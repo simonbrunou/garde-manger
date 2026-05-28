@@ -24,3 +24,8 @@ vite.config.ts.timestamp-*
 
 # Brainstorming visual-companion scratch dir
 .superpowers/
+# SQLite
+*.db
+
+# Data directory
+data/
