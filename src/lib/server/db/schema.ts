@@ -4,6 +4,8 @@ export const users = sqliteTable('users', {
 	id: text('id').primaryKey(),
 	email: text('email').notNull().unique(),
 	displayName: text('display_name').notNull(),
-	locale: text('locale', { enum: ['fr', 'en'] }).notNull().default('fr'),
+	locale: text('locale', { enum: ['fr', 'en'] })
+		.notNull()
+		.default('fr'),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
 });

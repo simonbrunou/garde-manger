@@ -1,42 +1,40 @@
-# sv
+# Garde-Manger
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Self-hosted, mobile-first PWA to track fridge/cupboard inventory and cut food waste. See [`docs/superpowers/specs/2026-05-28-garde-manger-design.md`](docs/superpowers/specs/2026-05-28-garde-manger-design.md) for the design spec.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+## Develop
 
 ```sh
-# create a new project
-npx sv create my-app
+bun install
+bun run dev
 ```
 
-To recreate this project with the same configuration:
+## Build & run
 
 ```sh
-# recreate this project
-bun x sv@0.15.3 create --template minimal --types ts --add eslint prettier --install bun .
+bun run build        # Vite runs under Bun via bunx --bun so bun:sqlite resolves
+bun ./build/index.js # serves on port 3000; set DATABASE_PATH as needed
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Test / quality
 
 ```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+bun test
+bun run lint
+bun run check
 ```
 
-## Building
+## Database
 
-To create a production version of your app:
+Drizzle ORM + `bun:sqlite`. Run `bun run db:generate` after schema changes. Migrations live under `drizzle/` (committed) and are applied automatically at boot.
 
-```sh
-npm run build
-```
+## Deploy (Coolify + Railpack)
 
-You can preview the production build with `npm run preview`.
+- **Build pack:** select **Railpack** — it builds and runs with Bun, driven by `"packageManager": "bun@…"` in `package.json`.
+- **Env var:** `DATABASE_PATH=/app/data/garde-manger.db`
+- **Volume:** mount a **directory** volume at `/app/data`
+- **Deploy strategy:** **recreate** (no rolling updates — single SQLite writer)
+- **Healthcheck:** `GET /healthz`
+- **Start command:** `bun ./build/index.js`
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+The included `Dockerfile` is the fallback build path if Railpack is unavailable.

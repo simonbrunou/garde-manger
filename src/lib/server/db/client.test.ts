@@ -19,7 +19,13 @@ test('createDb enables foreign_keys and migrations create a usable users table',
 	runMigrations(db); // applies ./drizzle migrations
 
 	db.insert(users)
-		.values({ id: 'u1', email: 'a@b.fr', displayName: 'Alice', locale: 'fr', createdAt: new Date() })
+		.values({
+			id: 'u1',
+			email: 'a@b.fr',
+			displayName: 'Alice',
+			locale: 'fr',
+			createdAt: new Date()
+		})
 		.run();
 
 	const row = db.select().from(users).where(eq(users.email, 'a@b.fr')).get();
