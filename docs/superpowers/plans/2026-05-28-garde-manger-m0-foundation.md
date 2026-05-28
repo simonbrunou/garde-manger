@@ -112,6 +112,10 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
+	compilerOptions: {
+		// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
+		runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
+	},
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter() // default out: 'build', precompress: true
@@ -120,6 +124,7 @@ const config = {
 
 export default config;
 ```
+**Keep the template's `compilerOptions.runes` block** (forces Svelte 5 runes mode project-wide — the recommended default); change only the adapter import and add `vitePreprocess`.
 
 - [ ] **Step 3: Build and serve with Bun**
 
