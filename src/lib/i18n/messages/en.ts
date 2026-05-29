@@ -139,5 +139,36 @@ export const en: Messages = {
 	ddm_label: 'Best before',
 
 	// --- M2 item count ---
-	items_count: (n: number) => `${n} ${n === 1 ? 'item' : 'items'}`
+	items_count: (n: number) => `${n} ${n === 1 ? 'item' : 'items'}`,
+
+	// --- M3 scan ---
+	scan_title: 'Scan a product',
+	scan_instructions: 'Point the camera at the product barcode.',
+	scan_starting: 'Starting the camera…',
+	scan_searching: 'Looking for a barcode…',
+	scan_detected: 'Barcode detected, opening…',
+	scan_camera_denied: 'Camera denied or unavailable. Enter the barcode below.',
+	scan_camera_unsupported: 'The camera is not available here. Enter the barcode below.',
+	scan_enable_camera: 'Enable the camera',
+	scan_manual_title: 'Enter the barcode',
+	scan_manual_label: 'Barcode (EAN / UPC)',
+	scan_manual_placeholder: 'e.g. 3017620422003',
+	scan_manual_submit: 'Look up',
+	scan_manual_invalid: 'Invalid barcode.',
+	scan_or_freetext: 'No barcode? Add it manually',
+	scan_confirm_title: 'Confirm the product',
+	scan_barcode_label: 'Barcode',
+	scan_name_label: 'Product name',
+	scan_brand_label: 'Brand',
+	scan_product_unknown: 'Unknown product in Open Food Facts. Enter its name.',
+	scan_off_unavailable:
+		'Open Food Facts is unavailable right now. You can enter the product manually.',
+	scan_dlc_label: 'Use-by date',
+	scan_dlc_hint: 'The date printed on the packaging (“use by”).',
+	scan_dlc_required: 'A use-by date is required for a packaged product.',
+	scan_add_submit: 'Add to the pantry',
+	scan_attribution: 'Data © Open Food Facts (ODbL) · photo CC-BY-SA 3.0',
+	scan_back: 'Scan another product',
+	scan_name_required: 'The product name is required.',
+	scan_error_generic: 'Something went wrong.'
 };
