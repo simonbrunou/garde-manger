@@ -33,7 +33,7 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const name = (data.get('name') as string | null)?.trim() ?? '';
 
-		if (!name) {
+		if (!name || name.length > 80) {
 			return fail(400, { message: t.households_name_required });
 		}
 

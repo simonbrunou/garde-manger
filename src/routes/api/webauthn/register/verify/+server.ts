@@ -1,5 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
+import type { RegistrationResponseJSON } from '@simplewebauthn/server';
 import { db, users } from '$lib/server/db';
 import { verifyRegistration } from '$lib/server/auth/webauthn';
 import type { RequestHandler } from './$types';
@@ -19,7 +20,12 @@ export const POST: RequestHandler = async ({ locals, cookies, request }) => {
 		error(401, 'Utilisateur introuvable');
 	}
 
-	const body = await request.json();
+	let body: RegistrationResponseJSON & { deviceLabel?: string };
+	try {
+		body = await request.json();
+	} catch {
+		error(400, 'Invalid JSON');
+	}
 
 	const { verified } = await verifyRegistration(db, {
 		user,

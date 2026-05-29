@@ -1,4 +1,5 @@
 import { json, error } from '@sveltejs/kit';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import { db } from '$lib/server/db';
 import { verifyAuthentication } from '$lib/server/auth/webauthn';
 import { createSession } from '$lib/server/auth/session';
@@ -11,7 +12,12 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 		error(400, 'Challenge manquant ou expiré');
 	}
 
-	const body = await request.json();
+	let body: AuthenticationResponseJSON;
+	try {
+		body = await request.json();
+	} catch {
+		error(400, 'Invalid JSON');
+	}
 
 	const result = await verifyAuthentication(db, {
 		response: body,
