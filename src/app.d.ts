@@ -6,6 +6,7 @@ declare global {
 		interface Locals {
 			user: { id: string; email: string; displayName: string; locale: 'fr' | 'en' } | null;
 			session: { id: string; userId: string; expiresAt: Date } | null;
+			locale: 'fr' | 'en';
 		}
 		// interface PageData {}
 		// interface PageState {}

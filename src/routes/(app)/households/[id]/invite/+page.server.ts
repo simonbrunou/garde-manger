@@ -2,14 +2,16 @@ import { error, fail } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { MembershipError, requireMembership } from '$lib/server/households';
 import { createInvitation } from '$lib/server/invitations';
+import { m } from '$lib/i18n';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
+	const t = m(locals.locale);
 	try {
 		requireMembership(db, params.id, locals.user!.id, 'admin');
 	} catch (e) {
 		if (e instanceof MembershipError) {
-			error(403, 'Réservé aux administrateurs');
+			error(403, t.invite_admin_only);
 		}
 		throw e;
 	}
@@ -19,11 +21,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 export const actions: Actions = {
 	create: async ({ params, locals, request, url }) => {
+		const t = m(locals.locale);
 		try {
 			requireMembership(db, params.id, locals.user!.id, 'admin');
 		} catch (e) {
 			if (e instanceof MembershipError) {
-				return fail(403, { message: 'Accès refusé' });
+				return fail(403, { message: t.invite_access_denied });
 			}
 			throw e;
 		}

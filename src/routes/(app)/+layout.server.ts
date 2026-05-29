@@ -14,5 +14,5 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
 	const activeHouseholdId =
 		cookieId && householdIds.includes(cookieId) ? cookieId : (households[0]?.id ?? null);
 
-	return { user, households, activeHouseholdId };
+	return { user, households, activeHouseholdId, locale: locals.locale };
 };

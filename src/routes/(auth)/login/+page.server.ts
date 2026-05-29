@@ -6,6 +6,7 @@ import { verifyPassword } from '$lib/server/auth/password';
 import { createSession } from '$lib/server/auth/session';
 import { setSessionCookie } from '$lib/server/auth/cookies';
 import { loginSchema, safeLocalPath } from '$lib/validation';
+import { m } from '$lib/i18n';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -15,11 +16,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request, cookies, locals }) => {
+		const t = m(locals.locale);
 		const raw = Object.fromEntries(await request.formData());
 		const result = v.safeParse(loginSchema, raw);
 		if (!result.success) {
-			return fail(400, { message: 'Identifiants invalides' });
+			return fail(400, { message: t.auth_invalid_credentials });
 		}
 
 		const { email: rawEmail, password } = result.output;
@@ -27,12 +29,12 @@ export const actions: Actions = {
 
 		const user = db.select().from(users).where(eq(users.email, email)).get();
 		if (!user || !user.passwordHash) {
-			return fail(400, { message: 'Identifiants invalides' });
+			return fail(400, { message: t.auth_invalid_credentials });
 		}
 
 		const valid = await verifyPassword(password, user.passwordHash);
 		if (!valid) {
-			return fail(400, { message: 'Identifiants invalides' });
+			return fail(400, { message: t.auth_invalid_credentials });
 		}
 
 		const { token, session } = await createSession(db, user.id);

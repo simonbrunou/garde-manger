@@ -1,24 +1,29 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
+	import type { PageData } from './$types';
+	import { m } from '$lib/i18n';
 
-	let { data }: { data: PageServerData } = $props();
+	let { data }: { data: PageData } = $props();
+	const t = $derived(m(data.locale));
 </script>
 
-<h1>{data.household.name} — Membres</h1>
+<h1>{data.household.name} {t.members_title_suffix}</h1>
 
 <ul>
-	{#each data.members as m (m.id)}
+	{#each data.members as member (member.id)}
 		<li>
-			<strong>{m.displayName}</strong>
-			<span class="email">{m.email}</span>
-			<span class="role-badge">{m.role}</span>
-			<span class="joined">Membre depuis {m.joinedAt.toLocaleDateString('fr-FR')}</span>
+			<strong>{member.displayName}</strong>
+			<span class="email">{member.email}</span>
+			<span class="role-badge">{member.role}</span>
+			<span class="joined"
+				>{t.members_since}
+				{member.joinedAt.toLocaleDateString(data.locale === 'en' ? 'en-GB' : 'fr-FR')}</span
+			>
 		</li>
 	{/each}
 </ul>
 
 {#if data.isAdmin}
-	<a href="./invite">Inviter un membre</a>
+	<a href="./invite">{t.members_invite_link}</a>
 {/if}
 
-<p><a href="/households">← Retour aux foyers</a></p>
+<p><a href="/households">{t.members_back}</a></p>

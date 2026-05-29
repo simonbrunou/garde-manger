@@ -2,18 +2,21 @@ import { redirect } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { db } from '$lib/server/db';
 import { InvitationError, acceptInvitation } from '$lib/server/invitations';
+import { m } from '$lib/i18n';
 import type { PageServerLoad } from './$types';
-
-const ERROR_MESSAGES: Record<string, string> = {
-	not_found: "Ce lien d'invitation est invalide ou n'existe pas.",
-	already_used: "Ce lien d'invitation a déjà été utilisé.",
-	expired: "Ce lien d'invitation a expiré."
-};
 
 export const load: PageServerLoad = async ({ params, locals, cookies }) => {
 	if (!locals.user) {
 		redirect(303, `/login?redirectTo=${encodeURIComponent('/join/' + params.token)}`);
 	}
+
+	const t = m(locals.locale);
+
+	const ERROR_MESSAGES: Record<string, string> = {
+		not_found: t.join_error_not_found,
+		already_used: t.join_error_already_used,
+		expired: t.join_error_expired
+	};
 
 	try {
 		const membership = acceptInvitation(db, {
@@ -33,7 +36,8 @@ export const load: PageServerLoad = async ({ params, locals, cookies }) => {
 	} catch (e) {
 		if (e instanceof InvitationError) {
 			return {
-				error: ERROR_MESSAGES[e.code] ?? "Une erreur est survenue avec ce lien d'invitation."
+				locale: locals.locale as 'fr' | 'en',
+				error: ERROR_MESSAGES[e.code] ?? t.join_error_generic
 			};
 		}
 		// Let SvelteKit redirect/error throws propagate

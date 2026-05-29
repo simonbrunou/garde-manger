@@ -1,10 +1,12 @@
 <script lang="ts">
-	import type { PageServerData, ActionData } from './$types';
+	import type { PageData, ActionData } from './$types';
+	import { m } from '$lib/i18n';
 
-	let { data, form }: { data: PageServerData; form: ActionData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
+	const t = $derived(m(data.locale));
 </script>
 
-<h1>Mes foyers</h1>
+<h1>{t.households_title}</h1>
 
 {#if form?.message}
 	<p class="error" role="alert">{form.message}</p>
@@ -20,14 +22,14 @@
 		{/each}
 	</ul>
 {:else}
-	<p>Vous n'appartenez à aucun foyer. Créez-en un ci-dessous.</p>
+	<p>{t.households_no_household}</p>
 {/if}
 
 <section>
-	<h2>Créer un foyer</h2>
+	<h2>{t.households_create_section}</h2>
 	<form method="POST" action="?/create">
 		<div>
-			<label for="name">Nom du foyer</label>
+			<label for="name">{t.households_name_label}</label>
 			<input
 				type="text"
 				id="name"
@@ -35,9 +37,9 @@
 				required
 				minlength="1"
 				maxlength="80"
-				placeholder="Mon foyer"
+				placeholder={t.households_name_placeholder}
 			/>
 		</div>
-		<button type="submit">Créer</button>
+		<button type="submit">{t.households_create_submit}</button>
 	</form>
 </section>

@@ -6,6 +6,7 @@ import { hashPassword } from '$lib/server/auth/password';
 import { createSession } from '$lib/server/auth/session';
 import { setSessionCookie } from '$lib/server/auth/cookies';
 import { signupSchema, safeLocalPath } from '$lib/validation';
+import { m } from '$lib/i18n';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -15,7 +16,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request, cookies, locals }) => {
+		const t = m(locals.locale);
 		const raw = Object.fromEntries(await request.formData());
 		const result = v.safeParse(signupSchema, raw);
 		if (!result.success) {
@@ -33,7 +35,7 @@ export const actions: Actions = {
 		const existing = db.select().from(users).where(eq(users.email, email)).get();
 		if (existing) {
 			return fail(400, {
-				message: 'Un compte existe déjà avec cet email',
+				message: t.auth_email_already_used,
 				email,
 				displayName
 			});
