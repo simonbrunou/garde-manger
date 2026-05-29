@@ -1,5 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
+import type { RegistrationResponseJSON } from '@simplewebauthn/server';
 import { db, users } from '$lib/server/db';
 import { verifyRegistration } from '$lib/server/auth/webauthn';
 import type { RequestHandler } from './$types';
@@ -19,13 +20,25 @@ export const POST: RequestHandler = async ({ locals, cookies, request }) => {
 		error(401, 'Utilisateur introuvable');
 	}
 
-	const body = await request.json();
+	let body: RegistrationResponseJSON & { deviceLabel?: string };
+	try {
+		body = await request.json();
+	} catch {
+		error(400, 'Invalid JSON');
+	}
+
+	// deviceLabel is the only client-controlled side field (the rest is verified
+	// by the WebAuthn lib) — sanitize it before it's persisted as the credential label.
+	const deviceLabel =
+		typeof body.deviceLabel === 'string' && body.deviceLabel.trim()
+			? body.deviceLabel.trim().slice(0, 120)
+			: 'Passkey';
 
 	const { verified } = await verifyRegistration(db, {
 		user,
 		response: body,
 		expectedChallenge: chal,
-		deviceLabel: body.deviceLabel ?? 'Passkey'
+		deviceLabel
 	});
 
 	// Single-use: delete the challenge cookie regardless of outcome

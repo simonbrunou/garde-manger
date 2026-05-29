@@ -37,5 +37,21 @@ export const handle: Handle = async ({ event, resolve }) => {
 		acceptLanguage: event.request.headers.get('accept-language')
 	});
 
-	return resolve(event);
+	const response = await resolve(event);
+
+	// Security headers (the CSP itself is configured in svelte.config.js). HSTS is
+	// intentionally left to the TLS-terminating proxy (Traefik/Coolify) so dev over
+	// http:// and localhost are not forced onto HTTPS.
+	response.headers.set('X-Content-Type-Options', 'nosniff');
+	response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+	response.headers.set('X-Frame-Options', 'DENY');
+	response.headers.set('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
+
+	// Belt-and-suspenders: ensure the self-hosted ZXing WASM is served as
+	// application/wasm (a mislabelled type breaks streaming instantiation under CSP).
+	if (event.url.pathname.endsWith('.wasm') && !response.headers.get('content-type')) {
+		response.headers.set('content-type', 'application/wasm');
+	}
+
+	return response;
 };

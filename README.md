@@ -56,11 +56,10 @@ Drizzle ORM + `bun:sqlite`. Run `bun run db:generate` after schema changes. Migr
 
 ## Deploy (Coolify + Railpack)
 
-- **Build pack:** select **Railpack** — it builds and runs with Bun, driven by `"packageManager": "bun@…"` in `package.json`.
-- **Env var:** `DATABASE_PATH=/app/data/garde-manger.db`
-- **Volume:** mount a **directory** volume at `/app/data`
-- **Deploy strategy:** **recreate** (no rolling updates — single SQLite writer)
-- **Healthcheck:** `GET /healthz`
-- **Start command:** `bun ./build/index.js`
+See **[DEPLOY.md](./DEPLOY.md)** for the full guide: env vars, persistent volume,
+recreate strategy, reverse-proxy headers, the two daily Scheduled Tasks (reminder
+push + backup), security headers, and a post-deploy smoke checklist.
 
-The included `Dockerfile` is the fallback build path if Railpack is unavailable.
+In short: Railpack build pack (Bun), start `bun ./build/index.js`, mount a
+directory volume at `/app/data`, recreate strategy (single SQLite writer),
+healthcheck `GET /healthz`. The included `Dockerfile` is the fallback build path.
