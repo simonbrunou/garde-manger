@@ -47,6 +47,12 @@ describe('message key parity', () => {
 	});
 });
 
+describe('fr/en parity', () => {
+	test('both locales define the same keys', () => {
+		expect(Object.keys(fr).sort()).toEqual(Object.keys(en).sort());
+	});
+});
+
 describe('m()', () => {
 	test('returns fr messages for "fr"', () => {
 		expect(m('fr').nav_account).toBe('Compte');
