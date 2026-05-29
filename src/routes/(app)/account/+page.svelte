@@ -54,7 +54,11 @@
 							<span> — ajoutée le {new Date(cred.createdAt).toLocaleDateString('fr-FR')}</span>
 						{/if}
 						{#if cred.lastUsedAt}
-							<span>, dernière utilisation le {new Date(cred.lastUsedAt).toLocaleDateString('fr-FR')}</span>
+							<span
+								>, dernière utilisation le {new Date(cred.lastUsedAt).toLocaleDateString(
+									'fr-FR'
+								)}</span
+							>
 						{/if}
 						<form method="POST" action="?/removePasskey" style="display:inline">
 							<input type="hidden" name="id" value={cred.id} />

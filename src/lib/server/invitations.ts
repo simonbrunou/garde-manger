@@ -87,10 +87,7 @@ export function acceptInvitation(db: DB, { token, userId }: { token: string; use
 
 		if (existing) {
 			// Idempotent: mark invite used but don't insert a duplicate membership.
-			tx.update(invitations)
-				.set({ usedAt: now })
-				.where(eq(invitations.id, invite.id))
-				.run();
+			tx.update(invitations).set({ usedAt: now }).where(eq(invitations.id, invite.id)).run();
 			return existing;
 		}
 
@@ -105,10 +102,7 @@ export function acceptInvitation(db: DB, { token, userId }: { token: string; use
 		tx.insert(memberships).values(membership).run();
 
 		// Mark the invitation as used.
-		tx.update(invitations)
-			.set({ usedAt: now })
-			.where(eq(invitations.id, invite.id))
-			.run();
+		tx.update(invitations).set({ usedAt: now }).where(eq(invitations.id, invite.id)).run();
 
 		return membership;
 	});

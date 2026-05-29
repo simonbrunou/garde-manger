@@ -72,20 +72,20 @@ test('validateSessionToken returns null for an expired session and deletes the r
 	const { session } = await createSession(db, TEST_USER_ID);
 
 	// Force expiry via the raw sqlite handle (bypassing the ORM layer).
-	sqlite.run(
-		'UPDATE sessions SET expires_at = ? WHERE id = ?',
-		[Math.floor(Date.now() / 1000) - 1, session.id]
-	);
+	sqlite.run('UPDATE sessions SET expires_at = ? WHERE id = ?', [
+		Math.floor(Date.now() / 1000) - 1,
+		session.id
+	]);
 
 	// Build the token manually: we need the raw secret, but we stored only the hash.
 	// We don't have the secret anymore — so we test expiry by trying a plausible token
 	// with the correct id but any secret; expiry check happens before secret check.
 	// To do this properly: create a second session whose token we keep, then expire it.
 	const { token: token2, session: session2 } = await createSession(db, TEST_USER_ID);
-	sqlite.run(
-		'UPDATE sessions SET expires_at = ? WHERE id = ?',
-		[Math.floor(Date.now() / 1000) - 1, session2.id]
-	);
+	sqlite.run('UPDATE sessions SET expires_at = ? WHERE id = ?', [
+		Math.floor(Date.now() / 1000) - 1,
+		session2.id
+	]);
 
 	const result = validateSessionToken(db, token2);
 	expect(result).toBeNull();

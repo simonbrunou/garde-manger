@@ -30,14 +30,15 @@ Drizzle ORM + `bun:sqlite`. Run `bun run db:generate` after schema changes. Migr
 
 ## Auth / env
 
-| Variable | Purpose | Example |
-|---|---|---|
-| `DATABASE_PATH` | SQLite file path | `./data/garde-manger.db` |
-| `RP_ID` | WebAuthn Relying Party ID — must match the domain serving the app | `localhost` (dev), `manger.example.com` (prod) |
-| `RP_NAME` | Human-readable app name shown in passkey dialogs | `Garde-Manger` |
-| `ORIGIN` | Full origin the built server accepts requests from (SvelteKit CSRF check) | `http://localhost:5173` (dev), `https://manger.example.com` (prod) |
+| Variable        | Purpose                                                                   | Example                                                            |
+| --------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `DATABASE_PATH` | SQLite file path                                                          | `./data/garde-manger.db`                                           |
+| `RP_ID`         | WebAuthn Relying Party ID — must match the domain serving the app         | `localhost` (dev), `manger.example.com` (prod)                     |
+| `RP_NAME`       | Human-readable app name shown in passkey dialogs                          | `Garde-Manger`                                                     |
+| `ORIGIN`        | Full origin the built server accepts requests from (SvelteKit CSRF check) | `http://localhost:5173` (dev), `https://manger.example.com` (prod) |
 
 **Production passkey notes:**
+
 - `RP_ID` must be a stable HTTPS domain. Changing it invalidates all existing passkeys — affected users can still log in with their password and re-enroll.
 - Behind Coolify/Traefik, `PROTOCOL_HEADER` and `HOST_HEADER` handle the origin automatically; set `ORIGIN` as a fallback or for direct-access deployments.
 

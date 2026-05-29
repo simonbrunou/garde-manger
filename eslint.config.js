@@ -22,7 +22,9 @@ export default defineConfig(
 		rules: {
 			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
 			// see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
-			'no-undef': 'off'
+			'no-undef': 'off',
+			// Allow underscore-prefixed parameters to signal intentionally unused args (e.g. _db, _event).
+			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
 		}
 	},
 	{
@@ -37,8 +39,12 @@ export default defineConfig(
 		}
 	},
 	{
-		// Override or add rule settings here, such as:
-		// 'svelte/button-has-type': 'error'
-		rules: {}
+		rules: {
+			// Plain internal hrefs are fine here; resolve() ceremony isn't worth it for
+			// grouped/dynamic routes at this scale. Every anchor in this app targets a
+			// same-origin SvelteKit route — wrapping each in resolve() adds boilerplate
+			// without meaningful benefit.
+			'svelte/no-navigation-without-resolve': 'off'
+		}
 	}
 );

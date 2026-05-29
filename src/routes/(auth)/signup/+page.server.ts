@@ -41,7 +41,9 @@ export const actions: Actions = {
 
 		const passwordHash = await hashPassword(password);
 		const id = crypto.randomUUID();
-		db.insert(users).values({ id, email, displayName, locale, passwordHash, createdAt: new Date() }).run();
+		db.insert(users)
+			.values({ id, email, displayName, locale, passwordHash, createdAt: new Date() })
+			.run();
 
 		const { token, session } = await createSession(db, id);
 		setSessionCookie(cookies, token, session.expiresAt);

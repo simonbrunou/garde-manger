@@ -16,13 +16,7 @@
 
 		<div>
 			<label for="email">Adresse e-mail</label>
-			<input
-				type="email"
-				id="email"
-				name="email"
-				autocomplete="email"
-				required
-			/>
+			<input type="email" id="email" name="email" autocomplete="email" required />
 		</div>
 
 		<div>

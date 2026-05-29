@@ -1,7 +1,12 @@
 import { redirect, fail } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { db } from '$lib/server/db';
-import { createHousehold, listForUser, MembershipError, requireMembership } from '$lib/server/households';
+import {
+	createHousehold,
+	listForUser,
+	MembershipError,
+	requireMembership
+} from '$lib/server/households';
 import type { PageServerLoad, Actions } from './$types';
 
 const HOUSEHOLD_COOKIE = 'gm_household';
@@ -35,7 +40,7 @@ export const actions: Actions = {
 		redirect(303, '/households');
 	},
 
-	switch: async ({ request, cookies, locals }) => {
+	switch: async ({ request, cookies, locals, url }) => {
 		const data = await request.formData();
 		const householdId = (data.get('householdId') as string | null) ?? '';
 
@@ -47,13 +52,22 @@ export const actions: Actions = {
 			requireMembership(db, householdId, locals.user!.id);
 		} catch (e) {
 			if (e instanceof MembershipError) {
-				return fail(400, { message: 'Vous n\'êtes pas membre de ce foyer' });
+				return fail(400, { message: "Vous n'êtes pas membre de ce foyer" });
 			}
 			throw e;
 		}
 
 		setHouseholdCookie(cookies, householdId);
-		const referer = request.headers.get('referer') ?? '/households';
-		redirect(303, referer);
+		const referer = request.headers.get('referer');
+		let target = '/households';
+		if (referer) {
+			try {
+				const r = new URL(referer);
+				if (r.origin === url.origin) target = r.pathname + r.search;
+			} catch {
+				/* ignore malformed Referer */
+			}
+		}
+		redirect(303, target);
 	}
 };

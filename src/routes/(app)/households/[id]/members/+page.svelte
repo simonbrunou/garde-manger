@@ -7,7 +7,7 @@
 <h1>{data.household.name} — Membres</h1>
 
 <ul>
-	{#each data.members as m}
+	{#each data.members as m (m.id)}
 		<li>
 			<strong>{m.displayName}</strong>
 			<span class="email">{m.email}</span>

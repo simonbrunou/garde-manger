@@ -18,7 +18,7 @@
 				headers: { 'content-type': 'application/json' },
 				body: '{}'
 			});
-			if (!optRes.ok) throw new Error('Impossible d\'obtenir les options');
+			if (!optRes.ok) throw new Error("Impossible d'obtenir les options");
 			const optionsJSON = await optRes.json();
 
 			const regResponse = await startRegistration({ optionsJSON });
@@ -53,9 +53,7 @@
 
 {#if supportsPasskeys}
 	<div class="passkey-enroll">
-		<button type="button" onclick={handleEnroll} disabled={loading}>
-			Ajouter une passkey
-		</button>
+		<button type="button" onclick={handleEnroll} disabled={loading}> Ajouter une passkey </button>
 		{#if successMessage}
 			<p class="success" role="status">{successMessage}</p>
 		{/if}

@@ -16,11 +16,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		throw e;
 	}
 
-	const household = db
-		.select()
-		.from(households)
-		.where(eq(households.id, params.id))
-		.get();
+	const household = db.select().from(households).where(eq(households.id, params.id)).get();
 
 	if (!household) {
 		error(404, 'Foyer introuvable');

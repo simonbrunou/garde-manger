@@ -178,9 +178,9 @@ test('acceptInvitation throws InvitationError("expired") for an expired invite',
 });
 
 test('acceptInvitation throws InvitationError("not_found") for a bogus token', () => {
-	expect(() => acceptInvitation(db, { token: 'bogus-token-that-does-not-exist', userId: INVITEE_ID })).toThrow(
-		InvitationError
-	);
+	expect(() =>
+		acceptInvitation(db, { token: 'bogus-token-that-does-not-exist', userId: INVITEE_ID })
+	).toThrow(InvitationError);
 
 	try {
 		acceptInvitation(db, { token: 'bogus', userId: INVITEE_ID });

@@ -25,10 +25,7 @@ export const actions: Actions = {
 			return fail(400, { message: result.issues[0].message });
 		}
 		const { displayName, locale } = result.output;
-		db.update(users)
-			.set({ displayName, locale })
-			.where(eq(users.id, user.id))
-			.run();
+		db.update(users).set({ displayName, locale }).where(eq(users.id, user.id)).run();
 		return { success: true };
 	},
 

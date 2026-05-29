@@ -1,4 +1,5 @@
 import { redirect } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 import { db } from '$lib/server/db';
 import { InvitationError, acceptInvitation } from '$lib/server/invitations';
 import type { PageServerLoad } from './$types';
@@ -24,7 +25,8 @@ export const load: PageServerLoad = async ({ params, locals, cookies }) => {
 		cookies.set('gm_household', membership.householdId, {
 			path: '/',
 			httpOnly: true,
-			sameSite: 'lax'
+			sameSite: 'lax',
+			secure: !dev
 		});
 
 		redirect(303, `/households/${membership.householdId}/members`);

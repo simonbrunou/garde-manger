@@ -7,19 +7,17 @@ import { join } from 'node:path';
 
 function makeDb() {
 	const path = join(tmpdir(), `schema-test-${crypto.randomUUID()}.db`);
-	const { db, sqlite } = createDb(path);
+	const { db } = createDb(path);
 	runMigrations(db);
-	return { db, sqlite };
+	return { db };
 }
 
 describe('schema', () => {
 	let db: ReturnType<typeof makeDb>['db'];
-	let sqlite: ReturnType<typeof makeDb>['sqlite'];
 
 	beforeEach(() => {
 		const result = makeDb();
 		db = result.db;
-		sqlite = result.sqlite;
 	});
 
 	it('inserts a user and a session (FK ok)', async () => {
@@ -76,7 +74,10 @@ describe('schema', () => {
 			joinedAt: now
 		});
 
-		const [membership] = await db.select().from(memberships).where(eq(memberships.id, membershipId));
+		const [membership] = await db
+			.select()
+			.from(memberships)
+			.where(eq(memberships.id, membershipId));
 		expect(membership.role).toBe('admin');
 		expect(membership.householdId).toBe(householdId);
 		expect(membership.userId).toBe(userId);
@@ -111,13 +112,16 @@ describe('schema', () => {
 
 		// Second membership with same householdId + userId must throw
 		expect(() =>
-			db.insert(memberships).values({
-				id: crypto.randomUUID(),
-				householdId,
-				userId,
-				role: 'admin',
-				joinedAt: now
-			}).run()
+			db
+				.insert(memberships)
+				.values({
+					id: crypto.randomUUID(),
+					householdId,
+					userId,
+					role: 'admin',
+					joinedAt: now
+				})
+				.run()
 		).toThrow();
 	});
 
@@ -134,13 +138,16 @@ describe('schema', () => {
 		});
 
 		expect(() =>
-			db.insert(memberships).values({
-				id: crypto.randomUUID(),
-				householdId: crypto.randomUUID(), // non-existent
-				userId,
-				role: 'member',
-				joinedAt: now
-			}).run()
+			db
+				.insert(memberships)
+				.values({
+					id: crypto.randomUUID(),
+					householdId: crypto.randomUUID(), // non-existent
+					userId,
+					role: 'member',
+					joinedAt: now
+				})
+				.run()
 		).toThrow();
 	});
 

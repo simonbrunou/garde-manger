@@ -172,11 +172,7 @@ export async function verifyAuthentication(
 	}
 ): Promise<{ verified: boolean; userId?: string }> {
 	// Look up stored credential by its base64url id
-	const cred = db
-		.select()
-		.from(credentials)
-		.where(eq(credentials.credentialId, response.id))
-		.get();
+	const cred = db.select().from(credentials).where(eq(credentials.credentialId, response.id)).get();
 
 	if (!cred) {
 		return { verified: false };

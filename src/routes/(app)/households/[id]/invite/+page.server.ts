@@ -30,8 +30,7 @@ export const actions: Actions = {
 
 		const data = await request.formData();
 		const rawRole = data.get('role');
-		const role: 'admin' | 'member' =
-			rawRole === 'admin' ? 'admin' : 'member';
+		const role: 'admin' | 'member' = rawRole === 'admin' ? 'admin' : 'member';
 
 		const { token } = createInvitation(db, {
 			householdId: params.id,

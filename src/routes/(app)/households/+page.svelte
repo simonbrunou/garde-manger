@@ -12,7 +12,7 @@
 
 {#if data.households.length > 0}
 	<ul>
-		{#each data.households as h}
+		{#each data.households as h (h.id)}
 			<li>
 				<a href="/households/{h.id}/members">{h.name}</a>
 				<span class="role-badge">{h.role}</span>

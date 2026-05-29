@@ -12,7 +12,7 @@
 			<form method="POST" action="/households?/switch">
 				<label for="householdId">Foyer :</label>
 				<select id="householdId" name="householdId">
-					{#each data.households as h}
+					{#each data.households as h (h.id)}
 						<option value={h.id} selected={h.id === data.activeHouseholdId}>{h.name}</option>
 					{/each}
 				</select>

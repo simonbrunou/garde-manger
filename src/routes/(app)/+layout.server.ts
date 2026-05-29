@@ -12,9 +12,7 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
 	const cookieId = cookies.get('gm_household') ?? null;
 	const householdIds = households.map((h) => h.id);
 	const activeHouseholdId =
-		cookieId && householdIds.includes(cookieId)
-			? cookieId
-			: (households[0]?.id ?? null);
+		cookieId && householdIds.includes(cookieId) ? cookieId : (households[0]?.id ?? null);
 
 	return { user, households, activeHouseholdId };
 };
