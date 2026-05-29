@@ -47,7 +47,7 @@
 						placeholder={t.add_search_placeholder}
 						autocomplete="off"
 					/>
-					<button type="submit">{t.add_search_submit}</button>
+					<button type="submit" class="btn btn-secondary">{t.add_search_submit}</button>
 				</div>
 			</form>
 
@@ -133,8 +133,8 @@
 						<input type="number" id="fresh-quantity" name="quantity" min="1" max="99" value="1" />
 					</div>
 
-					<button type="submit" class="btn-primary">{t.add_fresh_submit}</button>
-					<a href="/add?q={encodeURIComponent(data.q)}" class="btn-secondary">{t.add_cancel}</a>
+					<button type="submit" class="btn btn-primary">{t.add_fresh_submit}</button>
+					<a href="/add?q={encodeURIComponent(data.q)}" class="btn btn-secondary">{t.add_cancel}</a>
 				</form>
 			{/if}
 		</details>
@@ -188,7 +188,7 @@
 					<input type="number" id="custom-quantity" name="quantity" min="1" max="99" value="1" />
 				</div>
 
-				<button type="submit" class="btn-primary">{t.add_custom_submit}</button>
+				<button type="submit" class="btn btn-primary">{t.add_custom_submit}</button>
 			</form>
 		</details>
 	</section>
@@ -204,8 +204,10 @@
 	}
 
 	.method-card {
-		border: 1px solid #ddd;
-		border-radius: 8px;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow-sm);
 		padding: 1rem;
 	}
 
@@ -218,8 +220,9 @@
 	}
 
 	.method-link:hover {
-		background: #f0f7ff;
-		border-color: #93c5fd;
+		background: var(--surface-2);
+		border-color: var(--green);
+		text-decoration: none;
 	}
 
 	.method-icon {
@@ -260,9 +263,6 @@
 
 	.search-row input {
 		flex: 1;
-		padding: 0.4rem 0.6rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
 	}
 
 	.food-results {
@@ -272,7 +272,7 @@
 	}
 
 	.food-results li {
-		border-bottom: 1px solid #eee;
+		border-bottom: 1px solid var(--border);
 	}
 
 	.food-results li a {
@@ -280,32 +280,34 @@
 		padding: 0.4rem 0.25rem;
 		text-decoration: none;
 		color: inherit;
+		border-radius: var(--radius-sm);
 	}
 
 	.food-results li a:hover {
-		background: #f0f7ff;
+		background: var(--surface-2);
+		text-decoration: none;
 	}
 
 	.food-results li.selected a {
-		background: #e8f4fe;
+		background: var(--green-tint);
 		font-weight: 600;
 	}
 
 	.subtitle {
 		display: block;
 		font-size: 0.8rem;
-		color: #666;
+		color: var(--text-muted);
 	}
 
 	.no-results {
 		font-size: 0.9rem;
-		color: #666;
+		color: var(--text-muted);
 		font-style: italic;
 	}
 
 	.add-form {
 		margin-top: 1rem;
-		border-top: 1px solid #eee;
+		border-top: 1px solid var(--border);
 		padding-top: 1rem;
 		display: flex;
 		flex-direction: column;
@@ -322,23 +324,10 @@
 		gap: 0.25rem;
 	}
 
-	.field label {
-		font-size: 0.9rem;
-		font-weight: 500;
-	}
-
-	.field input,
-	.field select {
-		padding: 0.4rem 0.6rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		font-size: 1rem;
-	}
-
 	.estimate-box {
-		background: #fffbeb;
-		border: 1px solid #f6ad55;
-		border-radius: 6px;
+		background: var(--amber-tint);
+		border: 1px solid var(--amber);
+		border-radius: var(--radius-sm);
 		padding: 0.6rem 0.8rem;
 		font-size: 0.9rem;
 	}
@@ -348,43 +337,12 @@
 	}
 
 	.estimate-note {
-		color: #92400e;
+		color: var(--amber-dark);
 		font-size: 0.8rem;
 	}
 
 	.estimate-guidance {
-		background: #fff7ed;
-		border-color: #ed8936;
-	}
-
-	.btn-primary {
-		padding: 0.5rem 1.2rem;
-		background: #2563eb;
-		color: white;
-		border: none;
-		border-radius: 6px;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: 500;
-	}
-
-	.btn-primary:hover {
-		background: #1d4ed8;
-	}
-
-	.btn-secondary {
-		display: inline-block;
-		padding: 0.4rem 0.8rem;
-		color: #555;
-		font-size: 0.9rem;
-		text-decoration: none;
-	}
-
-	.error {
-		color: #dc2626;
-		background: #fef2f2;
-		border: 1px solid #fca5a5;
-		border-radius: 4px;
-		padding: 0.5rem 0.75rem;
+		background: var(--amber-tint);
+		border-color: var(--amber-dark);
 	}
 </style>

@@ -19,10 +19,10 @@
 		<p class="success" role="status">{t.account_profile_updated}</p>
 	{/if}
 
-	<section>
+	<section class="card account-section">
 		<h2>{t.account_profile_section}</h2>
-		<form method="POST" action="?/updateProfile">
-			<div>
+		<form method="POST" action="?/updateProfile" class="account-form">
+			<div class="field">
 				<label for="displayName">{t.account_display_name_label}</label>
 				<input
 					type="text"
@@ -33,42 +33,42 @@
 					maxlength="80"
 				/>
 			</div>
-			<div>
+			<div class="field">
 				<label for="locale">{t.account_locale_label}</label>
 				<select id="locale" name="locale">
 					<option value="fr" selected={data.user.locale === 'fr'}>{t.account_locale_fr}</option>
 					<option value="en" selected={data.user.locale === 'en'}>{t.account_locale_en}</option>
 				</select>
 			</div>
-			<button type="submit">{t.account_save}</button>
+			<button type="submit" class="btn btn-primary">{t.account_save}</button>
 		</form>
 	</section>
 
-	<section>
+	<section class="card account-section">
 		<h2>{t.account_passkeys_section}</h2>
 
 		{#if data.credentials.length === 0}
-			<p>{t.account_no_passkeys}</p>
+			<p class="muted">{t.account_no_passkeys}</p>
 		{:else}
-			<ul>
+			<ul class="passkey-list">
 				{#each data.credentials as cred (cred.id)}
 					<li>
-						<span>{cred.deviceLabel ?? 'Passkey'}</span>
+						<span class="passkey-name">{cred.deviceLabel ?? 'Passkey'}</span>
 						{#if cred.createdAt}
-							<span>
+							<span class="passkey-meta">
 								— {t.account_passkey_added}
 								{new Date(cred.createdAt).toLocaleDateString(dateLocale)}</span
 							>
 						{/if}
 						{#if cred.lastUsedAt}
-							<span
+							<span class="passkey-meta"
 								>, {t.account_passkey_last_used}
 								{new Date(cred.lastUsedAt).toLocaleDateString(dateLocale)}</span
 							>
 						{/if}
-						<form method="POST" action="?/removePasskey" style="display:inline">
+						<form method="POST" action="?/removePasskey" class="passkey-remove">
 							<input type="hidden" name="id" value={cred.id} />
-							<button type="submit">{t.account_passkey_delete}</button>
+							<button type="submit" class="btn btn-ghost">{t.account_passkey_delete}</button>
 						</form>
 					</li>
 				{/each}
@@ -80,3 +80,56 @@
 
 	<PushSettings locale={data.locale} vapidPublicKey={data.vapidPublicKey} />
 </main>
+
+<style>
+	.account-section {
+		margin-bottom: 1rem;
+	}
+
+	.account-form {
+		display: flex;
+		flex-direction: column;
+		gap: 0.9rem;
+		align-items: flex-start;
+	}
+
+	.field {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		width: 100%;
+	}
+
+	.passkey-list {
+		list-style: none;
+		padding: 0;
+		margin: 0 0 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.passkey-list li {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.6rem 0.75rem;
+		background: var(--surface-2);
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+	}
+
+	.passkey-name {
+		font-weight: 600;
+	}
+
+	.passkey-meta {
+		font-size: 0.85rem;
+		color: var(--text-muted);
+	}
+
+	.passkey-remove {
+		margin-left: auto;
+	}
+</style>

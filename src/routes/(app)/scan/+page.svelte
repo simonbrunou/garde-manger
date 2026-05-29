@@ -43,7 +43,7 @@
 				{#if data.invalidCode}
 					<p class="error" role="alert">{t.scan_manual_invalid}</p>
 				{/if}
-				<button type="submit" class="btn-primary">{t.scan_manual_submit}</button>
+				<button type="submit" class="btn btn-primary">{t.scan_manual_submit}</button>
 			</form>
 		</div>
 
@@ -63,8 +63,10 @@
 	}
 
 	.method-card {
-		border: 1px solid #ddd;
-		border-radius: 8px;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow-sm);
 		padding: 1rem;
 	}
 
@@ -85,45 +87,12 @@
 		gap: 0.25rem;
 	}
 
-	.field label {
-		font-size: 0.9rem;
-		font-weight: 500;
-	}
-
-	.field input {
-		padding: 0.4rem 0.6rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		font-size: 1rem;
-	}
-
-	.btn-primary {
-		padding: 0.5rem 1.2rem;
-		background: #2563eb;
-		color: white;
-		border: none;
-		border-radius: 6px;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: 500;
+	.method-card .btn {
 		align-self: flex-start;
-	}
-
-	.btn-primary:hover {
-		background: #1d4ed8;
 	}
 
 	.freetext {
 		margin: 0;
 		font-size: 0.95rem;
-	}
-
-	.error {
-		color: #dc2626;
-		background: #fef2f2;
-		border: 1px solid #fca5a5;
-		border-radius: 4px;
-		padding: 0.5rem 0.75rem;
-		margin: 0;
 	}
 </style>

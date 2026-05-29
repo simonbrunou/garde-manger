@@ -44,8 +44,8 @@
 		padding: 0.4rem 0.75rem;
 		font-size: 0.85rem;
 		text-align: center;
-		color: #5c4400;
-		background: #ffe6a7;
-		border-bottom: 1px solid #e0c878;
+		color: var(--amber-dark);
+		background: var(--amber-tint);
+		border-bottom: 1px solid var(--amber);
 	}
 </style>

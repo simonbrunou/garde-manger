@@ -159,15 +159,15 @@
 		<p class="muted" role="status">{t.notif_denied}</p>
 	{:else if status === 'subscribed'}
 		<p role="status">{t.notif_enabled}</p>
-		<button type="button" onclick={disable}>{t.notif_disable}</button>
+		<button type="button" class="btn btn-secondary" onclick={disable}>{t.notif_disable}</button>
 	{:else if status === 'reconnect'}
 		<p class="muted">{t.notif_explainer}</p>
-		<button type="button" onclick={enable}>{t.notif_reconnect}</button>
+		<button type="button" class="btn btn-primary" onclick={enable}>{t.notif_reconnect}</button>
 	{:else if status === 'working'}
 		<p class="muted" role="status">{t.notif_working}</p>
 	{:else}
 		<p class="muted">{t.notif_explainer}</p>
-		<button type="button" onclick={enable}>{t.notif_enable}</button>
+		<button type="button" class="btn btn-primary" onclick={enable}>{t.notif_enable}</button>
 	{/if}
 
 	{#if errorMessage}
@@ -176,10 +176,15 @@
 </section>
 
 <style>
-	.muted {
-		color: #666;
+	.push-settings {
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow-sm);
+		padding: 1rem;
 	}
-	.error {
-		color: #b00020;
+
+	.push-settings p {
+		margin: 0 0 0.75rem;
 	}
 </style>

@@ -55,7 +55,7 @@
 
 {#if supportsPasskeys}
 	<div class="passkey-login">
-		<button type="button" onclick={handleLogin} disabled={loading}>
+		<button type="button" class="btn btn-secondary" onclick={handleLogin} disabled={loading}>
 			🔑 Se connecter avec une passkey
 		</button>
 		{#if errorMessage}
@@ -63,3 +63,15 @@
 		{/if}
 	</div>
 {/if}
+
+<style>
+	.passkey-login {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+	}
+
+	.passkey-login .btn {
+		width: 100%;
+	}
+</style>

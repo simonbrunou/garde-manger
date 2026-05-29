@@ -214,30 +214,37 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 0.75rem;
 		margin-bottom: 1rem;
 	}
 
 	.home-title {
 		font-size: 1.5rem;
-		font-weight: 700;
+		font-weight: 800;
+		letter-spacing: -0.01em;
 		margin: 0;
 	}
 
 	/* ── Add button ──────────────────────────────────────────────────────── */
 	.btn-add {
-		display: inline-block;
-		padding: 0.5rem 1.1rem;
-		background: #2563eb;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		flex-shrink: 0;
+		padding: 0.6rem 1.1rem;
+		background: var(--green);
 		color: #fff;
-		border-radius: 8px;
+		border-radius: var(--radius-pill);
 		text-decoration: none;
-		font-weight: 600;
-		font-size: 1rem;
+		font-weight: 700;
+		font-size: 0.98rem;
+		box-shadow: var(--shadow-sm);
 		transition: background 0.15s;
 	}
 
 	.btn-add:hover {
-		background: #1d4ed8;
+		background: var(--green-dark);
+		text-decoration: none;
 	}
 
 	/* ── Location filter chips ───────────────────────────────────────────── */
@@ -250,32 +257,32 @@
 
 	.chip {
 		display: inline-block;
-		padding: 0.3rem 0.8rem;
-		border-radius: 999px;
-		border: 1px solid #d1d5db;
-		background: #f9fafb;
-		color: #374151;
+		padding: 0.35rem 0.85rem;
+		border-radius: var(--radius-pill);
+		border: 1px solid var(--border-strong);
+		background: var(--surface);
+		color: var(--text);
 		text-decoration: none;
 		font-size: 0.875rem;
+		font-weight: 600;
 		transition:
 			background 0.1s,
 			border-color 0.1s;
 	}
 
 	.chip:hover {
-		background: #f3f4f6;
-		border-color: #9ca3af;
+		background: var(--surface-2);
+		text-decoration: none;
 	}
 
 	.chip-active {
-		background: #2563eb;
+		background: var(--green);
 		color: #fff;
-		border-color: #2563eb;
+		border-color: var(--green);
 	}
 
 	.chip-active:hover {
-		background: #1d4ed8;
-		border-color: #1d4ed8;
+		background: var(--green-dark);
 	}
 
 	/* ── Empty state ─────────────────────────────────────────────────────── */
@@ -283,10 +290,10 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 1rem;
-		padding: 3rem 1rem;
+		gap: 1.25rem;
+		padding: 3.5rem 1rem;
 		text-align: center;
-		color: #6b7280;
+		color: var(--text-muted);
 	}
 
 	/* ── Bands ───────────────────────────────────────────────────────────── */
@@ -298,39 +305,39 @@
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		font-size: 1rem;
-		font-weight: 600;
+		font-size: 0.8rem;
+		font-weight: 800;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		margin-bottom: 0.75rem;
+		letter-spacing: 0.06em;
+		margin-bottom: 0.6rem;
 	}
 
 	.band-dot {
-		width: 10px;
-		height: 10px;
+		width: 9px;
+		height: 9px;
 		border-radius: 50%;
 		display: inline-block;
 	}
 
 	.band-urgent .band-dot {
-		background: #ef4444;
+		background: var(--red);
 	}
 	.band-urgent .band-title {
-		color: #ef4444;
+		color: var(--red-dark);
 	}
 
 	.band-soon .band-dot {
-		background: #f97316;
+		background: var(--amber);
 	}
 	.band-soon .band-title {
-		color: #f97316;
+		color: var(--amber-dark);
 	}
 
 	.band-ok .band-dot {
-		background: #22c55e;
+		background: var(--green);
 	}
 	.band-ok .band-title {
-		color: #22c55e;
+		color: var(--green-dark);
 	}
 
 	/* ── Item list ───────────────────────────────────────────────────────── */
@@ -340,33 +347,39 @@
 		padding: 0;
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: 0.6rem;
 	}
 
 	.item-row {
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
-		padding: 0.75rem 1rem;
-		background: #fff;
-		border: 1px solid #e5e7eb;
-		border-radius: 10px;
+		padding: 0.7rem 0.85rem;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow-sm);
 	}
 
 	.item-thumb {
-		font-size: 1.4rem;
+		font-size: 1.5rem;
 		flex-shrink: 0;
-		width: 2rem;
-		text-align: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--surface-2);
+		border-radius: var(--radius-sm);
 	}
 
 	.item-thumb-img {
 		flex-shrink: 0;
-		width: 2rem;
-		height: 2rem;
+		width: 2.25rem;
+		height: 2.25rem;
 		object-fit: cover;
-		border-radius: 6px;
-		background: #f3f4f6;
+		border-radius: var(--radius-sm);
+		background: var(--surface-2);
 	}
 
 	.item-info {
@@ -378,8 +391,8 @@
 	}
 
 	.item-name {
-		font-weight: 600;
-		font-size: 0.95rem;
+		font-weight: 700;
+		font-size: 0.97rem;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -387,30 +400,30 @@
 
 	.item-sub {
 		font-size: 0.8rem;
-		color: #6b7280;
+		color: var(--text-muted);
 	}
 
 	/* ── Pills ───────────────────────────────────────────────────────────── */
 	.pill {
 		flex-shrink: 0;
-		padding: 0.2rem 0.6rem;
-		border-radius: 999px;
-		font-size: 0.75rem;
-		font-weight: 600;
+		padding: 0.22rem 0.6rem;
+		border-radius: var(--radius-pill);
+		font-size: 0.72rem;
+		font-weight: 700;
 		white-space: nowrap;
 	}
 
 	.pill-urgent {
-		background: #fef2f2;
-		color: #b91c1c;
+		background: var(--red-tint);
+		color: var(--red-dark);
 	}
 	.pill-soon {
-		background: #fff7ed;
-		color: #c2410c;
+		background: var(--amber-tint);
+		color: var(--amber-dark);
 	}
 	.pill-ok {
-		background: #f0fdf4;
-		color: #15803d;
+		background: var(--green-tint);
+		color: var(--green-dark);
 	}
 
 	/* ── Action buttons ──────────────────────────────────────────────────── */
@@ -425,27 +438,27 @@
 	}
 
 	.btn-action {
-		padding: 0.3rem 0.6rem;
-		border: 1px solid #d1d5db;
-		border-radius: 6px;
-		background: #f9fafb;
+		padding: 0.35rem 0.6rem;
+		border: 1px solid var(--border-strong);
+		border-radius: var(--radius-pill);
+		background: var(--surface);
+		color: var(--text);
 		font-size: 0.78rem;
+		font-weight: 600;
 		cursor: pointer;
 		white-space: nowrap;
 		transition: background 0.1s;
 	}
 
-	.btn-action:hover {
-		background: #f3f4f6;
-	}
-
 	.btn-consume:hover {
-		background: #d1fae5;
-		border-color: #6ee7b7;
+		background: var(--green-tint);
+		border-color: var(--green);
+		color: var(--green-dark);
 	}
 
 	.btn-discard:hover {
-		background: #fee2e2;
-		border-color: #fca5a5;
+		background: var(--red-tint);
+		border-color: var(--red);
+		color: var(--red-dark);
 	}
 </style>

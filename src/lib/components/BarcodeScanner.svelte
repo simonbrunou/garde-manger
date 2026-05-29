@@ -190,7 +190,7 @@
 		width: 100%;
 		aspect-ratio: 4 / 3;
 		background: #000;
-		border-radius: 8px;
+		border-radius: var(--radius);
 		overflow: hidden;
 	}
 
@@ -212,15 +212,15 @@
 
 	.status {
 		font-size: 0.9rem;
-		color: #555;
+		color: var(--text-muted);
 		margin: 0;
 	}
 
 	.notice {
-		background: #fffbeb;
-		border: 1px solid #f6ad55;
-		border-radius: 6px;
+		background: var(--amber-tint);
+		border: 1px solid var(--amber);
+		border-radius: var(--radius-sm);
 		padding: 0.6rem 0.8rem;
-		color: #92400e;
+		color: var(--amber-dark);
 	}
 </style>

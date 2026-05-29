@@ -94,7 +94,7 @@
 			<input type="number" id="quantity" name="quantity" min="1" max="99" value="1" />
 		</div>
 
-		<button type="submit" class="btn-primary">{t.scan_add_submit}</button>
+		<button type="submit" class="btn btn-primary">{t.scan_add_submit}</button>
 	</form>
 
 	{#if isFound}
@@ -114,11 +114,12 @@
 	}
 
 	.notice {
-		background: #fff7ed;
-		border: 1px solid #ed8936;
-		border-radius: 6px;
+		background: var(--amber-tint);
+		border: 1px solid var(--amber);
+		border-radius: var(--radius-sm);
 		padding: 0.6rem 0.8rem;
 		font-size: 0.9rem;
+		color: var(--amber-dark);
 		max-width: 540px;
 	}
 
@@ -128,64 +129,33 @@
 		gap: 0.25rem;
 	}
 
-	.field label {
-		font-size: 0.9rem;
-		font-weight: 500;
-	}
-
-	.field input,
-	.field select {
-		padding: 0.4rem 0.6rem;
-		border: 1px solid #ccc;
-		border-radius: 4px;
-		font-size: 1rem;
-	}
-
+	/* DLC (use-by) is the core idea of the packaged flow — keep it red. */
 	.dlc-field label {
-		color: #dc2626;
+		color: var(--red-dark);
 		font-weight: 600;
 	}
 
 	.dlc-field input {
-		border-color: #dc2626;
+		border-color: var(--red);
+	}
+
+	.dlc-field input:focus-visible {
+		outline-color: var(--red);
 	}
 
 	.dlc-hint {
 		font-size: 0.8rem;
-		color: #666;
+		color: var(--text-muted);
 	}
 
 	.product-thumb {
-		border-radius: 8px;
+		border-radius: var(--radius-sm);
 		object-fit: cover;
 	}
 
 	.attribution {
 		font-size: 0.8rem;
-		color: #666;
+		color: var(--text-muted);
 		max-width: 540px;
-	}
-
-	.btn-primary {
-		padding: 0.5rem 1.2rem;
-		background: #2563eb;
-		color: white;
-		border: none;
-		border-radius: 6px;
-		cursor: pointer;
-		font-size: 1rem;
-		font-weight: 500;
-	}
-
-	.btn-primary:hover {
-		background: #1d4ed8;
-	}
-
-	.error {
-		color: #dc2626;
-		background: #fef2f2;
-		border: 1px solid #fca5a5;
-		border-radius: 4px;
-		padding: 0.5rem 0.75rem;
 	}
 </style>

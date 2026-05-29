@@ -1,0 +1,215 @@
+/* Garde-Manger — warm & friendly design system.
+   Cream paper background, soft rounded surfaces, a rounded system font, and a
+   fresh-produce palette: green = primary/fresh, amber = soon/DDM, red = urgent/DLC. */
+
+:root {
+	/* Friendly rounded system font — renders SF Rounded on iOS/macOS, falls back gracefully. */
+	--font:
+		ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
+		'Helvetica Neue', Arial, sans-serif;
+
+	/* Surfaces */
+	--bg: #faf6ee; /* warm cream paper */
+	--surface: #fffdf9; /* card */
+	--surface-2: #f3ece0; /* tint: chips, inputs, hovers */
+	--border: #e9e0d1; /* warm hairline */
+	--border-strong: #d9cdb8;
+
+	/* Text */
+	--text: #322c22; /* warm near-black */
+	--text-muted: #8a7e6b; /* warm grey */
+
+	/* Accents */
+	--green: #2f9e44;
+	--green-dark: #2b8a3e;
+	--green-tint: #e9f6ec;
+	--amber: #e08a1e;
+	--amber-dark: #c2740f;
+	--amber-tint: #fdf1de;
+	--red: #d6492f;
+	--red-dark: #b93c25;
+	--red-tint: #fbeae6;
+
+	/* Shape & depth */
+	--radius: 16px;
+	--radius-sm: 10px;
+	--radius-pill: 999px;
+	--shadow-sm: 0 1px 2px rgba(80, 60, 30, 0.06);
+	--shadow: 0 1px 2px rgba(80, 60, 30, 0.06), 0 6px 16px rgba(80, 60, 30, 0.07);
+
+	--container: 640px;
+
+	color-scheme: light;
+	font-family: var(--font);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	min-height: 100dvh;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font);
+	font-size: 16px;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+/* Page content container (every route's <main>). */
+main {
+	width: 100%;
+	max-width: var(--container);
+	margin: 0 auto;
+	padding: 1rem 1.1rem 4rem;
+}
+
+h1 {
+	font-size: 1.45rem;
+	font-weight: 800;
+	letter-spacing: -0.01em;
+	margin: 0.2rem 0 1rem;
+}
+h2 {
+	font-size: 1.1rem;
+	font-weight: 700;
+	margin: 0 0 0.6rem;
+}
+h3 {
+	font-size: 1rem;
+	font-weight: 700;
+	margin: 0 0 0.5rem;
+}
+
+a {
+	color: var(--green-dark);
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+
+p {
+	margin: 0 0 0.75rem;
+}
+
+/* ── Forms ─────────────────────────────────────────────────────────────── */
+label {
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--text);
+}
+
+input,
+select,
+textarea {
+	font: inherit;
+	color: var(--text);
+	background: var(--surface);
+	border: 1px solid var(--border-strong);
+	border-radius: var(--radius-sm);
+	padding: 0.6rem 0.7rem;
+	width: 100%;
+}
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+	outline: 2px solid var(--green);
+	outline-offset: 2px;
+}
+
+select {
+	-webkit-appearance: none;
+	appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a7e6b' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 0.6rem center;
+	padding-right: 1.8rem;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────── */
+button {
+	font: inherit;
+	cursor: pointer;
+}
+
+.btn,
+button.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	padding: 0.6rem 1.1rem;
+	border: 1px solid transparent;
+	border-radius: var(--radius-pill);
+	font-weight: 700;
+	font-size: 0.98rem;
+	line-height: 1;
+	text-decoration: none;
+	transition:
+		background 0.12s,
+		transform 0.05s;
+}
+.btn:active {
+	transform: translateY(1px);
+}
+.btn-primary {
+	background: var(--green);
+	color: #fff;
+}
+.btn-primary:hover {
+	background: var(--green-dark);
+	text-decoration: none;
+}
+.btn-secondary {
+	background: var(--surface-2);
+	color: var(--text);
+	border-color: var(--border);
+}
+.btn-secondary:hover {
+	background: #ece3d3;
+	text-decoration: none;
+}
+.btn-ghost {
+	background: transparent;
+	color: var(--text-muted);
+	padding: 0.4rem 0.6rem;
+}
+.btn-ghost:hover {
+	background: var(--surface-2);
+	color: var(--text);
+	text-decoration: none;
+}
+
+/* ── Surfaces & helpers ────────────────────────────────────────────────── */
+.card {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-sm);
+	padding: 1rem;
+}
+
+.muted {
+	color: var(--text-muted);
+}
+
+.error {
+	color: var(--red-dark);
+	background: var(--red-tint);
+	border: 1px solid #f0b7ac;
+	border-radius: var(--radius-sm);
+	padding: 0.6rem 0.8rem;
+	margin: 0 0 0.9rem;
+}
