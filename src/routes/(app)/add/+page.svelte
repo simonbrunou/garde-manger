@@ -22,12 +22,11 @@
 {:else}
 	<!-- ── Method choice ── -->
 	<section class="add-methods">
-		<!-- Scanner (disabled, M3) -->
-		<div class="method-card method-disabled" aria-disabled="true">
+		<!-- Scanner → /scan -->
+		<a href="/scan" class="method-card method-link">
 			<span class="method-icon">📷</span>
 			<span class="method-label">{t.add_method_scanner}</span>
-			<span class="method-soon">{t.add_method_scanner_soon}</span>
-		</div>
+		</a>
 
 		<!-- Fresh produce from catalogue -->
 		<details class="method-card" open={!!data.selectedFood || data.q !== ''}>
@@ -210,13 +209,17 @@
 		padding: 1rem;
 	}
 
-	.method-disabled {
-		opacity: 0.55;
-		cursor: not-allowed;
-		background: #f5f5f5;
+	.method-link {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.method-link:hover {
+		background: #f0f7ff;
+		border-color: #93c5fd;
 	}
 
 	.method-icon {
@@ -225,12 +228,6 @@
 
 	.method-label {
 		font-weight: 600;
-	}
-
-	.method-soon {
-		margin-left: auto;
-		font-size: 0.8rem;
-		color: #666;
 	}
 
 	details > summary {
