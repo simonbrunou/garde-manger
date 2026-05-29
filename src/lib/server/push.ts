@@ -1,6 +1,10 @@
-import { eq, and } from 'drizzle-orm';
+import { eq, and, desc, inArray } from 'drizzle-orm';
 import type { DB } from './db/client';
 import { pushSubscriptions } from './db/schema';
+
+// Cap subscriptions per user: bounds table bloat and the daily cron fan-out, and
+// limits the blast radius of the SSRF surface (the cron POSTs to each endpoint).
+const MAX_SUBSCRIPTIONS_PER_USER = 20;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -94,6 +98,54 @@ function byteLength(s: string): number {
 	return new TextEncoder().encode(s).byteLength;
 }
 
+// ── Endpoint safety (SSRF guard) ────────────────────────────────────────────────
+
+/** True if `host` is an IP literal in a loopback / private / link-local range. */
+function isPrivateOrLocalHost(host: string): boolean {
+	if (host === 'localhost' || host.endsWith('.localhost')) return true;
+
+	// IPv4 literal?
+	const v4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);
+	if (v4) {
+		const [a, b] = [Number(v4[1]), Number(v4[2])];
+		if (a === 10 || a === 127 || a === 0) return true; // private / loopback / "this host"
+		if (a === 169 && b === 254) return true; // link-local (incl. cloud metadata 169.254.169.254)
+		if (a === 172 && b >= 16 && b <= 31) return true; // private
+		if (a === 192 && b === 168) return true; // private
+		if (a === 100 && b >= 64 && b <= 127) return true; // CGNAT
+		return false;
+	}
+
+	// IPv6 literal? `url.hostname` keeps the surrounding [] brackets — strip them.
+	if (host.includes(':')) {
+		const h = host.replace(/^\[/, '').replace(/\]$/, '').toLowerCase();
+		if (h === '::1' || h === '::') return true; // loopback / unspecified
+		if (h.startsWith('fc') || h.startsWith('fd')) return true; // unique-local fc00::/7
+		if (h.startsWith('fe8') || h.startsWith('fe9') || h.startsWith('fea') || h.startsWith('feb'))
+			return true; // link-local fe80::/10
+		return false;
+	}
+
+	return false;
+}
+
+/**
+ * A push endpoint is provided by the client and the daily cron later POSTs to it
+ * from the server — so it is an SSRF vector. Require https and reject hosts that
+ * point back at our own network (loopback/private/link-local/metadata). Public
+ * push services (FCM, Apple, Mozilla, WNS, …) all pass.
+ */
+export function isSafePushEndpoint(endpoint: string): boolean {
+	let url: URL;
+	try {
+		url = new URL(endpoint);
+	} catch {
+		return false;
+	}
+	if (url.protocol !== 'https:') return false;
+	return !isPrivateOrLocalHost(url.hostname.toLowerCase());
+}
+
 // ── Subscription persistence ────────────────────────────────────────────────────
 
 /**
@@ -127,6 +179,18 @@ export function saveSubscription(
 			}
 		})
 		.run();
+
+	// Evict the oldest beyond the per-user cap.
+	const owned = db
+		.select({ id: pushSubscriptions.id })
+		.from(pushSubscriptions)
+		.where(eq(pushSubscriptions.userId, userId))
+		.orderBy(desc(pushSubscriptions.createdAt))
+		.all();
+	if (owned.length > MAX_SUBSCRIPTIONS_PER_USER) {
+		const stale = owned.slice(MAX_SUBSCRIPTIONS_PER_USER).map((r) => r.id);
+		db.delete(pushSubscriptions).where(inArray(pushSubscriptions.id, stale)).run();
+	}
 }
 
 /**

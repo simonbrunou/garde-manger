@@ -123,11 +123,15 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 		groups[band].push(row);
 	}
 
+	// Deep-link target from the daily push: focus on items approaching their date.
+	const expiringOnly = url.searchParams.get('filter') === 'expiring';
+
 	return {
 		noHousehold: false as const,
 		groups,
 		activeHouseholdName: activeHousehold.name,
 		locationFilter: location ?? null,
+		expiringOnly,
 		locale
 	};
 };

@@ -153,6 +153,7 @@ def main():
     write_png(os.path.join(base, "icon-192.png"), 192, 192, make_icon(192))
     write_png(os.path.join(base, "icon-512.png"), 512, 512, make_icon(512))
     write_png(os.path.join(base, "icon-maskable-512.png"), 512, 512, make_icon(512, maskable=True))
+    write_png(os.path.join(base, "icon-maskable-192.png"), 192, 192, make_icon(192, maskable=True))
     write_png(os.path.join(base, "badge-72.png"), 72, 72, make_badge(72))
     print("icons written to", base)
 

@@ -1,12 +1,19 @@
 import { json, error } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { db } from '$lib/server/db';
-import { saveSubscription } from '$lib/server/push';
+import { saveSubscription, isSafePushEndpoint } from '$lib/server/push';
 import type { RequestHandler } from './$types';
 
 // A PushSubscription serialized via subscription.toJSON().
+// `isSafePushEndpoint` blocks non-https + loopback/private/link-local hosts: the
+// daily cron later POSTs to this endpoint server-side, so it is an SSRF vector.
 const subscribeSchema = v.object({
-	endpoint: v.pipe(v.string(), v.url(), v.maxLength(2048)),
+	endpoint: v.pipe(
+		v.string(),
+		v.url(),
+		v.maxLength(2048),
+		v.check(isSafePushEndpoint, 'Unsafe push endpoint')
+	),
 	keys: v.object({
 		p256dh: v.pipe(v.string(), v.minLength(1), v.maxLength(256)),
 		auth: v.pipe(v.string(), v.minLength(1), v.maxLength(256))

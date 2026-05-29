@@ -10,6 +10,7 @@ import {
 	deleteSubscriptionByEndpoint,
 	listSubscriptionsForUser,
 	sendToSubscription,
+	isSafePushEndpoint,
 	type PushSender,
 	type WebPushTarget,
 	type Vapid
@@ -320,5 +321,55 @@ describe('sendToSubscription', () => {
 		});
 		expect(outcome).toBe('failed');
 		expect(getById(db, sub.id)?.failureCount).toBe(1);
+	});
+});
+
+// ── isSafePushEndpoint (SSRF guard) ─────────────────────────────────────────
+
+describe('isSafePushEndpoint', () => {
+	it('accepts public https push endpoints', () => {
+		expect(isSafePushEndpoint('https://fcm.googleapis.com/fcm/send/abc')).toBe(true);
+		expect(isSafePushEndpoint('https://web.push.apple.com/xyz')).toBe(true);
+		expect(isSafePushEndpoint('https://updates.push.services.mozilla.com/wpush/v2/g')).toBe(true);
+	});
+
+	it('rejects non-https', () => {
+		expect(isSafePushEndpoint('http://fcm.googleapis.com/x')).toBe(false);
+		expect(isSafePushEndpoint('ftp://example.com')).toBe(false);
+	});
+
+	it('rejects loopback / private / link-local / metadata hosts', () => {
+		expect(isSafePushEndpoint('https://localhost/x')).toBe(false);
+		expect(isSafePushEndpoint('https://127.0.0.1/x')).toBe(false);
+		expect(isSafePushEndpoint('https://10.0.0.5/x')).toBe(false);
+		expect(isSafePushEndpoint('https://172.16.0.1/x')).toBe(false);
+		expect(isSafePushEndpoint('https://192.168.1.1/x')).toBe(false);
+		expect(isSafePushEndpoint('https://169.254.169.254/latest/meta-data')).toBe(false);
+		expect(isSafePushEndpoint('https://[::1]/x')).toBe(false);
+	});
+
+	it('rejects garbage', () => {
+		expect(isSafePushEndpoint('not a url')).toBe(false);
+		expect(isSafePushEndpoint('')).toBe(false);
+	});
+});
+
+describe('saveSubscription per-user cap', () => {
+	it('keeps at most 20 subscriptions per user, evicting oldest', () => {
+		const path = join(tmpdir(), `push-cap-${crypto.randomUUID()}.db`);
+		const { db } = createDb(path);
+		runMigrations(db);
+		db.insert(users)
+			.values({ id: 'capuser', email: 'cap@ex.test', displayName: 'cap', createdAt: new Date() })
+			.run();
+		for (let i = 0; i < 25; i++) {
+			saveSubscription(
+				db,
+				'capuser',
+				{ endpoint: `https://push.example/${i}`, keys: { p256dh: 'p', auth: 'a' } },
+				`d${i}`
+			);
+		}
+		expect(listSubscriptionsForUser(db, 'capuser').length).toBe(20);
 	});
 });
