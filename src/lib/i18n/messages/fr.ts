@@ -101,7 +101,6 @@ export const fr: Messages = {
 	add_title: 'Ajouter un aliment',
 	add_no_household: 'Aucun foyer actif. Créez ou rejoignez un foyer pour ajouter des aliments.',
 	add_method_scanner: 'Scanner',
-	add_method_scanner_soon: 'bientôt (M3)',
 	add_method_fresh: 'Fruit / Légume / Frais',
 	add_method_custom: 'Saisie libre',
 	add_search_label: 'Rechercher un aliment',
@@ -137,7 +136,39 @@ export const fr: Messages = {
 	ddm_label: 'DDM',
 
 	// --- M2 item count ---
-	items_count: (n: number) => `${n} ${n > 1 ? 'aliments' : 'aliment'}`
+	items_count: (n: number) => `${n} ${n > 1 ? 'aliments' : 'aliment'}`,
+
+	// --- M3 scan ---
+	scan_title: 'Scanner un produit',
+	scan_instructions: 'Visez le code-barres du produit avec la caméra.',
+	scan_starting: 'Démarrage de la caméra…',
+	scan_searching: 'Recherche du code-barres…',
+	scan_detected: 'Code détecté, ouverture…',
+	scan_camera_denied: 'Caméra refusée ou indisponible. Saisissez le code-barres ci-dessous.',
+	scan_camera_unsupported:
+		"La caméra n'est pas disponible ici. Saisissez le code-barres ci-dessous.",
+	scan_enable_camera: 'Activer la caméra',
+	scan_manual_title: 'Saisir le code-barres',
+	scan_manual_label: 'Code-barres (EAN / UPC)',
+	scan_manual_placeholder: 'ex. 3017620422003',
+	scan_manual_submit: 'Rechercher',
+	scan_manual_invalid: 'Code-barres invalide.',
+	scan_or_freetext: 'Produit sans code-barres ? Saisie libre',
+	scan_confirm_title: 'Confirmer le produit',
+	scan_barcode_label: 'Code-barres',
+	scan_name_label: 'Nom du produit',
+	scan_brand_label: 'Marque',
+	scan_product_unknown: 'Produit inconnu dans Open Food Facts. Saisissez son nom.',
+	scan_off_unavailable:
+		'Open Food Facts est indisponible pour le moment. Vous pouvez saisir le produit manuellement.',
+	scan_dlc_label: 'DLC — date limite de consommation',
+	scan_dlc_hint: 'Date imprimée sur l’emballage (« à consommer jusqu’au »).',
+	scan_dlc_required: 'La DLC est obligatoire pour un produit emballé.',
+	scan_add_submit: 'Ajouter au garde-manger',
+	scan_attribution: 'Données © Open Food Facts (ODbL) · photo CC-BY-SA 3.0',
+	scan_back: 'Scanner un autre produit',
+	scan_name_required: 'Le nom du produit est requis.',
+	scan_error_generic: 'Une erreur est survenue.'
 };
 
 // Messages interface uses widened types so EN can satisfy it with different string values.
@@ -232,7 +263,6 @@ export interface Messages {
 	add_title: string;
 	add_no_household: string;
 	add_method_scanner: string;
-	add_method_scanner_soon: string;
 	add_method_fresh: string;
 	add_method_custom: string;
 	add_search_label: string;
@@ -266,4 +296,33 @@ export interface Messages {
 	ddm_label: string;
 	// --- M2 item count ---
 	items_count: (n: number) => string;
+	// --- M3 scan ---
+	scan_title: string;
+	scan_instructions: string;
+	scan_starting: string;
+	scan_searching: string;
+	scan_detected: string;
+	scan_camera_denied: string;
+	scan_camera_unsupported: string;
+	scan_enable_camera: string;
+	scan_manual_title: string;
+	scan_manual_label: string;
+	scan_manual_placeholder: string;
+	scan_manual_submit: string;
+	scan_manual_invalid: string;
+	scan_or_freetext: string;
+	scan_confirm_title: string;
+	scan_barcode_label: string;
+	scan_name_label: string;
+	scan_brand_label: string;
+	scan_product_unknown: string;
+	scan_off_unavailable: string;
+	scan_dlc_label: string;
+	scan_dlc_hint: string;
+	scan_dlc_required: string;
+	scan_add_submit: string;
+	scan_attribution: string;
+	scan_back: string;
+	scan_name_required: string;
+	scan_error_generic: string;
 }

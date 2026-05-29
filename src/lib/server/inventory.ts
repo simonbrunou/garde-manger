@@ -99,6 +99,56 @@ export function addCustom(
 	return row;
 }
 
+// ── addPackaged ─────────────────────────────────────────────────────────────────
+
+/**
+ * Add a packaged item (identified by barcode) to a household's inventory.
+ * kind = 'packaged', foodId = null. productName is snapshotted into customName
+ * (useful for not_found products), useByDate is the DLC that drives the flow.
+ */
+export function addPackaged(
+	db: DB,
+	params: {
+		householdId: string;
+		addedBy: string;
+		barcode: string;
+		productName?: string | null; // stored in customName as a snapshot / for not_found products
+		useByDate?: Date; // DLC — the hard date that is the point of the packaged flow
+		quantity?: number;
+		location: 'pantry' | 'fridge' | 'freezer';
+		notes?: string | null;
+	}
+): InventoryItem {
+	const now = new Date();
+	const id = crypto.randomUUID();
+
+	db.insert(inventoryItems)
+		.values({
+			id,
+			householdId: params.householdId,
+			addedBy: params.addedBy,
+			kind: 'packaged',
+			barcode: params.barcode,
+			foodId: null,
+			customName: params.productName ?? null,
+			quantity: params.quantity ?? 1,
+			location: params.location,
+			addedAt: now,
+			useByDate: params.useByDate ?? null,
+			bestByDate: null,
+			isEstimate: false,
+			status: 'active',
+			notes: params.notes ?? null
+		})
+		.run();
+
+	const row = db.select().from(inventoryItems).where(eq(inventoryItems.id, id)).get();
+	if (!row) {
+		throw new Error(`Failed to retrieve inserted inventory item ${id}`);
+	}
+	return row;
+}
+
 // ── listActive ────────────────────────────────────────────────────────────────
 
 /**

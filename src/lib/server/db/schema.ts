@@ -134,3 +134,18 @@ export const inventoryItems = sqliteTable(
 	},
 	(t) => [index('inv_household_status_eff').on(t.householdId, t.status, t.effectiveDate)]
 );
+
+// Open Food Facts cache. DELIBERATELY there is NO foreign key from
+// `inventory_items.barcode` to `products.barcode`: the cache is prunable
+// independently and inventory history must never be cascade-deleted when a cache
+// row is evicted. The relationship is purely logical and joined in app code.
+export const products = sqliteTable('products', {
+	barcode: text('barcode').primaryKey(), // normalized EAN-13/EAN-8
+	name: text('name'), // OFF product_name (nullable)
+	brand: text('brand'), // OFF brands (nullable)
+	imagePath: text('image_path'), // relative path on the volume, nullable
+	quantity: text('quantity'), // OFF quantity string e.g. "500 g"
+	categories: text('categories'), // OFF categories_tags joined, nullable
+	status: text('status', { enum: ['found', 'not_found'] }).notNull(),
+	fetchedAt: integer('fetched_at', { mode: 'timestamp' }).notNull()
+});

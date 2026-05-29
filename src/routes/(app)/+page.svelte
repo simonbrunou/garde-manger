@@ -8,6 +8,24 @@
 
 <svelte:head><title>Garde-Manger</title></svelte:head>
 
+{#snippet thumb(
+	item: { name: string; barcode: string | null; imagePath: string | null },
+	emoji: string
+)}
+	{#if item.imagePath && item.barcode}
+		<img
+			class="item-thumb-img"
+			src="/products/{item.barcode}/image"
+			alt={item.name}
+			loading="lazy"
+			width="32"
+			height="32"
+		/>
+	{:else}
+		<span class="item-thumb" aria-hidden="true">{emoji}</span>
+	{/if}
+{/snippet}
+
 {#if data.noHousehold}
 	<!-- ── No household state ─────────────────────────────────────────────── -->
 	<h1>Garde-Manger</h1>
@@ -57,7 +75,7 @@
 				<ul class="item-list">
 					{#each data.groups.urgent as item (item.id)}
 						<li class="item-row">
-							<span class="item-thumb" aria-hidden="true">🍽️</span>
+							{@render thumb(item, '🍽️')}
 							<div class="item-info">
 								<span class="item-name">{item.name}</span>
 								<span class="item-sub">
@@ -104,7 +122,7 @@
 				<ul class="item-list">
 					{#each data.groups.soon as item (item.id)}
 						<li class="item-row">
-							<span class="item-thumb" aria-hidden="true">🕐</span>
+							{@render thumb(item, '🕐')}
 							<div class="item-info">
 								<span class="item-name">{item.name}</span>
 								<span class="item-sub">
@@ -151,7 +169,7 @@
 				<ul class="item-list">
 					{#each data.groups.ok as item (item.id)}
 						<li class="item-row">
-							<span class="item-thumb" aria-hidden="true">✅</span>
+							{@render thumb(item, '✅')}
 							<div class="item-info">
 								<span class="item-name">{item.name}</span>
 								<span class="item-sub">
@@ -340,6 +358,15 @@
 		flex-shrink: 0;
 		width: 2rem;
 		text-align: center;
+	}
+
+	.item-thumb-img {
+		flex-shrink: 0;
+		width: 2rem;
+		height: 2rem;
+		object-fit: cover;
+		border-radius: 6px;
+		background: #f3f4f6;
 	}
 
 	.item-info {
