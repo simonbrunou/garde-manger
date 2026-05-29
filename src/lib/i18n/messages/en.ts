@@ -184,6 +184,24 @@ export const en: Messages = {
 	scan_name_required: 'The product name is required.',
 	scan_error_generic: 'Something went wrong.',
 
+	// --- Day badge / item detail (M7) ---
+	day_today: 'Today',
+	day_overdue: 'Overdue',
+	day_unit: 'd',
+	home_subtitle: (n: number, urgent: number) =>
+		`${n} ${n > 1 ? 'items' : 'item'}${urgent > 0 ? ` · ${urgent} to eat soon` : ''}`,
+	home_empty_title: 'Pantry is empty',
+	home_empty_body: 'Add your first item with the + button.',
+	item_detail_title: 'Item detail',
+	item_added_on: 'Added on',
+	item_notes_label: 'Notes',
+	item_notes_placeholder: 'Opened, finish soon…',
+	item_save: 'Save',
+	item_saved: 'Changes saved.',
+	item_delete: 'Delete item',
+	item_delete_confirm: 'Confirm deletion',
+	item_back: '← Back',
+
 	// --- M4 notifications & PWA ---
 	notif_section_title: 'Notifications',
 	notif_explainer: 'Get a daily reminder of items to use up soon.',
