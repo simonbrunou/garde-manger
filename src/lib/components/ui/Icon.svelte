@@ -17,7 +17,19 @@
 		| 'search'
 		| 'sun'
 		| 'moon'
-		| 'monitor';
+		| 'monitor'
+		| 'cat-fruit'
+		| 'cat-veg'
+		| 'cat-herb'
+		| 'cat-charcuterie'
+		| 'cat-fish'
+		| 'cat-dairy'
+		| 'cat-meat'
+		| 'cat-poultry'
+		| 'cat-egg'
+		| 'cat-bakery'
+		| 'cat-pantry'
+		| 'cat-leftovers';
 
 	let {
 		name,
