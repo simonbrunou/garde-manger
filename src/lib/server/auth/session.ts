@@ -27,6 +27,8 @@ export function validateSessionToken(db: DB, token: string) {
 	if (parts.length !== 2 || !parts[0] || !parts[1]) return null;
 	const [id, secret] = parts;
 	const row = db.select().from(sessions).where(eq(sessions.id, id)).get();
+	// Early return is timing-safe by design: `id` carries 144 bits of CSPRNG entropy,
+	// so an attacker cannot guess a valid id to probe existence via timing.
 	if (!row) return null;
 	if (row.expiresAt.getTime() < Date.now()) {
 		db.delete(sessions).where(eq(sessions.id, id)).run();

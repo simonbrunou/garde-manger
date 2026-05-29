@@ -101,3 +101,26 @@ test('invalidateSession removes the session row', async () => {
 	const row = sqlite.query('SELECT id FROM sessions WHERE id = ?').get(session.id);
 	expect(row).toBeNull();
 });
+
+test('validateSessionToken returns null for an extra-dots token "a.b.c"', () => {
+	expect(validateSessionToken(db, 'a.b.c')).toBeNull();
+});
+
+test('validateSessionToken returns null for an empty-id token ".secret"', () => {
+	expect(validateSessionToken(db, '.secret')).toBeNull();
+});
+
+test('validateSessionToken returns null for an empty-secret token "id."', () => {
+	expect(validateSessionToken(db, 'id.')).toBeNull();
+});
+
+test('validateSessionToken returns null for a well-formed but unknown id', () => {
+	expect(validateSessionToken(db, 'nope.whatever')).toBeNull();
+});
+
+test('validateSessionToken returns null when the user row has been deleted', async () => {
+	const { token } = await createSession(db, TEST_USER_ID);
+	// Delete the user row via raw sqlite (cascades or leaves orphan session — either way user is gone).
+	sqlite.run('DELETE FROM users WHERE id = ?', [TEST_USER_ID]);
+	expect(validateSessionToken(db, token)).toBeNull();
+});

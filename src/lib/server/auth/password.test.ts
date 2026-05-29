@@ -16,3 +16,7 @@ test('verifyPassword returns false for a wrong password', async () => {
 	const hash = await hashPassword('correct horse');
 	expect(await verifyPassword('wrong', hash)).toBe(false);
 });
+
+test('verifyPassword returns false (not throw) for a malformed hash', async () => {
+	expect(await verifyPassword('whatever', 'not-a-valid-hash')).toBe(false);
+});
