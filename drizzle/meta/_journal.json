@@ -15,6 +15,13 @@
       "when": 1780015134257,
       "tag": "0001_furry_preak",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1780019743252,
+      "tag": "0002_living_payback",
+      "breakpoints": true
     }
   ]
 }
