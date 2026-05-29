@@ -168,7 +168,24 @@ export const fr: Messages = {
 	scan_attribution: 'Données © Open Food Facts (ODbL) · photo CC-BY-SA 3.0',
 	scan_back: 'Scanner un autre produit',
 	scan_name_required: 'Le nom du produit est requis.',
-	scan_error_generic: 'Une erreur est survenue.'
+	scan_error_generic: 'Une erreur est survenue.',
+
+	// --- M4 notifications & PWA ---
+	notif_section_title: 'Notifications',
+	notif_explainer: 'Recevez un rappel quotidien des aliments à consommer bientôt.',
+	notif_enable: 'Activer les notifications',
+	notif_disable: 'Désactiver les notifications',
+	notif_enabled: 'Notifications activées sur cet appareil.',
+	notif_denied:
+		'Les notifications sont bloquées. Autorisez-les dans les réglages de votre navigateur.',
+	notif_unsupported: 'Cet appareil ne prend pas en charge les notifications push.',
+	notif_ios_install_title: "Installez l'app pour activer les notifications",
+	notif_ios_install_steps:
+		"Sur iPhone : touchez Partager, puis « Sur l'écran d'accueil ». Ouvrez ensuite l'app installée pour activer les notifications.",
+	notif_reconnect: 'Reconnecter les notifications',
+	notif_working: 'Veuillez patienter…',
+	notif_error: 'Impossible de modifier les notifications. Réessayez.',
+	offline_banner: 'Hors-ligne — lecture seule'
 };
 
 // Messages interface uses widened types so EN can satisfy it with different string values.
@@ -325,4 +342,18 @@ export interface Messages {
 	scan_back: string;
 	scan_name_required: string;
 	scan_error_generic: string;
+	// --- M4 notifications & PWA ---
+	notif_section_title: string;
+	notif_explainer: string;
+	notif_enable: string;
+	notif_disable: string;
+	notif_enabled: string;
+	notif_denied: string;
+	notif_unsupported: string;
+	notif_ios_install_title: string;
+	notif_ios_install_steps: string;
+	notif_reconnect: string;
+	notif_working: string;
+	notif_error: string;
+	offline_banner: string;
 }

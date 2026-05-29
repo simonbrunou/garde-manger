@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
 	import PasskeyEnroll from '$lib/components/PasskeyEnroll.svelte';
+	import PushSettings from '$lib/components/PushSettings.svelte';
 	import { m } from '$lib/i18n';
 
 	let { form, data }: { form: ActionData; data: PageData } = $props();
@@ -76,4 +77,6 @@
 
 		<PasskeyEnroll />
 	</section>
+
+	<PushSettings locale={data.locale} vapidPublicKey={data.vapidPublicKey} />
 </main>

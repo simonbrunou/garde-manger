@@ -4,13 +4,14 @@ import { eq } from 'drizzle-orm';
 import { dev } from '$app/environment';
 import { db, users } from '$lib/server/db';
 import { listCredentials, deleteCredential } from '$lib/server/auth/webauthn';
+import { vapidPublicKey } from '$lib/server/pushConfig';
 import { m } from '$lib/i18n';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = locals.user!;
 	const credentials = listCredentials(db, user.id);
-	return { user, credentials };
+	return { user, credentials, vapidPublicKey: vapidPublicKey() };
 };
 
 export const actions: Actions = {

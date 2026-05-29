@@ -169,5 +169,21 @@ export const en: Messages = {
 	scan_attribution: 'Data © Open Food Facts (ODbL) · photo CC-BY-SA 3.0',
 	scan_back: 'Scan another product',
 	scan_name_required: 'The product name is required.',
-	scan_error_generic: 'Something went wrong.'
+	scan_error_generic: 'Something went wrong.',
+
+	// --- M4 notifications & PWA ---
+	notif_section_title: 'Notifications',
+	notif_explainer: 'Get a daily reminder of items to use up soon.',
+	notif_enable: 'Enable notifications',
+	notif_disable: 'Disable notifications',
+	notif_enabled: 'Notifications enabled on this device.',
+	notif_denied: 'Notifications are blocked. Allow them in your browser settings.',
+	notif_unsupported: 'This device does not support push notifications.',
+	notif_ios_install_title: 'Install the app to enable notifications',
+	notif_ios_install_steps:
+		'On iPhone: tap Share, then “Add to Home Screen”. Then open the installed app to enable notifications.',
+	notif_reconnect: 'Reconnect notifications',
+	notif_working: 'Please wait…',
+	notif_error: 'Could not change notifications. Please try again.',
+	offline_banner: 'Offline — view only'
 };

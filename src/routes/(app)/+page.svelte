@@ -159,8 +159,8 @@
 			</section>
 		{/if}
 
-		<!-- ── OK band ─────────────────────────────────────────────────────── -->
-		{#if data.groups.ok.length > 0}
+		<!-- ── OK band (hidden when the push deep-link asks for expiring-only) ─ -->
+		{#if data.groups.ok.length > 0 && !data.expiringOnly}
 			<section class="band band-ok">
 				<h2 class="band-title">
 					<span class="band-dot" aria-hidden="true"></span>

@@ -149,3 +149,21 @@ export const products = sqliteTable('products', {
 	status: text('status', { enum: ['found', 'not_found'] }).notNull(),
 	fetchedAt: integer('fetched_at', { mode: 'timestamp' }).notNull()
 });
+
+// Web Push subscriptions, one row per user-device (endpoint is the device key).
+// Pruned on 404/410 from the push service; `last_notified_on` makes the daily
+// cron idempotent (safe to call twice/day).
+export const pushSubscriptions = sqliteTable('push_subscriptions', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+	endpoint: text('endpoint').notNull().unique(),
+	p256dh: text('p256dh').notNull(),
+	auth: text('auth').notNull(),
+	deviceLabel: text('device_label'),
+	lastSuccessAt: integer('last_success_at', { mode: 'timestamp' }),
+	failureCount: integer('failure_count').notNull().default(0),
+	lastNotifiedOn: text('last_notified_on'), // 'YYYY-MM-DD'
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+});
