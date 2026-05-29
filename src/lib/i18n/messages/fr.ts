@@ -1,11 +1,6 @@
 // FR is the canonical source locale. All keys defined here must be mirrored in en.ts.
 export const fr: Messages = {
 	// --- Navigation ---
-	nav_account: 'Compte',
-	nav_logout: 'Se déconnecter',
-	nav_households: 'Foyers',
-	nav_switch_household: 'Changer',
-	nav_household_label: 'Foyer :',
 	nav_create_household: 'Créer un foyer',
 
 	// --- Navigation (bottom nav) ---
@@ -13,6 +8,7 @@ export const fr: Messages = {
 	nav_add: 'Ajouter',
 	nav_settings: 'Réglages',
 	nav_household_switcher: 'Changer de foyer',
+	nav_primary: 'Navigation principale',
 
 	// --- Auth: Login ---
 	auth_login_title: 'Se connecter',
@@ -208,17 +204,13 @@ export const fr: Messages = {
 // Messages interface uses widened types so EN can satisfy it with different string values.
 export interface Messages {
 	// --- Navigation ---
-	nav_account: string;
-	nav_logout: string;
-	nav_households: string;
-	nav_switch_household: string;
-	nav_household_label: string;
 	nav_create_household: string;
 	// --- Navigation (bottom nav) ---
 	nav_home: string;
 	nav_add: string;
 	nav_settings: string;
 	nav_household_switcher: string;
+	nav_primary: string;
 	// --- Auth: Login ---
 	auth_login_title: string;
 	auth_login_submit: string;

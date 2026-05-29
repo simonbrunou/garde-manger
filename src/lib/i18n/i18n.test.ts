@@ -55,11 +55,11 @@ describe('fr/en parity', () => {
 
 describe('m()', () => {
 	test('returns fr messages for "fr"', () => {
-		expect(m('fr').nav_account).toBe('Compte');
+		expect(m('fr').nav_home).toBe('Garde-manger');
 	});
 
 	test('returns en messages for "en"', () => {
-		expect(m('en').nav_account).toBe('Account');
+		expect(m('en').nav_home).toBe('Pantry');
 	});
 
 	test('items_count interpolation fr', () => {

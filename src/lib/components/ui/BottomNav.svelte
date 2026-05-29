@@ -6,7 +6,7 @@
 	const path = $derived(page.url.pathname);
 </script>
 
-<nav class="bottom-nav" aria-label={t.nav_home}>
+<nav class="bottom-nav" aria-label={t.nav_primary}>
 	<a href="/" class="tab" aria-current={path === '/' ? 'page' : undefined}>
 		<Icon name="home" size={22} /><span>{t.nav_home}</span>
 	</a>
@@ -59,7 +59,7 @@
 		background: var(--green);
 		color: var(--on-accent);
 		border: 4px solid var(--bg);
-		box-shadow: 0 8px 18px rgba(47, 138, 62, 0.4);
+		box-shadow: 0 8px 18px color-mix(in srgb, var(--green) 38%, transparent);
 	}
 	.fab:hover {
 		text-decoration: none;

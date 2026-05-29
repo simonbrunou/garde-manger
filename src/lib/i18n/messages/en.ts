@@ -3,11 +3,6 @@ import type { Messages } from './fr';
 // EN mirrors every key from FR. TypeScript enforces identical shapes.
 export const en: Messages = {
 	// --- Navigation ---
-	nav_account: 'Account',
-	nav_logout: 'Log out',
-	nav_households: 'Households',
-	nav_switch_household: 'Switch',
-	nav_household_label: 'Household:',
 	nav_create_household: 'Create a household',
 
 	// --- Navigation (bottom nav) ---
@@ -15,6 +10,7 @@ export const en: Messages = {
 	nav_add: 'Add',
 	nav_settings: 'Settings',
 	nav_household_switcher: 'Switch household',
+	nav_primary: 'Main navigation',
 
 	// --- Auth: Login ---
 	auth_login_title: 'Log in',
