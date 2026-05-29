@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { ActionData } from './$types';
-	let { form }: { form: ActionData } = $props();
+	import type { ActionData, PageData } from './$types';
+	let { form, data }: { form: ActionData; data: PageData } = $props();
 </script>
 
 <main>
@@ -11,6 +11,8 @@
 	{/if}
 
 	<form method="POST">
+		<input type="hidden" name="redirectTo" value={data.redirectTo} />
+
 		<div>
 			<label for="email">Adresse e-mail</label>
 			<input

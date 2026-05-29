@@ -5,11 +5,13 @@ import { db, users } from '$lib/server/db';
 import { hashPassword } from '$lib/server/auth/password';
 import { createSession } from '$lib/server/auth/session';
 import { setSessionCookie } from '$lib/server/auth/cookies';
-import { signupSchema } from '$lib/validation';
+import { signupSchema, safeLocalPath } from '$lib/validation';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	if (locals.user) redirect(303, '/');
+export const load: PageServerLoad = async ({ locals, url }) => {
+	const redirectTo = safeLocalPath(url.searchParams.get('redirectTo'));
+	if (locals.user) redirect(303, redirectTo);
+	return { redirectTo };
 };
 
 export const actions: Actions = {
@@ -43,6 +45,8 @@ export const actions: Actions = {
 
 		const { token, session } = await createSession(db, id);
 		setSessionCookie(cookies, token, session.expiresAt);
-		redirect(303, '/');
+
+		const redirectTo = safeLocalPath(raw.redirectTo as string);
+		redirect(303, redirectTo);
 	}
 };
