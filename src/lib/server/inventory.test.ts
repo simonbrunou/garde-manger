@@ -3,7 +3,15 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createDb, runMigrations, type DB } from './db/client';
 import { users, households, foods } from './db/schema';
-import { addFresh, addCustom, listActive, getItem, setStatus, bandFor } from './inventory';
+import {
+	addFresh,
+	addCustom,
+	addPackaged,
+	listActive,
+	getItem,
+	setStatus,
+	bandFor
+} from './inventory';
 
 // ── Test DB setup ─────────────────────────────────────────────────────────────
 
@@ -180,6 +188,102 @@ describe('addCustom', () => {
 			quantity: 6
 		});
 		expect(item.quantity).toBe(6);
+	});
+});
+
+// ── addPackaged ─────────────────────────────────────────────────────────────────
+
+describe('addPackaged', () => {
+	let db: DB;
+
+	const BARCODE = '3017620422003';
+
+	beforeEach(() => {
+		db = makeDb();
+		seedFixtures(db);
+	});
+
+	it('inserts with kind=packaged, barcode set, foodId null, useByDate set, isEstimate false', () => {
+		const useBy = new Date('2024-08-01T00:00:00.000Z');
+		const item = addPackaged(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			barcode: BARCODE,
+			useByDate: useBy,
+			location: 'pantry'
+		});
+
+		expect(item.kind).toBe('packaged');
+		expect(item.barcode).toBe(BARCODE);
+		expect(item.foodId).toBeNull();
+		expect(item.useByDate?.getTime()).toBe(useBy.getTime());
+		expect(item.bestByDate).toBeNull();
+		expect(item.isEstimate).toBe(false);
+		expect(item.status).toBe('active');
+		expect(item.location).toBe('pantry');
+	});
+
+	it('appears in listActive with effectiveDate equal to useByDate', () => {
+		const useBy = new Date('2024-08-01T00:00:00.000Z');
+		const item = addPackaged(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			barcode: BARCODE,
+			useByDate: useBy,
+			location: 'pantry'
+		});
+
+		const active = listActive(db, HOUSEHOLD_ID);
+		const found = active.find((i) => i.id === item.id);
+		expect(found).toBeDefined();
+		// effectiveDate = coalesce(useByDate, bestByDate) = useByDate
+		expect(found!.effectiveDate?.getTime()).toBe(useBy.getTime());
+	});
+
+	it('can be consumed via setStatus (household-scoped) and drops out of listActive', () => {
+		const item = addPackaged(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			barcode: BARCODE,
+			useByDate: new Date('2024-08-01T00:00:00.000Z'),
+			location: 'pantry'
+		});
+
+		expect(listActive(db, HOUSEHOLD_ID).some((i) => i.id === item.id)).toBe(true);
+
+		const consumed = setStatus(db, { id: item.id, householdId: HOUSEHOLD_ID, status: 'consumed' });
+		expect(consumed).toBeDefined();
+		expect(consumed!.status).toBe('consumed');
+
+		expect(listActive(db, HOUSEHOLD_ID).some((i) => i.id === item.id)).toBe(false);
+	});
+
+	it('stores productName in customName', () => {
+		const item = addPackaged(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			barcode: BARCODE,
+			productName: 'Pâte à tartiner',
+			useByDate: new Date('2024-08-01T00:00:00.000Z'),
+			location: 'pantry'
+		});
+		expect(item.customName).toBe('Pâte à tartiner');
+	});
+
+	it('inserts without useByDate (effectiveDate null)', () => {
+		const item = addPackaged(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			barcode: BARCODE,
+			location: 'pantry'
+		});
+
+		expect(item.useByDate).toBeNull();
+		expect(item.effectiveDate).toBeNull();
+
+		const found = listActive(db, HOUSEHOLD_ID).find((i) => i.id === item.id);
+		expect(found).toBeDefined();
+		expect(found!.effectiveDate).toBeNull();
 	});
 });
 

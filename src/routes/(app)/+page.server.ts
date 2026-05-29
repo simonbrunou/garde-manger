@@ -1,7 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import { inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { foods } from '$lib/server/db/schema';
+import { foods, products } from '$lib/server/db/schema';
 import { requireMembership, MembershipError } from '$lib/server/households';
 import { listActive, setStatus, bandFor } from '$lib/server/inventory';
 import type { PageServerLoad, Actions } from './$types';
@@ -19,6 +19,8 @@ export interface ItemRow {
 	effectiveDate: string | null; // ISO date string for serialisation
 	band: Band;
 	quantity: number;
+	barcode: string | null;
+	imagePath: string | null; // relative path; null when none
 }
 
 interface Groups {
@@ -69,17 +71,32 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 		}
 	}
 
+	// Batch-fetch products for all barcodes to avoid N+1
+	const barcodes = [...new Set(items.map((i) => i.barcode).filter((b): b is string => b !== null))];
+	const productMap = new Map<string, typeof products.$inferSelect>();
+	if (barcodes.length > 0) {
+		const productRows = db.select().from(products).where(inArray(products.barcode, barcodes)).all();
+		for (const p of productRows) {
+			productMap.set(p.barcode, p);
+		}
+	}
+
 	const now = new Date();
 	const groups: Groups = { urgent: [], soon: [], ok: [] };
 
 	for (const item of items) {
-		// Resolve display name
+		// Resolve display name + image (packaged items resolve via the products cache)
 		let name = '—';
+		let imagePath: string | null = null;
 		if (item.foodId) {
 			const food = foodMap.get(item.foodId);
 			if (food) {
 				name = locale === 'fr' ? food.nameFr : food.nameEn;
 			}
+		} else if (item.kind === 'packaged' && item.barcode && productMap.has(item.barcode)) {
+			const product = productMap.get(item.barcode)!;
+			name = product.name ?? item.customName ?? item.barcode ?? '—';
+			imagePath = product.imagePath ?? null;
 		} else if (item.customName) {
 			name = item.customName;
 		}
@@ -98,7 +115,9 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 			dateKind,
 			effectiveDate,
 			band,
-			quantity: item.quantity
+			quantity: item.quantity,
+			barcode: item.barcode,
+			imagePath
 		};
 
 		groups[band].push(row);
