@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private';
+import { dev } from '$app/environment';
 import { randomBytes } from 'node:crypto';
 import { eq, and } from 'drizzle-orm';
 import {
@@ -29,12 +30,23 @@ const ORIGIN = env.ORIGIN ?? 'http://localhost:5173';
 type User = typeof users.$inferSelect;
 
 // ---------------------------------------------------------------------------
+// Config guard — fails loudly in production when required env vars are missing
+// ---------------------------------------------------------------------------
+
+function assertConfig() {
+	if (!dev && (!env.RP_ID || !env.ORIGIN)) {
+		throw new Error('WebAuthn requires RP_ID and ORIGIN in production');
+	}
+}
+
+// ---------------------------------------------------------------------------
 // 1. Registration options
 //    Returns the options object. The caller is responsible for storing
 //    options.challenge (e.g. in the session) for single-use verification.
 // ---------------------------------------------------------------------------
 
 export async function registrationOptions(db: DB, user: User) {
+	assertConfig();
 	// Fetch credentials the user already has so we can exclude them
 	const existingCredentials = db
 		.select({ credentialId: credentials.credentialId, transports: credentials.transports })
@@ -133,6 +145,7 @@ export async function verifyRegistration(
 // ---------------------------------------------------------------------------
 
 export async function authenticationOptions(_db: DB) {
+	assertConfig();
 	const options = await generateAuthenticationOptions({
 		rpID: RP_ID,
 		userVerification: 'preferred',
@@ -184,8 +197,9 @@ export async function verifyAuthentication(
 				transports: JSON.parse(cred.transports ?? '[]')
 			}
 		});
-	} catch {
+	} catch (err) {
 		// verifyAuthenticationResponse throws on counter regression / verification failure
+		console.error('[webauthn] authentication verify failed:', err);
 		return { verified: false };
 	}
 

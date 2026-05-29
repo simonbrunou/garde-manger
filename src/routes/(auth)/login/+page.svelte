@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
+	import PasskeyLogin from '$lib/components/PasskeyLogin.svelte';
 	let { form, data }: { form: ActionData; data: PageData } = $props();
 </script>
 
@@ -38,8 +39,7 @@
 		<button type="submit">Se connecter</button>
 	</form>
 
-	<!-- Passkey login island — wired in a later task -->
-	<div id="passkey-login"></div>
+	<PasskeyLogin redirectTo={data.redirectTo} />
 
 	<p><a href="/signup">Pas encore de compte ? S'inscrire</a></p>
 </main>
