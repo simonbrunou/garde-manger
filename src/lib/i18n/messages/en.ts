@@ -103,7 +103,6 @@ export const en: Messages = {
 	add_title: 'Add a food item',
 	add_no_household: 'No active household. Create or join a household to add items.',
 	add_method_scanner: 'Scanner',
-	add_method_scanner_soon: 'coming soon (M3)',
 	add_method_fresh: 'Fruit / Vegetable / Fresh produce',
 	add_method_custom: 'Free entry',
 	add_search_label: 'Search for a food',

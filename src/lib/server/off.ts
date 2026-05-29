@@ -37,6 +37,13 @@ export interface LookupDeps {
 	now?: Date; // default: new Date()
 	imageStore?: ImageStore; // if omitted, images are NOT downloaded (imagePath stays null)
 	timeoutMs?: number; // OFF request timeout, default 3500
+	/**
+	 * Called once right before a LIVE OFF product fetch (cache misses only — never
+	 * on a cache hit). May THROW to abort the call (e.g. an outbound rate limiter
+	 * protecting the shared server IP's OFF budget). Throw OffUnavailable to
+	 * degrade gracefully to manual entry.
+	 */
+	beforeOffCall?: (now: Date) => void;
 }
 
 export interface ParsedOff {
@@ -50,6 +57,8 @@ export interface ParsedOff {
 
 const DEFAULT_TIMEOUT_MS = 3500;
 const DEFAULT_IMAGE_CONTENT_TYPE = 'image/jpeg';
+// Never buffer an unbounded image body into memory (product photos are small).
+const MAX_IMAGE_BYTES = 2_000_000;
 
 // ── parseOffV2 (pure) ─────────────────────────────────────────────────────────
 
@@ -135,10 +144,18 @@ async function maybeDownloadImage(
 
 	try {
 		const res = await fetchImpl(url.toString(), {
-			signal: AbortSignal.timeout(timeoutMs)
+			signal: AbortSignal.timeout(timeoutMs),
+			// Do NOT follow redirects: an allowlisted OFF URL could 3xx to an
+			// internal host (SSRF allowlist bypass). A 3xx response is not `ok`,
+			// so it is skipped by the check below.
+			redirect: 'manual'
 		});
 		if (!res.ok) return null;
+		// Size guard: reject before buffering an oversized body into memory.
+		const declared = Number(res.headers.get('content-length') ?? '0');
+		if (declared > MAX_IMAGE_BYTES) return null;
 		const bytes = new Uint8Array(await res.arrayBuffer());
+		if (bytes.byteLength > MAX_IMAGE_BYTES) return null;
 		const contentType = res.headers.get('content-type') ?? DEFAULT_IMAGE_CONTENT_TYPE;
 		return await imageStore.save(barcode, bytes, contentType);
 	} catch {
@@ -181,6 +198,10 @@ export async function lookupProduct(
 			return cached;
 		}
 	}
+
+	// Cache miss → we are about to hit OFF. Let the caller veto (outbound rate
+	// limiting protects the single shared server IP from OFF's ~15/min/IP limit).
+	deps.beforeOffCall?.(now);
 
 	// 3. Fetch OFF.
 	const fields =

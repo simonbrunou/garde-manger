@@ -101,7 +101,6 @@ export const fr: Messages = {
 	add_title: 'Ajouter un aliment',
 	add_no_household: 'Aucun foyer actif. Créez ou rejoignez un foyer pour ajouter des aliments.',
 	add_method_scanner: 'Scanner',
-	add_method_scanner_soon: 'bientôt (M3)',
 	add_method_fresh: 'Fruit / Légume / Frais',
 	add_method_custom: 'Saisie libre',
 	add_search_label: 'Rechercher un aliment',
@@ -264,7 +263,6 @@ export interface Messages {
 	add_title: string;
 	add_no_household: string;
 	add_method_scanner: string;
-	add_method_scanner_soon: string;
 	add_method_fresh: string;
 	add_method_custom: string;
 	add_search_label: string;

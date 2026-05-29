@@ -438,3 +438,58 @@ describe('parseOffV2', () => {
 		expect(parseOffV2({ status: 1 })).toEqual({ status: 'found' }); // product missing → no fields
 	});
 });
+
+// ── beforeOffCall (outbound rate-limit veto) ────────────────────────────────
+
+describe('lookupProduct — beforeOffCall veto', () => {
+	let db: DB;
+	beforeEach(() => {
+		db = makeDb();
+	});
+
+	it('is called on a cache MISS (live OFF call)', async () => {
+		const fake = makeFakeFetch({ productBody: foundBody() });
+		let calls = 0;
+		await lookupProduct(db, BARCODE, CFG, {
+			fetchImpl: fake.fetch,
+			now: FIXED_NOW,
+			beforeOffCall: () => {
+				calls++;
+			}
+		});
+		expect(calls).toBe(1);
+		expect(fake.productCalls).toBe(1);
+	});
+
+	it('is NOT called on a cache HIT (no live OFF call)', async () => {
+		db.insert(products)
+			.values({ barcode: BARCODE, name: 'Cached', status: 'found', fetchedAt: FIXED_NOW })
+			.run();
+		const fake = makeFakeFetch({ productBody: foundBody() });
+		let calls = 0;
+		await lookupProduct(db, BARCODE, CFG, {
+			fetchImpl: fake.fetch,
+			now: FIXED_NOW,
+			beforeOffCall: () => {
+				calls++;
+			}
+		});
+		expect(calls).toBe(0);
+		expect(fake.productCalls).toBe(0);
+	});
+
+	it('a throwing veto aborts the lookup WITHOUT fetching or caching', async () => {
+		const fake = makeFakeFetch({ productBody: foundBody() });
+		await expect(
+			lookupProduct(db, BARCODE, CFG, {
+				fetchImpl: fake.fetch,
+				now: FIXED_NOW,
+				beforeOffCall: () => {
+					throw new OffUnavailable('rate limited');
+				}
+			})
+		).rejects.toBeInstanceOf(OffUnavailable);
+		expect(fake.productCalls).toBe(0);
+		expect(getRow(db)).toBeUndefined(); // nothing cached
+	});
+});

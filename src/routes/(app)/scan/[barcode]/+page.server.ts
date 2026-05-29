@@ -5,6 +5,7 @@ import { requireMembership, MembershipError, listForUser } from '$lib/server/hou
 import { addPackaged } from '$lib/server/inventory';
 import { lookupProduct, OffUnavailable } from '$lib/server/off';
 import { getOffConfig, diskImageStore } from '$lib/server/productConfig';
+import { offRateLimitGuard } from '$lib/server/offRateLimit';
 import { normalizeBarcode } from '$lib/barcode';
 import { m } from '$lib/i18n';
 import type { PageServerLoad, Actions } from './$types';
@@ -45,7 +46,10 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 	let product: typeof import('$lib/server/db/schema').products.$inferSelect | null = null;
 	let offUnavailable = false;
 	try {
-		product = await lookupProduct(db, norm, getOffConfig(), { imageStore: diskImageStore });
+		product = await lookupProduct(db, norm, getOffConfig(), {
+			imageStore: diskImageStore,
+			beforeOffCall: offRateLimitGuard
+		});
 	} catch (e) {
 		if (e instanceof OffUnavailable) {
 			offUnavailable = true;
