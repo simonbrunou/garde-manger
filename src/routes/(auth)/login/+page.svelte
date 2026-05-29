@@ -1,0 +1,43 @@
+<script lang="ts">
+	import type { ActionData } from './$types';
+	let { form }: { form: ActionData } = $props();
+</script>
+
+<main>
+	<h1>Se connecter</h1>
+
+	{#if form?.message}
+		<p class="error" role="alert">{form.message}</p>
+	{/if}
+
+	<form method="POST">
+		<div>
+			<label for="email">Adresse e-mail</label>
+			<input
+				type="email"
+				id="email"
+				name="email"
+				autocomplete="email"
+				required
+			/>
+		</div>
+
+		<div>
+			<label for="password">Mot de passe</label>
+			<input
+				type="password"
+				id="password"
+				name="password"
+				autocomplete="current-password"
+				required
+			/>
+		</div>
+
+		<button type="submit">Se connecter</button>
+	</form>
+
+	<!-- Passkey login island — wired in a later task -->
+	<div id="passkey-login"></div>
+
+	<p><a href="/signup">Pas encore de compte ? S'inscrire</a></p>
+</main>
