@@ -27,11 +27,18 @@ export const POST: RequestHandler = async ({ locals, cookies, request }) => {
 		error(400, 'Invalid JSON');
 	}
 
+	// deviceLabel is the only client-controlled side field (the rest is verified
+	// by the WebAuthn lib) — sanitize it before it's persisted as the credential label.
+	const deviceLabel =
+		typeof body.deviceLabel === 'string' && body.deviceLabel.trim()
+			? body.deviceLabel.trim().slice(0, 120)
+			: 'Passkey';
+
 	const { verified } = await verifyRegistration(db, {
 		user,
 		response: body,
 		expectedChallenge: chal,
-		deviceLabel: body.deviceLabel ?? 'Passkey'
+		deviceLabel
 	});
 
 	// Single-use: delete the challenge cookie regardless of outcome

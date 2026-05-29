@@ -9,7 +9,7 @@
  *   DATABASE_PATH=/app/data/garde-manger.db BACKUP_DIR=/app/data/backups bun run db:backup
  */
 import { Database } from 'bun:sqlite';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, chmodSync } from 'node:fs';
 import { join } from 'node:path';
 import { backupDatabase } from '../src/lib/server/backup';
 
@@ -24,6 +24,8 @@ const dest = join(backupDir, `garde-manger-${stamp}.db`);
 const sqlite = new Database(dbPath, { readonly: true });
 try {
 	backupDatabase(sqlite, dest);
+	// A backup is a full DB copy — restrict it to the owner (defence in depth).
+	chmodSync(dest, 0o600);
 	console.log(`Backup written to ${dest}`);
 } finally {
 	sqlite.close();
