@@ -1,6 +1,7 @@
 import { redirect, fail } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { eq } from 'drizzle-orm';
+import { dev } from '$app/environment';
 import { db, users } from '$lib/server/db';
 import { listCredentials, deleteCredential } from '$lib/server/auth/webauthn';
 import { m } from '$lib/i18n';
@@ -13,7 +14,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	updateProfile: async ({ request, locals }) => {
+	updateProfile: async ({ request, locals, cookies }) => {
 		const t = m(locals.locale);
 		const profileSchema = v.object({
 			displayName: v.pipe(
@@ -32,6 +33,15 @@ export const actions: Actions = {
 		}
 		const { displayName, locale } = result.output;
 		db.update(users).set({ displayName, locale }).where(eq(users.id, user.id)).run();
+		// Mirror locale to cookie so the change takes effect immediately on the next request
+		// and persists as a fallback after logout.
+		cookies.set('gm_locale', locale, {
+			path: '/',
+			httpOnly: false,
+			sameSite: 'lax',
+			secure: !dev,
+			maxAge: 60 * 60 * 24 * 365
+		});
 		return { success: true };
 	},
 

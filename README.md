@@ -24,6 +24,18 @@ bun run lint
 bun run check
 ```
 
+## Inventory & catalogue (M2)
+
+The food catalogue ships with the app and is seeded automatically. On every boot the server checks whether the `foods` table is empty; if so, it runs `seedFoods()` before serving any request. You can also seed (or re-seed) manually:
+
+```sh
+bun run db:seed
+```
+
+The home page (`/`) displays inventory items grouped into urgency bands — **Eat now / Consommer vite**, **Bientôt / Eat soon**, **Encore bon / Still good** — and is fully bilingual (fr/en). The active language follows the user's profile locale, the `gm_locale` cookie, then the browser's `Accept-Language` header, in that order.
+
+> **Data quality notice:** shelf-life figures in the catalogue are draft estimates and **have not been reviewed by a food-safety professional**. Do not rely on them for health-critical decisions; treat them as rough guidance only until a qualified review is completed.
+
 ## Database
 
 Drizzle ORM + `bun:sqlite`. Run `bun run db:generate` after schema changes. Migrations live under `drizzle/` (committed) and are applied automatically at boot.
