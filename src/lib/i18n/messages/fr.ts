@@ -94,6 +94,34 @@ export const fr: Messages = {
 
 	// --- M2 add item ---
 	add_title: 'Ajouter un aliment',
+	add_no_household: 'Aucun foyer actif. Créez ou rejoignez un foyer pour ajouter des aliments.',
+	add_method_scanner: 'Scanner',
+	add_method_scanner_soon: 'bientôt (M3)',
+	add_method_fresh: 'Fruit / Légume / Frais',
+	add_method_custom: 'Saisie libre',
+	add_search_label: 'Rechercher un aliment',
+	add_search_placeholder: 'ex. pomme, tomate…',
+	add_search_submit: 'Rechercher',
+	add_no_results: 'Aucun résultat.',
+	add_fresh_form_title: 'Ajouter',
+	add_location_label: 'Emplacement',
+	add_location_pantry: 'Placard',
+	add_location_fridge: 'Réfrigérateur',
+	add_location_freezer: 'Congélateur',
+	add_estimate_prefix: '≈',
+	add_estimate_note: 'Estimation DDM — source ADEME / SpF, modifiable',
+	add_estimate_guidance: 'Stockage non recommandé à cet emplacement.',
+	add_bestby_label: 'DDM (date limite de consommation recommandée)',
+	add_useby_label: 'DLC (date limite de consommation)',
+	add_quantity_label: 'Quantité',
+	add_optional: 'facultatif',
+	add_fresh_submit: 'Ajouter au garde-manger',
+	add_custom_name_label: 'Nom',
+	add_custom_name_placeholder: 'ex. Confiture maison…',
+	add_custom_submit: 'Ajouter',
+	add_cancel: 'Annuler',
+	add_food_not_found: 'Aliment introuvable.',
+	add_error_generic: 'Une erreur est survenue.',
 
 	// --- M2 lifecycle ---
 	lifecycle_ate: "J'ai mangé",
@@ -193,6 +221,34 @@ export interface Messages {
 	home_band_ok: string;
 	// --- M2 add item ---
 	add_title: string;
+	add_no_household: string;
+	add_method_scanner: string;
+	add_method_scanner_soon: string;
+	add_method_fresh: string;
+	add_method_custom: string;
+	add_search_label: string;
+	add_search_placeholder: string;
+	add_search_submit: string;
+	add_no_results: string;
+	add_fresh_form_title: string;
+	add_location_label: string;
+	add_location_pantry: string;
+	add_location_fridge: string;
+	add_location_freezer: string;
+	add_estimate_prefix: string;
+	add_estimate_note: string;
+	add_estimate_guidance: string;
+	add_bestby_label: string;
+	add_useby_label: string;
+	add_quantity_label: string;
+	add_optional: string;
+	add_fresh_submit: string;
+	add_custom_name_label: string;
+	add_custom_name_placeholder: string;
+	add_custom_submit: string;
+	add_cancel: string;
+	add_food_not_found: string;
+	add_error_generic: string;
 	// --- M2 lifecycle ---
 	lifecycle_ate: string;
 	lifecycle_tossed: string;
