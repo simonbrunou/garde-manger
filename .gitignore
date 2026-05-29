@@ -24,6 +24,9 @@ vite.config.ts.timestamp-*
 
 # Brainstorming visual-companion scratch dir
 .superpowers/
+# Playwright MCP + UI-audit screenshots (scratch)
+.playwright-mcp/
+current-*.png
 # SQLite
 *.db
 

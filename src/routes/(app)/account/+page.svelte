@@ -2,6 +2,7 @@
 	import type { ActionData, PageData } from './$types';
 	import PasskeyEnroll from '$lib/components/PasskeyEnroll.svelte';
 	import PushSettings from '$lib/components/PushSettings.svelte';
+	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
 	import { m } from '$lib/i18n';
 
 	let { form, data }: { form: ActionData; data: PageData } = $props();
@@ -43,6 +44,20 @@
 			<button type="submit" class="btn btn-primary">{t.account_save}</button>
 		</form>
 	</section>
+
+	<section class="card account-section">
+		<h2>{t.account_theme_section}</h2>
+		<ThemeToggle value={data.theme} {t} />
+	</section>
+
+	<section class="card account-section">
+		<h2>{t.account_households_section}</h2>
+		<a class="btn btn-secondary" href="/households">{t.account_manage_households}</a>
+	</section>
+
+	<form method="POST" action="/logout" class="logout-form">
+		<button type="submit" class="btn btn-ghost">{t.account_logout}</button>
+	</form>
 
 	<section class="card account-section">
 		<h2>{t.account_passkeys_section}</h2>
@@ -131,5 +146,9 @@
 
 	.passkey-remove {
 		margin-left: auto;
+	}
+
+	.logout-form {
+		margin-top: 1rem;
 	}
 </style>

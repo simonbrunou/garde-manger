@@ -3,6 +3,7 @@ import { db } from '$lib/server/db';
 import { validateSessionToken } from '$lib/server/auth/session';
 import { SESSION_COOKIE, clearSessionCookie } from '$lib/server/auth/cookies';
 import { resolveLocale } from '$lib/i18n';
+import { resolveTheme } from '$lib/theme';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get(SESSION_COOKIE);
@@ -37,7 +38,13 @@ export const handle: Handle = async ({ event, resolve }) => {
 		acceptLanguage: event.request.headers.get('accept-language')
 	});
 
-	const response = await resolve(event);
+	const themeAttr = resolveTheme(event.cookies.get('gm_theme'));
+	const lang = event.locals.locale ?? 'fr';
+
+	const response = await resolve(event, {
+		transformPageChunk: ({ html }) =>
+			html.replace('%gm.theme%', themeAttr).replace('%gm.lang%', lang)
+	});
 
 	// Security headers (the CSP itself is configured in svelte.config.js). HSTS is
 	// intentionally left to the TLS-terminating proxy (Traefik/Coolify) so dev over

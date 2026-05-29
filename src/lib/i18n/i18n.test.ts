@@ -47,13 +47,19 @@ describe('message key parity', () => {
 	});
 });
 
+describe('fr/en parity', () => {
+	test('both locales define the same keys', () => {
+		expect(Object.keys(fr).sort()).toEqual(Object.keys(en).sort());
+	});
+});
+
 describe('m()', () => {
 	test('returns fr messages for "fr"', () => {
-		expect(m('fr').nav_account).toBe('Compte');
+		expect(m('fr').nav_home).toBe('Garde-manger');
 	});
 
 	test('returns en messages for "en"', () => {
-		expect(m('en').nav_account).toBe('Account');
+		expect(m('en').nav_home).toBe('Pantry');
 	});
 
 	test('items_count interpolation fr', () => {

@@ -3,44 +3,63 @@
    fresh-produce palette: green = primary/fresh, amber = soon/DDM, red = urgent/DLC. */
 
 :root {
-	/* Friendly rounded system font — renders SF Rounded on iOS/macOS, falls back gracefully. */
 	--font:
 		ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
 		'Helvetica Neue', Arial, sans-serif;
 
+	/* Auto by default: light-dark() resolves against this. Forced themes below
+	   narrow color-scheme to a single value. */
+	color-scheme: light dark;
+
 	/* Surfaces */
-	--bg: #faf6ee; /* warm cream paper */
-	--surface: #fffdf9; /* card */
-	--surface-2: #f3ece0; /* tint: chips, inputs, hovers */
-	--border: #e9e0d1; /* warm hairline */
-	--border-strong: #d9cdb8;
+	--bg: light-dark(#faf6ee, #1d1811);
+	--surface: light-dark(#fffdf9, #2a241b);
+	--surface-2: light-dark(#f3ece0, #352e21);
+	--border: light-dark(#e9e0d1, #3a3326);
+	--border-strong: light-dark(#d9cdb8, #4a412f);
 
 	/* Text */
-	--text: #322c22; /* warm near-black */
-	--text-muted: #8a7e6b; /* warm grey */
+	--text: light-dark(#322c22, #f1eadd);
+	--text-muted: light-dark(#8a7e6b, #a89e8b);
 
-	/* Accents */
-	--green: #2f9e44;
-	--green-dark: #2b8a3e;
-	--green-tint: #e9f6ec;
-	--amber: #e08a1e;
-	--amber-dark: #c2740f;
-	--amber-tint: #fdf1de;
-	--red: #d6492f;
-	--red-dark: #b93c25;
-	--red-tint: #fbeae6;
+	/* Accents (produce palette, brightened for dark) */
+	--green: light-dark(#2f9e44, #43b15a);
+	--green-dark: light-dark(#2b8a3e, #54b366);
+	--green-tint: light-dark(#e9f6ec, rgba(84, 179, 102, 0.15));
+	--amber: light-dark(#e08a1e, #e8b257);
+	--amber-dark: light-dark(#c2740f, #f0c070);
+	--amber-tint: light-dark(#fdf1de, rgba(224, 162, 58, 0.16));
+	--red: light-dark(#d6492f, #ef6a4f);
+	--red-dark: light-dark(#b93c25, #ff8064);
+	--red-tint: light-dark(#fbeae6, rgba(239, 106, 79, 0.16));
+
+	/* Text drawn on a filled accent (green/red) button or badge */
+	--on-accent: #ffffff;
 
 	/* Shape & depth */
 	--radius: 16px;
 	--radius-sm: 10px;
+	--radius-lg: 22px;
 	--radius-pill: 999px;
-	--shadow-sm: 0 1px 2px rgba(80, 60, 30, 0.06);
-	--shadow: 0 1px 2px rgba(80, 60, 30, 0.06), 0 6px 16px rgba(80, 60, 30, 0.07);
+	--shadow-sm: light-dark(0 1px 2px rgba(80, 60, 30, 0.06), 0 1px 2px rgba(0, 0, 0, 0.3));
+	--shadow: light-dark(
+		(0 1px 2px rgba(80, 60, 30, 0.06), 0 6px 16px rgba(80, 60, 30, 0.07)),
+		(0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 16px rgba(0, 0, 0, 0.28))
+	);
 
 	--container: 640px;
+	--bottom-nav-h: 4.25rem;
 
-	color-scheme: light;
 	font-family: var(--font);
+}
+
+/* Forced themes: narrow color-scheme so light-dark() resolves to one side,
+   regardless of the OS setting. data-theme="" (auto) keeps the :root default. */
+:root[data-theme='light'] {
+	color-scheme: light;
+}
+:root[data-theme='dark'] {
+	color-scheme: dark;
 }
 
 *,
@@ -70,7 +89,7 @@ main {
 	width: 100%;
 	max-width: var(--container);
 	margin: 0 auto;
-	padding: 1rem 1.1rem 4rem;
+	padding: 1rem 1.1rem calc(var(--bottom-nav-h) + 1.5rem + env(safe-area-inset-bottom));
 }
 
 h1 {

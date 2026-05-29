@@ -3,12 +3,14 @@ import type { Messages } from './fr';
 // EN mirrors every key from FR. TypeScript enforces identical shapes.
 export const en: Messages = {
 	// --- Navigation ---
-	nav_account: 'Account',
-	nav_logout: 'Log out',
-	nav_households: 'Households',
-	nav_switch_household: 'Switch',
-	nav_household_label: 'Household:',
 	nav_create_household: 'Create a household',
+
+	// --- Navigation (bottom nav) ---
+	nav_home: 'Pantry',
+	nav_add: 'Add',
+	nav_settings: 'Settings',
+	nav_household_switcher: 'Switch household',
+	nav_primary: 'Main navigation',
 
 	// --- Auth: Login ---
 	auth_login_title: 'Log in',
@@ -42,6 +44,17 @@ export const en: Messages = {
 	account_passkey_delete: 'Delete',
 	account_display_name_required: 'Name required',
 	account_passkey_id_missing: 'Missing identifier',
+
+	// --- Theme ---
+	account_theme_section: 'Theme',
+	theme_auto: 'Auto',
+	theme_light: 'Light',
+	theme_dark: 'Dark',
+
+	// --- Account extras ---
+	account_households_section: 'My households',
+	account_manage_households: 'Manage households',
+	account_logout: 'Log out',
 
 	// --- Households page ---
 	households_title: 'My households',
