@@ -234,8 +234,8 @@ describe('listActive', () => {
 			location: 'fridge'
 		});
 
-		setStatus(db, { id: item1.id, status: 'consumed' });
-		setStatus(db, { id: item2.id, status: 'discarded' });
+		setStatus(db, { id: item1.id, householdId: HOUSEHOLD_ID, status: 'consumed' });
+		setStatus(db, { id: item2.id, householdId: HOUSEHOLD_ID, status: 'discarded' });
 
 		const active = listActive(db, HOUSEHOLD_ID);
 		expect(active.length).toBe(1);
@@ -367,11 +367,12 @@ describe('setStatus', () => {
 		expect(item.status).toBe('active');
 		expect(item.closedAt).toBeNull();
 
-		const updated = setStatus(db, { id: item.id, status: 'consumed' });
+		const updated = setStatus(db, { id: item.id, householdId: HOUSEHOLD_ID, status: 'consumed' });
 
-		expect(updated.status).toBe('consumed');
-		expect(updated.closedAt).not.toBeNull();
-		expect(updated.closedAt).toBeInstanceOf(Date);
+		expect(updated).toBeDefined();
+		expect(updated!.status).toBe('consumed');
+		expect(updated!.closedAt).not.toBeNull();
+		expect(updated!.closedAt).toBeInstanceOf(Date);
 	});
 
 	it('moves item to discarded and sets closedAt', () => {
@@ -382,10 +383,11 @@ describe('setStatus', () => {
 			location: 'fridge'
 		});
 
-		const updated = setStatus(db, { id: item.id, status: 'discarded' });
+		const updated = setStatus(db, { id: item.id, householdId: HOUSEHOLD_ID, status: 'discarded' });
 
-		expect(updated.status).toBe('discarded');
-		expect(updated.closedAt).not.toBeNull();
+		expect(updated).toBeDefined();
+		expect(updated!.status).toBe('discarded');
+		expect(updated!.closedAt).not.toBeNull();
 	});
 
 	it('item is no longer returned by listActive after setStatus', () => {
@@ -399,10 +401,65 @@ describe('setStatus', () => {
 		const beforeUpdate = listActive(db, HOUSEHOLD_ID);
 		expect(beforeUpdate.some((i) => i.id === item.id)).toBe(true);
 
-		setStatus(db, { id: item.id, status: 'consumed' });
+		setStatus(db, { id: item.id, householdId: HOUSEHOLD_ID, status: 'consumed' });
 
 		const afterUpdate = listActive(db, HOUSEHOLD_ID);
 		expect(afterUpdate.some((i) => i.id === item.id)).toBe(false);
+	});
+
+	it('cross-household: cannot discard an item belonging to another household', () => {
+		// Seed a second user and household
+		const USER_B_ID = 'user-test-inv-b';
+		const HOUSEHOLD_B_ID = 'household-test-inv-b';
+
+		db.insert(users)
+			.values({
+				id: USER_B_ID,
+				email: 'inv-test-b@example.com',
+				displayName: 'Inv Test User B',
+				locale: 'fr',
+				createdAt: new Date()
+			})
+			.run();
+
+		db.insert(households)
+			.values({
+				id: HOUSEHOLD_B_ID,
+				name: 'Household B',
+				createdAt: new Date()
+			})
+			.run();
+
+		// Add an item to household B
+		const itemB = addCustom(db, {
+			householdId: HOUSEHOLD_B_ID,
+			addedBy: USER_B_ID,
+			customName: 'Household B item',
+			location: 'pantry'
+		});
+
+		// Attempting to discard itemB using household A's id must return undefined (no-op)
+		const result = setStatus(db, { id: itemB.id, householdId: HOUSEHOLD_ID, status: 'discarded' });
+		expect(result).toBeUndefined();
+
+		// itemB must still be active in household B
+		const stillActive = listActive(db, HOUSEHOLD_B_ID);
+		expect(stillActive.some((i) => i.id === itemB.id)).toBe(true);
+		const unchanged = stillActive.find((i) => i.id === itemB.id)!;
+		expect(unchanged.status).toBe('active');
+
+		// household A's list must NOT include itemB
+		const householdAItems = listActive(db, HOUSEHOLD_ID);
+		expect(householdAItems.some((i) => i.id === itemB.id)).toBe(false);
+
+		// Now discard with the correct household — must succeed
+		const discarded = setStatus(db, {
+			id: itemB.id,
+			householdId: HOUSEHOLD_B_ID,
+			status: 'discarded'
+		});
+		expect(discarded).toBeDefined();
+		expect(discarded!.status).toBe('discarded');
 	});
 });
 

@@ -149,21 +149,23 @@ export function getItem(db: DB, id: string): InventoryItem | undefined {
 // ── setStatus ─────────────────────────────────────────────────────────────────
 
 /**
- * Update an item's status and set closedAt to now. Returns the updated row.
+ * Update an item's status and set closedAt to now, scoped to the given household.
+ * Returns the updated row, or undefined if no item with that id belongs to that household.
  */
 export function setStatus(
 	db: DB,
-	{ id, status }: { id: string; status: 'active' | 'consumed' | 'discarded' }
-): InventoryItem {
+	{ id, householdId, status }: { id: string; householdId: string; status: 'consumed' | 'discarded' }
+): InventoryItem | undefined {
 	const now = new Date();
 
-	db.update(inventoryItems).set({ status, closedAt: now }).where(eq(inventoryItems.id, id)).run();
+	const updated = db
+		.update(inventoryItems)
+		.set({ status, closedAt: now })
+		.where(and(eq(inventoryItems.id, id), eq(inventoryItems.householdId, householdId)))
+		.returning()
+		.get();
 
-	const row = db.select().from(inventoryItems).where(eq(inventoryItems.id, id)).get();
-	if (!row) {
-		throw new Error(`Inventory item ${id} not found after status update`);
-	}
-	return row;
+	return updated ?? undefined;
 }
 
 // ── bandFor ───────────────────────────────────────────────────────────────────

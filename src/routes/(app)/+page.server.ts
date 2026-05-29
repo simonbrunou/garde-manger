@@ -131,7 +131,8 @@ export const actions: Actions = {
 			throw e;
 		}
 
-		setStatus(db, { id, status: 'consumed' });
+		const consumed = setStatus(db, { id, householdId: activeHouseholdId, status: 'consumed' });
+		if (!consumed) error(404, 'Item not found in your active household');
 
 		const locationParam = url.searchParams.get('location');
 		const target = locationParam ? `/?location=${encodeURIComponent(locationParam)}` : '/';
@@ -153,7 +154,8 @@ export const actions: Actions = {
 			throw e;
 		}
 
-		setStatus(db, { id, status: 'discarded' });
+		const discarded = setStatus(db, { id, householdId: activeHouseholdId, status: 'discarded' });
+		if (!discarded) error(404, 'Item not found in your active household');
 
 		const locationParam = url.searchParams.get('location');
 		const target = locationParam ? `/?location=${encodeURIComponent(locationParam)}` : '/';
