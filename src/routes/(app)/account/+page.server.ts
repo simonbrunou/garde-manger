@@ -6,12 +6,18 @@ import { db, users } from '$lib/server/db';
 import { listCredentials, deleteCredential } from '$lib/server/auth/webauthn';
 import { vapidPublicKey } from '$lib/server/pushConfig';
 import { m } from '$lib/i18n';
+import { normalizeChoice, THEME_COOKIE } from '$lib/theme';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, cookies }) => {
 	const user = locals.user!;
 	const credentials = listCredentials(db, user.id);
-	return { user, credentials, vapidPublicKey: vapidPublicKey() };
+	return {
+		user,
+		credentials,
+		vapidPublicKey: vapidPublicKey(),
+		theme: normalizeChoice(cookies.get(THEME_COOKIE))
+	};
 };
 
 export const actions: Actions = {
@@ -55,6 +61,18 @@ export const actions: Actions = {
 			return fail(400, { message: t.account_passkey_id_missing });
 		}
 		deleteCredential(db, { id, userId: user.id });
+		redirect(303, '/account');
+	},
+
+	setTheme: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const theme = normalizeChoice(data.get('theme') as string | null);
+		cookies.set(THEME_COOKIE, theme, {
+			path: '/',
+			httpOnly: true,
+			sameSite: 'lax',
+			maxAge: 60 * 60 * 24 * 365
+		});
 		redirect(303, '/account');
 	}
 };
