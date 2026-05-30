@@ -88,6 +88,23 @@ export function setMemberRole(
 		.run();
 }
 
+export function removeMember(db: DB, householdId: string, targetUserId: string) {
+	const membership = db
+		.select()
+		.from(memberships)
+		.where(and(eq(memberships.householdId, householdId), eq(memberships.userId, targetUserId)))
+		.get();
+	if (!membership) throw new HouseholdError('not_found');
+
+	if (membership.role === 'admin' && countAdmins(db, householdId) <= 1) {
+		throw new HouseholdError('last_admin');
+	}
+
+	db.delete(memberships)
+		.where(and(eq(memberships.householdId, householdId), eq(memberships.userId, targetUserId)))
+		.run();
+}
+
 export function createHousehold(db: DB, { name, ownerId }: { name: string; ownerId: string }) {
 	return db.transaction((tx) => {
 		const now = new Date();

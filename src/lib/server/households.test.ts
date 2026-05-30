@@ -249,3 +249,39 @@ test('setMemberRole throws not_found for a non-member target', () => {
 	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
 	expect(() => setMemberRole(db, h.id, MEMBER_ID, 'admin')).toThrow(HouseholdError);
 });
+
+test('removeMember removes a regular member', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'member');
+	removeMember(db, h.id, MEMBER_ID);
+	const m = db
+		.select()
+		.from(memberships)
+		.where(and(eq(memberships.householdId, h.id), eq(memberships.userId, MEMBER_ID)))
+		.get();
+	expect(m).toBeUndefined();
+});
+
+test('removeMember blocks removing the last admin', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	expect(() => removeMember(db, h.id, OWNER_ID)).toThrow(HouseholdError);
+});
+
+test('removeMember lets an admin leave when another admin remains', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'admin');
+	removeMember(db, h.id, OWNER_ID);
+	expect(
+		db
+			.select()
+			.from(memberships)
+			.where(and(eq(memberships.householdId, h.id), eq(memberships.userId, OWNER_ID)))
+			.get()
+	).toBeUndefined();
+	expect(countAdmins(db, h.id)).toBe(1);
+});
+
+test('removeMember throws not_found for a non-member target', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	expect(() => removeMember(db, h.id, MEMBER_ID)).toThrow(HouseholdError);
+});
