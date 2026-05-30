@@ -138,6 +138,7 @@ export const en: Messages = {
 	add_custom_name_placeholder: 'e.g. Homemade jam…',
 	add_custom_submit: 'Add',
 	add_cancel: 'Cancel',
+	add_change_food: '← Change food',
 	add_food_not_found: 'Food not found.',
 	add_error_generic: 'An error occurred.',
 

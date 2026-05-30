@@ -136,6 +136,7 @@ export const fr: Messages = {
 	add_custom_name_placeholder: 'ex. Confiture maison…',
 	add_custom_submit: 'Ajouter',
 	add_cancel: 'Annuler',
+	add_change_food: "← Changer d'aliment",
 	add_food_not_found: 'Aliment introuvable.',
 	add_error_generic: 'Une erreur est survenue.',
 
@@ -342,6 +343,7 @@ export interface Messages {
 	add_custom_name_placeholder: string;
 	add_custom_submit: string;
 	add_cancel: string;
+	add_change_food: string;
 	add_food_not_found: string;
 	add_error_generic: string;
 	// --- M2 lifecycle ---
