@@ -216,5 +216,16 @@ export const en: Messages = {
 	notif_reconnect: 'Reconnect notifications',
 	notif_working: 'Please wait…',
 	notif_error: 'Could not change notifications. Please try again.',
-	offline_banner: 'Offline — view only'
+	offline_banner: 'Offline — view only',
+
+	// --- Bilan (M9) ---
+	nav_bilan: 'Stats',
+	bilan_title: 'Waste report',
+	bilan_month_subtitle: 'This month',
+	bilan_eaten: 'Eaten',
+	bilan_wasted: 'Wasted',
+	bilan_streak: (n: number) => `${n} day${n > 1 ? 's' : ''} waste-free`,
+	bilan_streak_none: 'No waste recorded yet 🎉',
+	bilan_empty_title: 'Nothing to report yet',
+	bilan_empty_body: 'Mark items as eaten or thrown away to track your waste.'
 };
