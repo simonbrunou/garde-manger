@@ -97,7 +97,7 @@ describe('buildDailyPayload', () => {
 		const str = buildDailyPayload({ count: 3, locale: 'fr', origin: ORIGIN });
 		const obj = JSON.parse(str);
 		expect(obj.web_push).toBe(8030);
-		expect(obj.notification.navigate).toBe(`${ORIGIN}/?filter=expiring`);
+		expect(obj.notification.navigate).toBe(`${ORIGIN}/garde-manger?filter=expiring`);
 		expect(obj.notification.lang).toBe('fr');
 		expect(obj.notification.body).toContain('3');
 	});

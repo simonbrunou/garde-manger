@@ -11,7 +11,7 @@
 
 <svelte:head><title>{t.item_detail_title}</title></svelte:head>
 
-<a class="back" href="/">{t.item_back}</a>
+<a class="back" href="/garde-manger">{t.item_back}</a>
 
 <header class="head">
 	<Thumb

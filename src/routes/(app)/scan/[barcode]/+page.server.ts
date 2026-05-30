@@ -150,6 +150,6 @@ export const actions: Actions = {
 			location
 		});
 
-		redirect(303, '/');
+		redirect(303, '/garde-manger');
 	}
 };

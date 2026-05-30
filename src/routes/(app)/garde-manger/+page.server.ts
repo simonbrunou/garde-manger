@@ -167,7 +167,9 @@ export const actions: Actions = {
 		if (!consumed) error(404, 'Item not found in your active household');
 
 		const locationParam = url.searchParams.get('location');
-		const target = locationParam ? `/?location=${encodeURIComponent(locationParam)}` : '/';
+		const target = locationParam
+			? `/garde-manger?location=${encodeURIComponent(locationParam)}`
+			: '/garde-manger';
 		redirect(303, target);
 	},
 
@@ -190,7 +192,9 @@ export const actions: Actions = {
 		if (!discarded) error(404, 'Item not found in your active household');
 
 		const locationParam = url.searchParams.get('location');
-		const target = locationParam ? `/?location=${encodeURIComponent(locationParam)}` : '/';
+		const target = locationParam
+			? `/garde-manger?location=${encodeURIComponent(locationParam)}`
+			: '/garde-manger';
 		redirect(303, target);
 	}
 };

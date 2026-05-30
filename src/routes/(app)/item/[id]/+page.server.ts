@@ -13,7 +13,7 @@ function activeHouseholdId(cookies: import('@sveltejs/kit').Cookies): string | n
 export const load: PageServerLoad = async ({ params, locals, cookies, parent }) => {
 	const { locale, households, activeHouseholdId: parentHouseholdId } = await parent();
 	const hh = activeHouseholdId(cookies) ?? parentHouseholdId;
-	if (!hh) redirect(303, '/');
+	if (!hh) redirect(303, '/garde-manger');
 	try {
 		requireMembership(db, hh, locals.user!.id);
 	} catch (e) {
@@ -114,7 +114,7 @@ export const actions: Actions = {
 		if (!setStatus(db, { id: params.id, householdId: hh, status: 'consumed' })) {
 			error(404, 'Not found');
 		}
-		redirect(303, '/');
+		redirect(303, '/garde-manger');
 	},
 
 	discard: async ({ params, locals, cookies }) => {
@@ -129,7 +129,7 @@ export const actions: Actions = {
 		if (!setStatus(db, { id: params.id, householdId: hh, status: 'discarded' })) {
 			error(404, 'Not found');
 		}
-		redirect(303, '/');
+		redirect(303, '/garde-manger');
 	},
 
 	remove: async ({ params, locals, cookies }) => {
@@ -144,6 +144,6 @@ export const actions: Actions = {
 		if (!deleteItem(db, { id: params.id, householdId: hh })) {
 			error(404, 'Not found');
 		}
-		redirect(303, '/');
+		redirect(303, '/garde-manger');
 	}
 };

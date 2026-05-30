@@ -250,7 +250,25 @@ export const fr: Messages = {
 	cuisiner_subtitle: 'Idées pour vos aliments à consommer vite',
 	cuisiner_empty_title: 'Rien ne presse',
 	cuisiner_empty_body: "Aucun aliment à consommer rapidement pour l'instant.",
-	bilan_streak_zero: "Reparti·e à zéro — c'est reparti !"
+	bilan_streak_zero: "Reparti·e à zéro — c'est reparti !",
+
+	// --- Landing (public) ---
+	landing_hero_title: 'Ne gaspillez plus. Cuisinez ce que vous avez.',
+	landing_hero_subtitle:
+		'Suivez votre garde-manger, soyez alerté avant péremption, et trouvez quoi cuisiner — en quelques secondes.',
+	landing_cta_signup: 'Créer un compte',
+	landing_cta_login: 'Se connecter',
+	landing_feature_stock_title: 'Suivi du stock',
+	landing_feature_stock_body: "Sachez en un coup d'œil ce qu'il vous reste.",
+	landing_feature_expiry_title: 'Alertes de péremption',
+	landing_feature_expiry_body: 'Soyez prévenu avant que ça ne périme.',
+	landing_feature_scan_title: 'Scan code-barres',
+	landing_feature_scan_body: 'Ajoutez un produit en le scannant.',
+	landing_feature_cook_title: 'Idées recettes',
+	landing_feature_cook_body: 'Cuisinez à partir de ce que vous avez déjà.',
+	landing_closing_prompt: 'Prêt à arrêter le gaspillage ?',
+	landing_meta_description:
+		'Garde-Manger — suivez votre stock alimentaire, évitez le gaspillage et cuisinez malin.'
 };
 
 // Messages interface uses widened types so EN can satisfy it with different string values.
@@ -478,4 +496,19 @@ export interface Messages {
 	cuisiner_empty_title: string;
 	cuisiner_empty_body: string;
 	bilan_streak_zero: string;
+	// --- Landing (public) ---
+	landing_hero_title: string;
+	landing_hero_subtitle: string;
+	landing_cta_signup: string;
+	landing_cta_login: string;
+	landing_feature_stock_title: string;
+	landing_feature_stock_body: string;
+	landing_feature_expiry_title: string;
+	landing_feature_expiry_body: string;
+	landing_feature_scan_title: string;
+	landing_feature_scan_body: string;
+	landing_feature_cook_title: string;
+	landing_feature_cook_body: string;
+	landing_closing_prompt: string;
+	landing_meta_description: string;
 }

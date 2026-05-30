@@ -250,5 +250,22 @@ export const en: Messages = {
 	cuisiner_subtitle: 'Ideas for items to use up soon',
 	cuisiner_empty_title: 'Nothing to use up',
 	cuisiner_empty_body: 'No items need using up right now.',
-	bilan_streak_zero: 'Back to zero — fresh start!'
+	bilan_streak_zero: 'Back to zero — fresh start!',
+
+	// --- Landing (public) ---
+	landing_hero_title: 'Stop wasting food. Cook what you have.',
+	landing_hero_subtitle:
+		'Track your pantry, get alerted before things expire, and find what to cook — in seconds.',
+	landing_cta_signup: 'Create account',
+	landing_cta_login: 'Log in',
+	landing_feature_stock_title: 'Track your stock',
+	landing_feature_stock_body: 'See at a glance what you have left.',
+	landing_feature_expiry_title: 'Expiry alerts',
+	landing_feature_expiry_body: 'Get notified before food goes bad.',
+	landing_feature_scan_title: 'Barcode scan',
+	landing_feature_scan_body: 'Add a product just by scanning it.',
+	landing_feature_cook_title: 'Recipe ideas',
+	landing_feature_cook_body: "Cook from what's already in your kitchen.",
+	landing_closing_prompt: 'Ready to stop wasting food?',
+	landing_meta_description: 'Garde-Manger — track your food stock, cut waste, and cook smart.'
 };
