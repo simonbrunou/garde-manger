@@ -105,7 +105,9 @@
 		{/each}
 	</ul>
 	{#if data.isAdmin}
-		<a href="./invite" class="btn btn-primary">{t.members_invite_link}</a>
+		<a href="/households/{data.household.id}/invite" class="btn btn-primary"
+			>{t.members_invite_link}</a
+		>
 	{/if}
 </section>
 
