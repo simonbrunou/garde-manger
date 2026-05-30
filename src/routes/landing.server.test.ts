@@ -13,6 +13,7 @@ describe('landing page load', () => {
 		} catch (e) {
 			thrown = e as { status?: number; location?: string };
 		}
+		expect(thrown).toBeDefined();
 		expect(thrown?.status).toBe(303);
 		expect(thrown?.location).toBe('/garde-manger');
 	});

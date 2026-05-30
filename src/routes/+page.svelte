@@ -6,7 +6,8 @@
 	let { data } = $props();
 	const t = $derived(m(data.locale));
 
-	const features = $derived<{ icon: IconName; title: string; body: string; tone: string }[]>([
+	type FeatureCard = { icon: IconName; title: string; body: string; tone: string };
+	const features = $derived([
 		{
 			icon: 'cat-pantry',
 			title: t.landing_feature_stock_title,
@@ -31,7 +32,7 @@
 			body: t.landing_feature_cook_body,
 			tone: 'red'
 		}
-	]);
+	] satisfies FeatureCard[]);
 </script>
 
 <svelte:head>
@@ -164,7 +165,7 @@
 		color: var(--text-muted);
 		font-size: 0.85rem;
 	}
-	@media (max-width: 30rem) {
+	@media (max-width: 35rem) {
 		.features {
 			grid-template-columns: 1fr;
 		}
