@@ -215,3 +215,37 @@ test('deleteHousehold removes the household and cascades memberships + invitatio
 test('deleteHousehold throws not_found for an unknown id', () => {
 	expect(() => deleteHousehold(db, 'nope')).toThrow(HouseholdError);
 });
+
+test('setMemberRole promotes a member to admin', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'member');
+	setMemberRole(db, h.id, MEMBER_ID, 'admin');
+	const m = db
+		.select()
+		.from(memberships)
+		.where(and(eq(memberships.householdId, h.id), eq(memberships.userId, MEMBER_ID)))
+		.get();
+	expect(m?.role).toBe('admin');
+});
+
+test('setMemberRole blocks demoting the last admin', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	expect(() => setMemberRole(db, h.id, OWNER_ID, 'member')).toThrow(HouseholdError);
+});
+
+test('setMemberRole allows demoting one of several admins', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'admin');
+	setMemberRole(db, h.id, OWNER_ID, 'member');
+	const m = db
+		.select()
+		.from(memberships)
+		.where(and(eq(memberships.householdId, h.id), eq(memberships.userId, OWNER_ID)))
+		.get();
+	expect(m?.role).toBe('member');
+});
+
+test('setMemberRole throws not_found for a non-member target', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	expect(() => setMemberRole(db, h.id, MEMBER_ID, 'admin')).toThrow(HouseholdError);
+});

@@ -57,6 +57,37 @@ export function deleteHousehold(db: DB, householdId: string) {
 	db.delete(households).where(eq(households.id, householdId)).run();
 }
 
+export function countAdmins(db: DB, householdId: string): number {
+	return db
+		.select({ userId: memberships.userId })
+		.from(memberships)
+		.where(and(eq(memberships.householdId, householdId), eq(memberships.role, 'admin')))
+		.all().length;
+}
+
+export function setMemberRole(
+	db: DB,
+	householdId: string,
+	targetUserId: string,
+	role: 'admin' | 'member'
+) {
+	const membership = db
+		.select()
+		.from(memberships)
+		.where(and(eq(memberships.householdId, householdId), eq(memberships.userId, targetUserId)))
+		.get();
+	if (!membership) throw new HouseholdError('not_found');
+
+	if (membership.role === 'admin' && role === 'member' && countAdmins(db, householdId) <= 1) {
+		throw new HouseholdError('last_admin');
+	}
+
+	db.update(memberships)
+		.set({ role })
+		.where(and(eq(memberships.householdId, householdId), eq(memberships.userId, targetUserId)))
+		.run();
+}
+
 export function createHousehold(db: DB, { name, ownerId }: { name: string; ownerId: string }) {
 	return db.transaction((tx) => {
 		const now = new Date();
