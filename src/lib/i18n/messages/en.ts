@@ -74,6 +74,31 @@ export const en: Messages = {
 	members_invite_link: 'Invite a member',
 	members_back: '← Back to households',
 
+	// --- Manage household (admin hub) ---
+	manage_settings_section: 'Settings',
+	manage_warn_days_label: 'Warning days before expiry',
+	manage_settings_saved: 'Settings saved.',
+	manage_settings_invalid: 'Invalid name or number of days.',
+	manage_members_section: 'Members',
+	manage_promote: 'Make admin',
+	manage_demote: 'Make member',
+	manage_remove_member: 'Remove',
+	manage_leave: 'Leave household',
+	manage_last_admin: 'The household must keep at least one admin.',
+	manage_member_not_found: 'Member not found.',
+	manage_invites_section: 'Pending invitations',
+	manage_invites_empty: 'No pending invitations.',
+	manage_invite_expires: 'expires',
+	manage_invite_revoke: 'Revoke',
+	manage_invite_revoke_failed: 'Could not revoke this invitation.',
+	manage_danger_section: 'Danger zone',
+	manage_delete_warning:
+		'Deleting this household permanently removes its inventory, members, and invitations. This cannot be undone.',
+	manage_delete_confirm_label: 'Type the household name to confirm',
+	manage_delete_button: 'Delete household',
+	manage_delete_name_mismatch: 'The name you typed does not match.',
+	manage_forbidden: 'Admins only.',
+
 	// --- Invite page ---
 	invite_title: 'Invite a member',
 	invite_role_label: 'Role',
@@ -82,7 +107,7 @@ export const en: Messages = {
 	invite_submit: 'Generate an invitation link',
 	invite_link_section_title: 'Invitation link generated',
 	invite_link_instructions: 'Share this link with the person you want to invite:',
-	invite_back: '← Back to members',
+	invite_back: '← Back to household',
 	invite_admin_only: 'Administrators only',
 	invite_access_denied: 'Access denied',
 

@@ -72,6 +72,31 @@ export const fr: Messages = {
 	members_invite_link: 'Inviter un membre',
 	members_back: '← Retour aux foyers',
 
+	// --- Manage household (admin hub) ---
+	manage_settings_section: 'Paramètres',
+	manage_warn_days_label: 'Jours d’alerte avant péremption',
+	manage_settings_saved: 'Paramètres enregistrés.',
+	manage_settings_invalid: 'Nom ou nombre de jours invalide.',
+	manage_members_section: 'Membres',
+	manage_promote: 'Promouvoir admin',
+	manage_demote: 'Passer membre',
+	manage_remove_member: 'Retirer',
+	manage_leave: 'Quitter le foyer',
+	manage_last_admin: 'Le foyer doit conserver au moins un admin.',
+	manage_member_not_found: 'Membre introuvable.',
+	manage_invites_section: 'Invitations en attente',
+	manage_invites_empty: 'Aucune invitation en attente.',
+	manage_invite_expires: 'expire le',
+	manage_invite_revoke: 'Révoquer',
+	manage_invite_revoke_failed: 'Impossible de révoquer cette invitation.',
+	manage_danger_section: 'Zone de danger',
+	manage_delete_warning:
+		'Supprimer ce foyer effacera définitivement son inventaire, ses membres et ses invitations. Action irréversible.',
+	manage_delete_confirm_label: 'Tapez le nom du foyer pour confirmer',
+	manage_delete_button: 'Supprimer le foyer',
+	manage_delete_name_mismatch: 'Le nom saisi ne correspond pas.',
+	manage_forbidden: 'Action réservée aux admins.',
+
 	// --- Invite page ---
 	invite_title: 'Inviter un membre',
 	invite_role_label: 'Rôle',
@@ -80,7 +105,7 @@ export const fr: Messages = {
 	invite_submit: "Générer un lien d'invitation",
 	invite_link_section_title: "Lien d'invitation généré",
 	invite_link_instructions: 'Partage ce lien avec la personne à inviter :',
-	invite_back: '← Retour aux membres',
+	invite_back: '← Retour au foyer',
 	invite_admin_only: 'Réservé aux administrateurs',
 	invite_access_denied: 'Accès refusé',
 
@@ -293,6 +318,29 @@ export interface Messages {
 	members_since: string;
 	members_invite_link: string;
 	members_back: string;
+	// --- Manage household (admin hub) ---
+	manage_settings_section: string;
+	manage_warn_days_label: string;
+	manage_settings_saved: string;
+	manage_settings_invalid: string;
+	manage_members_section: string;
+	manage_promote: string;
+	manage_demote: string;
+	manage_remove_member: string;
+	manage_leave: string;
+	manage_last_admin: string;
+	manage_member_not_found: string;
+	manage_invites_section: string;
+	manage_invites_empty: string;
+	manage_invite_expires: string;
+	manage_invite_revoke: string;
+	manage_invite_revoke_failed: string;
+	manage_danger_section: string;
+	manage_delete_warning: string;
+	manage_delete_confirm_label: string;
+	manage_delete_button: string;
+	manage_delete_name_mismatch: string;
+	manage_forbidden: string;
 	// --- Invite page ---
 	invite_title: string;
 	invite_role_label: string;
