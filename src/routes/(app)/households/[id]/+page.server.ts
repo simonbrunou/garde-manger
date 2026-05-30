@@ -133,7 +133,8 @@ export const actions: Actions = {
 		try {
 			revokeInvitation(db, id, params.id);
 		} catch (e) {
-			if (e instanceof InvitationError) return fail(400, { message: t.manage_invite_revoke_failed });
+			if (e instanceof InvitationError)
+				return fail(400, { message: t.manage_invite_revoke_failed });
 			throw e;
 		}
 		redirect(303, `/households/${params.id}`);
