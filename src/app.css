@@ -20,7 +20,7 @@
 
 	/* Text */
 	--text: light-dark(#322c22, #f1eadd);
-	--text-muted: light-dark(#8a7e6b, #a89e8b);
+	--text-muted: light-dark(#706552, #a89e8b);
 
 	/* Accents (produce palette, brightened for dark) */
 	--green: light-dark(#2f9e44, #43b15a);
