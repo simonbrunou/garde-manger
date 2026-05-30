@@ -9,6 +9,8 @@
 	const it = $derived(data.item);
 </script>
 
+<svelte:head><title>{t.item_detail_title}</title></svelte:head>
+
 <a class="back" href="/">{t.item_back}</a>
 
 <header class="head">
@@ -24,6 +26,10 @@
 	</div>
 	<DayBadge band={it.band} effectiveDate={it.effectiveDate} {t} />
 </header>
+{#if it.addedAt}<p class="added">
+		{t.item_added_on}
+		{new Intl.DateTimeFormat(data.locale, { dateStyle: 'long' }).format(new Date(it.addedAt))}
+	</p>{/if}
 
 <Card>
 	<form method="POST" action="?/update" class="edit">
@@ -122,5 +128,10 @@
 	}
 	.danger form {
 		margin-top: 0.5rem;
+	}
+	.added {
+		color: var(--text-muted);
+		font-size: 0.85rem;
+		margin: 0 0 1rem;
 	}
 </style>

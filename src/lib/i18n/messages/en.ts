@@ -108,7 +108,6 @@ export const en: Messages = {
 	home_band_ok: 'Still good',
 
 	// --- M2 home screen ---
-	home_empty: 'Your pantry is empty. Add your first item!',
 	home_add_item: '＋ Add',
 	home_filter_all: 'All',
 

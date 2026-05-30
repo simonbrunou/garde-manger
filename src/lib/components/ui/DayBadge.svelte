@@ -10,11 +10,26 @@
 	}: { band: Band; effectiveDate: string | null; now?: Date; t: Messages } = $props();
 	const info = $derived(dayBadge(effectiveDate, now));
 	const text = $derived(
-		info.days === null ? '∞' : info.days <= 0 ? t.day_today : `${info.days} ${t.day_unit}`
+		info.days === null
+			? '∞'
+			: info.days < 0
+				? '!'
+				: info.days === 0
+					? t.day_today
+					: `${info.days} ${t.day_unit}`
+	);
+	const aria = $derived(
+		info.days === null
+			? '∞'
+			: info.days < 0
+				? t.day_overdue
+				: info.days === 0
+					? t.day_today
+					: `${info.days} ${t.day_unit}`
 	);
 </script>
 
-<span class="badge badge-{band}" aria-label={text}>{text}</span>
+<span class="badge badge-{band}" aria-label={aria}>{text}</span>
 
 <style>
 	.badge {

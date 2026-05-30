@@ -106,7 +106,6 @@ export const fr: Messages = {
 	home_band_ok: 'Encore bon',
 
 	// --- M2 home screen ---
-	home_empty: 'Votre garde-manger est vide. Ajoutez un premier aliment !',
 	home_add_item: '＋ Ajouter',
 	home_filter_all: 'Tout',
 
@@ -314,7 +313,6 @@ export interface Messages {
 	home_band_soon: string;
 	home_band_ok: string;
 	// --- M2 home screen ---
-	home_empty: string;
 	home_add_item: string;
 	home_filter_all: string;
 	// --- M2 add item ---
