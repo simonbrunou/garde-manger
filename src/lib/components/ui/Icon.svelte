@@ -18,6 +18,7 @@
 		| 'sun'
 		| 'moon'
 		| 'monitor'
+		| 'stats'
 		| 'cat-fruit'
 		| 'cat-veg'
 		| 'cat-herb'
