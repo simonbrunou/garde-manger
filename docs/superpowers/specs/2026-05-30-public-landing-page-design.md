@@ -108,10 +108,30 @@ implementation):
 - Dashboard "all" location filter `Chip href="/"` → `/garde-manger`
   (now in `(app)/garde-manger/+page.svelte`).
 - `src/routes/(app)/item/[id]/+page.svelte` — back link `href="/"` → `/garde-manger`.
-- `src/routes/(auth)/login/+page.server.ts` redirect default `'/'` → `'/garde-manger'`.
 - `src/lib/components/PasskeyLogin.svelte` — `redirectTo` default `'/'` → `'/garde-manger'`.
 - `src/routes/join/[token]/+page.svelte` — "back home" link stays `/` (correct:
   shows the public landing; forwards to the app if the visitor is logged in).
+
+### Post-auth redirect default (login **and** signup)
+`safeLocalPath(p)` in `src/lib/validation.ts` falls back to `'/'`. Give it an
+optional `fallback` param (`safeLocalPath(p, fallback = '/')`) and call it with
+`'/garde-manger'` in both `(auth)/login/+page.server.ts` and
+`(auth)/signup/+page.server.ts` (each uses it in `load` and the default action).
+Explicit `?redirectTo=` values are still honoured. The shared helper's default
+stays `'/'`, so other callers are unaffected.
+
+### Additional touchpoints surfaced during planning
+The dashboard's move off `/` ripples to two more places that hard-code `/`:
+- `src/lib/server/push.ts` — the daily reminder deep-links to
+  `${origin}/?filter=expiring`; change to `/garde-manger?filter=expiring`. Two
+  tests assert this exact string and must be updated in lock-step:
+  `src/lib/server/push.test.ts` and `src/lib/server/cron.test.ts`.
+- `static/manifest.webmanifest` — `start_url: "/"` → `"/garde-manger"` so the
+  installed PWA launches into the app (logged-out users still get forwarded to
+  `/login` by the `(app)` guard).
+- `src/service-worker.ts` notification fallback `|| '/'` is left as-is — it only
+  fires for pushes without an explicit `navigate`, and `/` routes a logged-in
+  user onward correctly.
 
 ## Testing
 
