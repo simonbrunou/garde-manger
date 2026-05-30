@@ -271,7 +271,9 @@ test('listPendingInvitations excludes invites from other households', () => {
 test('revokeInvitation deletes a pending invite scoped to its household', () => {
 	const { invitation } = createInvitation(db, { householdId, role: 'member', createdBy: OWNER_ID });
 	revokeInvitation(db, invitation.id, householdId);
-	expect(db.select().from(invitations).where(eq(invitations.id, invitation.id)).get()).toBeUndefined();
+	expect(
+		db.select().from(invitations).where(eq(invitations.id, invitation.id)).get()
+	).toBeUndefined();
 });
 
 test('revokeInvitation refuses an invite from a different household', () => {

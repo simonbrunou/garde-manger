@@ -213,8 +213,12 @@ test('deleteHousehold removes the household and cascades memberships + invitatio
 	deleteHousehold(db, h.id);
 
 	expect(db.select().from(households).where(eq(households.id, h.id)).get()).toBeUndefined();
-	expect(db.select().from(memberships).where(eq(memberships.householdId, h.id)).all().length).toBe(0);
-	expect(db.select().from(invitations).where(eq(invitations.householdId, h.id)).all().length).toBe(0);
+	expect(db.select().from(memberships).where(eq(memberships.householdId, h.id)).all().length).toBe(
+		0
+	);
+	expect(db.select().from(invitations).where(eq(invitations.householdId, h.id)).all().length).toBe(
+		0
+	);
 });
 
 test('deleteHousehold throws not_found for an unknown id', () => {
