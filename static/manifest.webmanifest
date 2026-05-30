@@ -3,7 +3,7 @@
 	"short_name": "Garde-Manger",
 	"description": "Suivez votre garde-manger, réduisez le gaspillage alimentaire et consommez vos aliments avant qu'ils ne périment.",
 	"id": "/",
-	"start_url": "/",
+	"start_url": "/garde-manger",
 	"scope": "/",
 	"display": "standalone",
 	"theme_color": "#2f9e44",

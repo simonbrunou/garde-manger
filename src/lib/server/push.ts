@@ -68,7 +68,7 @@ export function buildDailyPayload(opts: {
 	origin: string;
 }): string {
 	const copy = COPY[opts.locale];
-	const navigate = `${opts.origin}/?filter=expiring`;
+	const navigate = `${opts.origin}/garde-manger?filter=expiring`;
 
 	const build = (body: string): string =>
 		JSON.stringify({

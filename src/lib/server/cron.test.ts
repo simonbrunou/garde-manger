@@ -152,7 +152,7 @@ describe('runDailyReminders', () => {
 		expect(sender.payloads).toHaveLength(2);
 		const obj = JSON.parse(sender.payloads[0]);
 		expect(obj.notification.body).toContain('1');
-		expect(obj.notification.navigate).toBe(`${ORIGIN}/?filter=expiring`);
+		expect(obj.notification.navigate).toBe(`${ORIGIN}/garde-manger?filter=expiring`);
 		// Locale 'en' honoured.
 		expect(obj.notification.lang).toBe('en');
 	});
