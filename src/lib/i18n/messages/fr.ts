@@ -227,7 +227,15 @@ export const fr: Messages = {
 	bilan_streak: (n: number) => `${n} jour${n > 1 ? 's' : ''} sans gaspillage`,
 	bilan_streak_none: 'Aucun gaspillage enregistré 🎉',
 	bilan_empty_title: 'Pas encore de bilan',
-	bilan_empty_body: 'Marquez des aliments comme mangés ou jetés pour suivre votre anti-gaspi.'
+	bilan_empty_body: 'Marquez des aliments comme mangés ou jetés pour suivre votre anti-gaspi.',
+
+	// --- Cuisiner (M10) ---
+	nav_cuisiner: 'Cuisiner',
+	cuisiner_title: 'Cuisiner',
+	cuisiner_subtitle: 'Idées pour vos aliments à consommer vite',
+	cuisiner_empty_title: 'Rien ne presse',
+	cuisiner_empty_body: "Aucun aliment à consommer rapidement pour l'instant.",
+	bilan_streak_zero: "Reparti·e à zéro — c'est reparti !"
 };
 
 // Messages interface uses widened types so EN can satisfy it with different string values.
@@ -434,4 +442,11 @@ export interface Messages {
 	bilan_streak_none: string;
 	bilan_empty_title: string;
 	bilan_empty_body: string;
+	// --- Cuisiner (M10) ---
+	nav_cuisiner: string;
+	cuisiner_title: string;
+	cuisiner_subtitle: string;
+	cuisiner_empty_title: string;
+	cuisiner_empty_body: string;
+	bilan_streak_zero: string;
 }

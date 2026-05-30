@@ -227,5 +227,13 @@ export const en: Messages = {
 	bilan_streak: (n: number) => `${n} day${n > 1 ? 's' : ''} waste-free`,
 	bilan_streak_none: 'No waste recorded yet 🎉',
 	bilan_empty_title: 'Nothing to report yet',
-	bilan_empty_body: 'Mark items as eaten or thrown away to track your waste.'
+	bilan_empty_body: 'Mark items as eaten or thrown away to track your waste.',
+
+	// --- Cuisiner (M10) ---
+	nav_cuisiner: 'Cook',
+	cuisiner_title: 'Cook',
+	cuisiner_subtitle: 'Ideas for items to use up soon',
+	cuisiner_empty_title: 'Nothing to use up',
+	cuisiner_empty_body: 'No items need using up right now.',
+	bilan_streak_zero: 'Back to zero — fresh start!'
 };
