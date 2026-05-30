@@ -3,7 +3,8 @@ import { load } from './+page.server';
 
 // The route's `load` uses redirect()/returns locale based on auth state.
 // We call it with a minimal fake event (only `locals` is read).
-const call = (locals: unknown) => (load as unknown as (e: { locals: unknown }) => unknown)({ locals });
+const call = (locals: unknown) =>
+	(load as unknown as (e: { locals: unknown }) => unknown)({ locals });
 
 describe('landing page load', () => {
 	test('redirects a logged-in user to /garde-manger', async () => {
