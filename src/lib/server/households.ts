@@ -51,6 +51,12 @@ export function updateHousehold(
 	return { ...existing, ...set };
 }
 
+export function deleteHousehold(db: DB, householdId: string) {
+	const existing = db.select().from(households).where(eq(households.id, householdId)).get();
+	if (!existing) throw new HouseholdError('not_found');
+	db.delete(households).where(eq(households.id, householdId)).run();
+}
+
 export function createHousehold(db: DB, { name, ownerId }: { name: string; ownerId: string }) {
 	return db.transaction((tx) => {
 		const now = new Date();

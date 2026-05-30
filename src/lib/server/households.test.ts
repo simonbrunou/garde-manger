@@ -188,3 +188,30 @@ test('updateHousehold rejects out-of-range warnDays', () => {
 test('updateHousehold throws not_found for an unknown id', () => {
 	expect(() => updateHousehold(db, 'nope', { name: 'X' })).toThrow(HouseholdError);
 });
+
+test('deleteHousehold removes the household and cascades memberships + invitations', () => {
+	const h = createHousehold(db, { name: 'Doomed', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'member');
+	db.insert(invitations)
+		.values({
+			id: crypto.randomUUID(),
+			householdId: h.id,
+			tokenHash: Buffer.from('x'),
+			role: 'member',
+			createdBy: OWNER_ID,
+			expiresAt: new Date(Date.now() + 100000),
+			usedAt: null,
+			createdAt: new Date()
+		})
+		.run();
+
+	deleteHousehold(db, h.id);
+
+	expect(db.select().from(households).where(eq(households.id, h.id)).get()).toBeUndefined();
+	expect(db.select().from(memberships).where(eq(memberships.householdId, h.id)).all().length).toBe(0);
+	expect(db.select().from(invitations).where(eq(invitations.householdId, h.id)).all().length).toBe(0);
+});
+
+test('deleteHousehold throws not_found for an unknown id', () => {
+	expect(() => deleteHousehold(db, 'nope')).toThrow(HouseholdError);
+});
