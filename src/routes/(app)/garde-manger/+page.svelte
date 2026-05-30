@@ -43,14 +43,14 @@
 	</header>
 
 	<div class="filters">
-		<Chip href="/" active={!data.locationFilter}>{t.home_filter_all}</Chip>
-		<Chip href="/?location=fridge" active={data.locationFilter === 'fridge'}
+		<Chip href="/garde-manger" active={!data.locationFilter}>{t.home_filter_all}</Chip>
+		<Chip href="/garde-manger?location=fridge" active={data.locationFilter === 'fridge'}
 			>{t.add_location_fridge}</Chip
 		>
-		<Chip href="/?location=pantry" active={data.locationFilter === 'pantry'}
+		<Chip href="/garde-manger?location=pantry" active={data.locationFilter === 'pantry'}
 			>{t.add_location_pantry}</Chip
 		>
-		<Chip href="/?location=freezer" active={data.locationFilter === 'freezer'}
+		<Chip href="/garde-manger?location=freezer" active={data.locationFilter === 'freezer'}
 			>{t.add_location_freezer}</Chip
 		>
 	</div>
