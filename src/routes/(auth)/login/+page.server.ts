@@ -10,7 +10,7 @@ import { m } from '$lib/i18n';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-	const redirectTo = safeLocalPath(url.searchParams.get('redirectTo'));
+	const redirectTo = safeLocalPath(url.searchParams.get('redirectTo'), '/garde-manger');
 	if (locals.user) redirect(303, redirectTo);
 	return { redirectTo };
 };
@@ -40,7 +40,7 @@ export const actions: Actions = {
 		const { token, session } = await createSession(db, user.id);
 		setSessionCookie(cookies, token, session.expiresAt);
 
-		const redirectTo = safeLocalPath(raw.redirectTo as string);
+		const redirectTo = safeLocalPath(raw.redirectTo as string, '/garde-manger');
 		redirect(303, redirectTo);
 	}
 };

@@ -4,11 +4,11 @@ import * as v from 'valibot';
  * Guard against open-redirect attacks.
  * Returns `p` only if it is a local path (starts with '/' but not '//').
  */
-export function safeLocalPath(p: string | null | undefined): string {
+export function safeLocalPath(p: string | null | undefined, fallback = '/'): string {
 	if (typeof p === 'string' && p.startsWith('/') && !p.startsWith('//')) {
 		return p;
 	}
-	return '/';
+	return fallback;
 }
 
 export const signupSchema = v.object({

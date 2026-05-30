@@ -6,7 +6,7 @@
 		redirectTo?: string;
 	}
 
-	let { redirectTo = '/' }: Props = $props();
+	let { redirectTo = '/garde-manger' }: Props = $props();
 
 	let errorMessage = $state('');
 	let loading = $state(false);

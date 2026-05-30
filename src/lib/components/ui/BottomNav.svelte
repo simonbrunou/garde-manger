@@ -7,7 +7,7 @@
 </script>
 
 <nav class="bottom-nav" aria-label={t.nav_primary}>
-	<a href="/" class="tab" aria-current={path === '/' ? 'page' : undefined}>
+	<a href="/garde-manger" class="tab" aria-current={path === '/garde-manger' ? 'page' : undefined}>
 		<Icon name="home" size={22} /><span>{t.nav_home}</span>
 	</a>
 	<a href="/cuisiner" class="tab" aria-current={path.startsWith('/cuisiner') ? 'page' : undefined}>
