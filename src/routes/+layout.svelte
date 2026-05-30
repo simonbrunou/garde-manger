@@ -61,6 +61,9 @@
 		>
 		<symbol id="gm-stats" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3" /></symbol
 		>
+		<symbol id="gm-cook" viewBox="0 0 24 24"
+			><path d="M6 3v6a2 2 0 0 0 4 0V3M8 9v12M16 3c-1.6 1-2.6 3.4-2.6 6.4H16V21" /></symbol
+		>
 		<symbol id="gm-cat-fruit" viewBox="0 0 24 24"
 			><path d="M12 8c1-3 4-4 6-3 1 4-1 9-4 11-1 .7-3 .7-4 0C7 14 5 9 6 5c2-1 5 0 6 3z" /><path
 				d="M12 8V4"
