@@ -11,6 +11,46 @@ export class MembershipError extends Error {
 	}
 }
 
+export class HouseholdError extends Error {
+	code: 'invalid' | 'not_found' | 'last_admin';
+	constructor(code: 'invalid' | 'not_found' | 'last_admin') {
+		const messages = {
+			invalid: 'Invalid household data',
+			not_found: 'Household or member not found',
+			last_admin: 'A household must keep at least one admin'
+		};
+		super(messages[code]);
+		this.code = code;
+		this.name = 'HouseholdError';
+	}
+}
+
+export function updateHousehold(
+	db: DB,
+	householdId: string,
+	patch: { name?: string; warnDays?: number }
+) {
+	const existing = db.select().from(households).where(eq(households.id, householdId)).get();
+	if (!existing) throw new HouseholdError('not_found');
+
+	const set: { name?: string; warnDays?: number } = {};
+	if (patch.name !== undefined) {
+		const name = patch.name.trim();
+		if (name.length < 1 || name.length > 80) throw new HouseholdError('invalid');
+		set.name = name;
+	}
+	if (patch.warnDays !== undefined) {
+		if (!Number.isInteger(patch.warnDays) || patch.warnDays < 0 || patch.warnDays > 30) {
+			throw new HouseholdError('invalid');
+		}
+		set.warnDays = patch.warnDays;
+	}
+	if (Object.keys(set).length > 0) {
+		db.update(households).set(set).where(eq(households.id, householdId)).run();
+	}
+	return { ...existing, ...set };
+}
+
 export function createHousehold(db: DB, { name, ownerId }: { name: string; ownerId: string }) {
 	return db.transaction((tx) => {
 		const now = new Date();

@@ -2,9 +2,21 @@ import { test, expect, beforeEach, afterEach } from 'bun:test';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { eq, and } from 'drizzle-orm';
 import { createDb, runMigrations, type DB } from './db/client';
-import { users, memberships } from './db/schema';
-import { createHousehold, listForUser, requireMembership, MembershipError } from './households';
+import { users, memberships, households, invitations } from './db/schema';
+import {
+	createHousehold,
+	listForUser,
+	requireMembership,
+	MembershipError,
+	updateHousehold,
+	deleteHousehold,
+	setMemberRole,
+	removeMember,
+	countAdmins,
+	HouseholdError
+} from './households';
 import type { Database } from 'bun:sqlite';
 
 let dir: string;
@@ -137,4 +149,42 @@ test('requireMembership does NOT throw when admin required and user IS admin', (
 	const household = createHousehold(db, { name: 'Admins Only', ownerId: OWNER_ID });
 	const m = requireMembership(db, household.id, OWNER_ID, 'admin');
 	expect(m.role).toBe('admin');
+});
+
+function addMember(householdId: string, userId: string, role: 'admin' | 'member') {
+	db.insert(memberships)
+		.values({ id: crypto.randomUUID(), householdId, userId, role, joinedAt: new Date() })
+		.run();
+}
+
+test('updateHousehold changes name and warnDays', () => {
+	const h = createHousehold(db, { name: 'Old', ownerId: OWNER_ID });
+	const updated = updateHousehold(db, h.id, { name: 'New', warnDays: 7 });
+	expect(updated.name).toBe('New');
+	expect(updated.warnDays).toBe(7);
+	const row = db.select().from(households).where(eq(households.id, h.id)).get();
+	expect(row?.name).toBe('New');
+	expect(row?.warnDays).toBe(7);
+});
+
+test('updateHousehold trims the name', () => {
+	const h = createHousehold(db, { name: 'X', ownerId: OWNER_ID });
+	expect(updateHousehold(db, h.id, { name: '  Trimmed  ' }).name).toBe('Trimmed');
+});
+
+test('updateHousehold rejects empty and oversized names', () => {
+	const h = createHousehold(db, { name: 'X', ownerId: OWNER_ID });
+	expect(() => updateHousehold(db, h.id, { name: '   ' })).toThrow(HouseholdError);
+	expect(() => updateHousehold(db, h.id, { name: 'a'.repeat(81) })).toThrow(HouseholdError);
+});
+
+test('updateHousehold rejects out-of-range warnDays', () => {
+	const h = createHousehold(db, { name: 'X', ownerId: OWNER_ID });
+	expect(() => updateHousehold(db, h.id, { warnDays: 31 })).toThrow(HouseholdError);
+	expect(() => updateHousehold(db, h.id, { warnDays: -1 })).toThrow(HouseholdError);
+	expect(() => updateHousehold(db, h.id, { warnDays: 1.5 })).toThrow(HouseholdError);
+});
+
+test('updateHousehold throws not_found for an unknown id', () => {
+	expect(() => updateHousehold(db, 'nope', { name: 'X' })).toThrow(HouseholdError);
 });
