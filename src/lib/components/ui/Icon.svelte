@@ -19,6 +19,7 @@
 		| 'moon'
 		| 'monitor'
 		| 'stats'
+		| 'cook'
 		| 'cat-fruit'
 		| 'cat-veg'
 		| 'cat-herb'

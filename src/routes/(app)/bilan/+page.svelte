@@ -26,7 +26,13 @@
 		<StatTile value={s.eaten} label={t.bilan_eaten} tone="eaten" />
 		<StatTile value={s.wasted} label={t.bilan_wasted} tone="wasted" />
 	</div>
-	<p class="streak">{s.streakDays === null ? t.bilan_streak_none : t.bilan_streak(s.streakDays)}</p>
+	<p class="streak">
+		{s.streakDays === null
+			? t.bilan_streak_none
+			: s.streakDays === 0
+				? t.bilan_streak_zero
+				: t.bilan_streak(s.streakDays)}
+	</p>
 {/if}
 
 <style>
