@@ -216,7 +216,18 @@ export const fr: Messages = {
 	notif_reconnect: 'Reconnecter les notifications',
 	notif_working: 'Veuillez patienter…',
 	notif_error: 'Impossible de modifier les notifications. Réessayez.',
-	offline_banner: 'Hors-ligne — lecture seule'
+	offline_banner: 'Hors-ligne — lecture seule',
+
+	// --- Bilan (M9) ---
+	nav_bilan: 'Bilan',
+	bilan_title: 'Bilan anti-gaspi',
+	bilan_month_subtitle: 'Ce mois-ci',
+	bilan_eaten: 'Consommés',
+	bilan_wasted: 'Jetés',
+	bilan_streak: (n: number) => `${n} jour${n > 1 ? 's' : ''} sans gaspillage`,
+	bilan_streak_none: 'Aucun gaspillage enregistré 🎉',
+	bilan_empty_title: 'Pas encore de bilan',
+	bilan_empty_body: 'Marquez des aliments comme mangés ou jetés pour suivre votre anti-gaspi.'
 };
 
 // Messages interface uses widened types so EN can satisfy it with different string values.
@@ -413,4 +424,14 @@ export interface Messages {
 	notif_working: string;
 	notif_error: string;
 	offline_banner: string;
+	// --- Bilan (M9) ---
+	nav_bilan: string;
+	bilan_title: string;
+	bilan_month_subtitle: string;
+	bilan_eaten: string;
+	bilan_wasted: string;
+	bilan_streak: (n: number) => string;
+	bilan_streak_none: string;
+	bilan_empty_title: string;
+	bilan_empty_body: string;
 }
