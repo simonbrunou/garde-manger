@@ -54,6 +54,7 @@ export const en: Messages = {
 	// --- Account extras ---
 	account_households_section: 'My households',
 	account_manage_households: 'Manage households',
+	account_session_section: 'Session',
 	account_logout: 'Log out',
 
 	// --- Households page ---

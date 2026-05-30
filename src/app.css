@@ -210,6 +210,16 @@ button.btn {
 	color: var(--text);
 	text-decoration: none;
 }
+.btn-danger {
+	background: var(--red-tint);
+	color: var(--red-dark);
+	border-color: color-mix(in srgb, var(--red) 35%, transparent);
+}
+.btn-danger:hover {
+	background: color-mix(in srgb, var(--red) 16%, var(--red-tint));
+	color: var(--red-dark);
+	text-decoration: none;
+}
 
 /* ── Surfaces & helpers ────────────────────────────────────────────────── */
 .card {

@@ -52,6 +52,7 @@ export const fr: Messages = {
 	// --- Account extras ---
 	account_households_section: 'Mes foyers',
 	account_manage_households: 'Gérer les foyers',
+	account_session_section: 'Session',
 	account_logout: 'Se déconnecter',
 
 	// --- Households page ---
@@ -275,6 +276,7 @@ export interface Messages {
 	// --- Account extras ---
 	account_households_section: string;
 	account_manage_households: string;
+	account_session_section: string;
 	account_logout: string;
 	// --- Households page ---
 	households_title: string;
