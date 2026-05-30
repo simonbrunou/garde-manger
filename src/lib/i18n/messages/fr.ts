@@ -106,7 +106,6 @@ export const fr: Messages = {
 	home_band_ok: 'Encore bon',
 
 	// --- M2 home screen ---
-	home_empty: 'Votre garde-manger est vide. Ajoutez un premier aliment !',
 	home_add_item: '＋ Ajouter',
 	home_filter_all: 'Tout',
 
@@ -182,6 +181,24 @@ export const fr: Messages = {
 	scan_back: 'Scanner un autre produit',
 	scan_name_required: 'Le nom du produit est requis.',
 	scan_error_generic: 'Une erreur est survenue.',
+
+	// --- Day badge / item detail (M7) ---
+	day_today: 'Auj.',
+	day_overdue: 'En retard',
+	day_unit: 'j',
+	home_subtitle: (n: number, urgent: number) =>
+		`${n} ${n > 1 ? 'aliments' : 'aliment'}${urgent > 0 ? ` · ${urgent} à consommer vite` : ''}`,
+	home_empty_title: 'Garde-manger vide',
+	home_empty_body: 'Ajoutez un premier aliment avec le bouton +.',
+	item_detail_title: "Détail de l'aliment",
+	item_added_on: 'Ajouté le',
+	item_notes_label: 'Notes',
+	item_notes_placeholder: 'Entamé, à finir…',
+	item_save: 'Enregistrer',
+	item_saved: 'Modifications enregistrées.',
+	item_delete: "Supprimer l'aliment",
+	item_delete_confirm: 'Confirmer la suppression',
+	item_back: '← Retour',
 
 	// --- M4 notifications & PWA ---
 	notif_section_title: 'Notifications',
@@ -296,7 +313,6 @@ export interface Messages {
 	home_band_soon: string;
 	home_band_ok: string;
 	// --- M2 home screen ---
-	home_empty: string;
 	home_add_item: string;
 	home_filter_all: string;
 	// --- M2 add item ---
@@ -365,6 +381,22 @@ export interface Messages {
 	scan_back: string;
 	scan_name_required: string;
 	scan_error_generic: string;
+	// --- Day badge / item detail (M7) ---
+	day_today: string;
+	day_overdue: string;
+	day_unit: string;
+	home_subtitle: (n: number, urgent: number) => string;
+	home_empty_title: string;
+	home_empty_body: string;
+	item_detail_title: string;
+	item_added_on: string;
+	item_notes_label: string;
+	item_notes_placeholder: string;
+	item_save: string;
+	item_saved: string;
+	item_delete: string;
+	item_delete_confirm: string;
+	item_back: string;
 	// --- M4 notifications & PWA ---
 	notif_section_title: string;
 	notif_explainer: string;

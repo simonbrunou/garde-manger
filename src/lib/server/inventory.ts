@@ -218,6 +218,72 @@ export function setStatus(
 	return updated ?? undefined;
 }
 
+// ── getItemScoped ─────────────────────────────────────────────────────────────
+
+/** Get an item only if it belongs to the given household. */
+export function getItemScoped(
+	db: DB,
+	{ id, householdId }: { id: string; householdId: string }
+): InventoryItem | undefined {
+	return (
+		db
+			.select()
+			.from(inventoryItems)
+			.where(and(eq(inventoryItems.id, id), eq(inventoryItems.householdId, householdId)))
+			.get() ?? undefined
+	);
+}
+
+// ── updateItem ────────────────────────────────────────────────────────────────
+
+/** Update mutable fields of an item, household-scoped. Returns the updated row or undefined. */
+export function updateItem(
+	db: DB,
+	params: {
+		id: string;
+		householdId: string;
+		location?: 'pantry' | 'fridge' | 'freezer';
+		useByDate?: Date | null;
+		bestByDate?: Date | null;
+		quantity?: number;
+		notes?: string | null;
+	}
+): InventoryItem | undefined {
+	const set: Partial<typeof inventoryItems.$inferInsert> = {};
+	if (params.location !== undefined) set.location = params.location;
+	if (params.useByDate !== undefined) set.useByDate = params.useByDate;
+	if (params.bestByDate !== undefined) set.bestByDate = params.bestByDate;
+	if (params.quantity !== undefined) set.quantity = params.quantity;
+	if (params.notes !== undefined) set.notes = params.notes;
+	if (Object.keys(set).length === 0) return getItemScoped(db, params);
+
+	return (
+		db
+			.update(inventoryItems)
+			.set(set)
+			.where(
+				and(eq(inventoryItems.id, params.id), eq(inventoryItems.householdId, params.householdId))
+			)
+			.returning()
+			.get() ?? undefined
+	);
+}
+
+// ── deleteItem ────────────────────────────────────────────────────────────────
+
+/** Hard-delete an item, household-scoped. Returns true if a row was deleted. */
+export function deleteItem(
+	db: DB,
+	{ id, householdId }: { id: string; householdId: string }
+): boolean {
+	const rows = db
+		.delete(inventoryItems)
+		.where(and(eq(inventoryItems.id, id), eq(inventoryItems.householdId, householdId)))
+		.returning()
+		.all();
+	return rows.length > 0;
+}
+
 // ── bandFor ───────────────────────────────────────────────────────────────────
 
 const MS_PER_DAY = 86_400_000;

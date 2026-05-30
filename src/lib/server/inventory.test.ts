@@ -10,7 +10,10 @@ import {
 	listActive,
 	getItem,
 	setStatus,
-	bandFor
+	bandFor,
+	getItemScoped,
+	updateItem,
+	deleteItem
 } from './inventory';
 
 // ── Test DB setup ─────────────────────────────────────────────────────────────
@@ -613,5 +616,71 @@ describe('bandFor', () => {
 	it('warnDays=0 and today → urgent', () => {
 		const today = new Date('2024-06-15T00:00:00.000Z');
 		expect(bandFor(today, 0, now)).toBe('urgent');
+	});
+});
+
+// ── getItemScoped / updateItem / deleteItem ────────────────────────────────────
+
+describe('getItemScoped / updateItem / deleteItem', () => {
+	let db: DB;
+
+	beforeEach(() => {
+		db = makeDb();
+		seedFixtures(db);
+	});
+
+	it('getItemScoped returns the item only for its household', () => {
+		const item = addCustom(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			customName: 'Lait',
+			location: 'fridge'
+		});
+		expect(getItemScoped(db, { id: item.id, householdId: HOUSEHOLD_ID })?.id).toBe(item.id);
+		expect(getItemScoped(db, { id: item.id, householdId: 'other' })).toBeUndefined();
+	});
+
+	it('updateItem changes fields, household-scoped', () => {
+		const item = addCustom(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			customName: 'Lait',
+			location: 'fridge'
+		});
+		const upd = updateItem(db, {
+			id: item.id,
+			householdId: HOUSEHOLD_ID,
+			quantity: 3,
+			location: 'pantry',
+			notes: 'entamé'
+		});
+		expect(upd?.quantity).toBe(3);
+		expect(upd?.location).toBe('pantry');
+		expect(upd?.notes).toBe('entamé');
+		expect(updateItem(db, { id: item.id, householdId: 'other', quantity: 9 })).toBeUndefined();
+	});
+
+	it('updateItem with no fields returns the scoped item unchanged', () => {
+		const item = addCustom(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			customName: 'Beurre',
+			location: 'fridge'
+		});
+		const result = updateItem(db, { id: item.id, householdId: HOUSEHOLD_ID });
+		expect(result?.id).toBe(item.id);
+		expect(result?.customName).toBe('Beurre');
+	});
+
+	it('deleteItem removes the row, household-scoped', () => {
+		const item = addCustom(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			customName: 'Lait',
+			location: 'fridge'
+		});
+		expect(deleteItem(db, { id: item.id, householdId: 'other' })).toBe(false);
+		expect(deleteItem(db, { id: item.id, householdId: HOUSEHOLD_ID })).toBe(true);
+		expect(getItem(db, item.id)).toBeUndefined();
 	});
 });
