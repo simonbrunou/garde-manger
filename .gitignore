@@ -32,3 +32,8 @@ current-*.png
 
 # Data directory
 data/
+
+# graphify: commit the graph artifacts, but not machine-specific paths or caches
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/cache/
