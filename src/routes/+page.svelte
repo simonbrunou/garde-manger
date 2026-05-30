@@ -36,8 +36,15 @@
 </script>
 
 <svelte:head>
-	<title>Garde-Manger</title>
+	<title>Garde-Manger — {t.landing_hero_title}</title>
 	<meta name="description" content={t.landing_meta_description} />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Garde-Manger" />
+	<meta property="og:title" content="Garde-Manger — {t.landing_hero_title}" />
+	<meta property="og:description" content={t.landing_meta_description} />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Garde-Manger — {t.landing_hero_title}" />
+	<meta name="twitter:description" content={t.landing_meta_description} />
 </svelte:head>
 
 <main class="landing">
