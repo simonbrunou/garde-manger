@@ -13,6 +13,9 @@
 	<a href="/add" class="fab" aria-label={t.nav_add}>
 		<Icon name="plus" size={26} />
 	</a>
+	<a href="/bilan" class="tab" aria-current={path.startsWith('/bilan') ? 'page' : undefined}>
+		<Icon name="stats" size={22} /><span>{t.nav_bilan}</span>
+	</a>
 	<a href="/account" class="tab" aria-current={path.startsWith('/account') ? 'page' : undefined}>
 		<Icon name="user" size={22} /><span>{t.nav_settings}</span>
 	</a>
