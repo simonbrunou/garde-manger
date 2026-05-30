@@ -28,11 +28,14 @@ function fixActiveHousehold(cookies: import('@sveltejs/kit').Cookies, userId: st
 	else cookies.delete(HOUSEHOLD_COOKIE, { path: '/' });
 }
 
+// Returns an ActionFailure to be `return`ed by the caller when the user is not an
+// admin, or null when authorized. (SvelteKit forbids `throw fail()` — it must be returned.)
 function ensureAdmin(id: string, userId: string, t: ReturnType<typeof m>) {
 	try {
 		requireMembership(db, id, userId, 'admin');
+		return null;
 	} catch (e) {
-		if (e instanceof MembershipError) throw fail(403, { message: t.manage_forbidden });
+		if (e instanceof MembershipError) return fail(403, { message: t.manage_forbidden });
 		throw e;
 	}
 }
@@ -71,7 +74,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 export const actions: Actions = {
 	updateSettings: async ({ params, locals, request }) => {
 		const t = m(locals.locale);
-		ensureAdmin(params.id, locals.user!.id, t);
+		const denied = ensureAdmin(params.id, locals.user!.id, t);
+		if (denied) return denied;
 		const data = await request.formData();
 		const name = (data.get('name') as string | null) ?? '';
 		const warnDays = Number((data.get('warnDays') as string | null) ?? '');
@@ -86,7 +90,8 @@ export const actions: Actions = {
 
 	setRole: async ({ params, locals, request }) => {
 		const t = m(locals.locale);
-		ensureAdmin(params.id, locals.user!.id, t);
+		const denied = ensureAdmin(params.id, locals.user!.id, t);
+		if (denied) return denied;
 		const data = await request.formData();
 		const userId = (data.get('userId') as string | null) ?? '';
 		const role: 'admin' | 'member' = data.get('role') === 'admin' ? 'admin' : 'member';
@@ -105,7 +110,8 @@ export const actions: Actions = {
 
 	removeMember: async ({ params, locals, request, cookies }) => {
 		const t = m(locals.locale);
-		ensureAdmin(params.id, locals.user!.id, t);
+		const denied = ensureAdmin(params.id, locals.user!.id, t);
+		if (denied) return denied;
 		const data = await request.formData();
 		const userId = (data.get('userId') as string | null) ?? '';
 		try {
@@ -119,7 +125,7 @@ export const actions: Actions = {
 			throw e;
 		}
 		if (userId === locals.user!.id) {
-			fixActiveHousehold(cookies, locals.user!.id);
+			if (cookies.get(HOUSEHOLD_COOKIE) === params.id) fixActiveHousehold(cookies, locals.user!.id);
 			redirect(303, '/households');
 		}
 		redirect(303, `/households/${params.id}`);
@@ -127,7 +133,8 @@ export const actions: Actions = {
 
 	revokeInvitation: async ({ params, locals, request }) => {
 		const t = m(locals.locale);
-		ensureAdmin(params.id, locals.user!.id, t);
+		const denied = ensureAdmin(params.id, locals.user!.id, t);
+		if (denied) return denied;
 		const data = await request.formData();
 		const id = (data.get('id') as string | null) ?? '';
 		try {
@@ -142,7 +149,8 @@ export const actions: Actions = {
 
 	deleteHousehold: async ({ params, locals, request, cookies }) => {
 		const t = m(locals.locale);
-		ensureAdmin(params.id, locals.user!.id, t);
+		const denied = ensureAdmin(params.id, locals.user!.id, t);
+		if (denied) return denied;
 		const household = db.select().from(households).where(eq(households.id, params.id)).get();
 		if (!household) error(404, 'Foyer introuvable');
 		const data = await request.formData();
