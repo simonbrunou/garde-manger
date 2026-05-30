@@ -61,22 +61,4 @@ describe('m()', () => {
 	test('returns en messages for "en"', () => {
 		expect(m('en').nav_home).toBe('Pantry');
 	});
-
-	test('items_count interpolation fr', () => {
-		expect(m('fr').items_count(1)).toBe('1 aliment');
-		expect(m('fr').items_count(3)).toBe('3 aliments');
-	});
-
-	test('items_count interpolation en', () => {
-		expect(m('en').items_count(1)).toBe('1 item');
-		expect(m('en').items_count(2)).toBe('2 items');
-	});
-
-	test('home_greeting fr', () => {
-		expect(m('fr').home_greeting('Alice')).toBe('Bonjour, Alice 👋');
-	});
-
-	test('home_greeting en', () => {
-		expect(m('en').home_greeting('Alice')).toBe('Hello, Alice 👋');
-	});
 });

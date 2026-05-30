@@ -96,11 +96,8 @@ export const en: Messages = {
 	join_error_generic: 'An error occurred with this invitation link.',
 
 	// --- Home page ---
-	home_greeting: (name: string) => `Hello, ${name} 👋`,
-	home_active_household: 'Active household:',
 	home_no_household: 'You do not have a household yet.',
 	home_create_or_join: 'Create or join a household →',
-	home_inventory_placeholder: '🧺 Your inventory is coming soon (M2)',
 
 	// --- M2 inventory bands ---
 	home_band_urgent: 'Consume soon',
@@ -108,7 +105,6 @@ export const en: Messages = {
 	home_band_ok: 'Still good',
 
 	// --- M2 home screen ---
-	home_add_item: '＋ Add',
 	home_filter_all: 'All',
 
 	// --- M2 add item ---
@@ -137,7 +133,6 @@ export const en: Messages = {
 	add_custom_name_label: 'Name',
 	add_custom_name_placeholder: 'e.g. Homemade jam…',
 	add_custom_submit: 'Add',
-	add_cancel: 'Cancel',
 	add_change_food: '← Change food',
 	add_food_not_found: 'Food not found.',
 	add_error_generic: 'An error occurred.',
@@ -150,9 +145,6 @@ export const en: Messages = {
 	dlc_label: 'Use by',
 	ddm_label: 'Best before',
 
-	// --- M2 item count ---
-	items_count: (n: number) => `${n} ${n === 1 ? 'item' : 'items'}`,
-
 	// --- M3 scan ---
 	scan_title: 'Scan a product',
 	scan_instructions: 'Point the camera at the product barcode.',
@@ -161,7 +153,6 @@ export const en: Messages = {
 	scan_detected: 'Barcode detected, opening…',
 	scan_camera_denied: 'Camera denied or unavailable. Enter the barcode below.',
 	scan_camera_unsupported: 'The camera is not available here. Enter the barcode below.',
-	scan_enable_camera: 'Enable the camera',
 	scan_manual_title: 'Enter the barcode',
 	scan_manual_label: 'Barcode (EAN / UPC)',
 	scan_manual_placeholder: 'e.g. 3017620422003',
@@ -181,7 +172,6 @@ export const en: Messages = {
 	scan_add_submit: 'Add to the pantry',
 	scan_attribution: 'Data © Open Food Facts (ODbL) · photo CC-BY-SA 3.0',
 	scan_back: 'Scan another product',
-	scan_name_required: 'The product name is required.',
 	scan_error_generic: 'Something went wrong.',
 
 	// --- Day badge / item detail (M7) ---
@@ -197,7 +187,6 @@ export const en: Messages = {
 	item_notes_label: 'Notes',
 	item_notes_placeholder: 'Opened, finish soon…',
 	item_save: 'Save',
-	item_saved: 'Changes saved.',
 	item_delete: 'Delete item',
 	item_delete_confirm: 'Confirm deletion',
 	item_back: '← Back',

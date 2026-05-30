@@ -94,11 +94,8 @@ export const fr: Messages = {
 	join_error_generic: "Une erreur est survenue avec ce lien d'invitation.",
 
 	// --- Home page ---
-	home_greeting: (name: string) => `Bonjour, ${name} 👋`,
-	home_active_household: 'Foyer actif :',
 	home_no_household: "Vous n'avez pas encore de foyer.",
 	home_create_or_join: 'Créer ou rejoindre un foyer →',
-	home_inventory_placeholder: '🧺 Ton inventaire arrive bientôt (M2)',
 
 	// --- M2 inventory bands ---
 	home_band_urgent: 'À consommer vite',
@@ -106,7 +103,6 @@ export const fr: Messages = {
 	home_band_ok: 'Encore bon',
 
 	// --- M2 home screen ---
-	home_add_item: '＋ Ajouter',
 	home_filter_all: 'Tout',
 
 	// --- M2 add item ---
@@ -135,7 +131,6 @@ export const fr: Messages = {
 	add_custom_name_label: 'Nom',
 	add_custom_name_placeholder: 'ex. Confiture maison…',
 	add_custom_submit: 'Ajouter',
-	add_cancel: 'Annuler',
 	add_change_food: "← Changer d'aliment",
 	add_food_not_found: 'Aliment introuvable.',
 	add_error_generic: 'Une erreur est survenue.',
@@ -148,9 +143,6 @@ export const fr: Messages = {
 	dlc_label: 'DLC',
 	ddm_label: 'DDM',
 
-	// --- M2 item count ---
-	items_count: (n: number) => `${n} ${n > 1 ? 'aliments' : 'aliment'}`,
-
 	// --- M3 scan ---
 	scan_title: 'Scanner un produit',
 	scan_instructions: 'Visez le code-barres du produit avec la caméra.',
@@ -160,7 +152,6 @@ export const fr: Messages = {
 	scan_camera_denied: 'Caméra refusée ou indisponible. Saisissez le code-barres ci-dessous.',
 	scan_camera_unsupported:
 		"La caméra n'est pas disponible ici. Saisissez le code-barres ci-dessous.",
-	scan_enable_camera: 'Activer la caméra',
 	scan_manual_title: 'Saisir le code-barres',
 	scan_manual_label: 'Code-barres (EAN / UPC)',
 	scan_manual_placeholder: 'ex. 3017620422003',
@@ -180,7 +171,6 @@ export const fr: Messages = {
 	scan_add_submit: 'Ajouter au garde-manger',
 	scan_attribution: 'Données © Open Food Facts (ODbL) · photo CC-BY-SA 3.0',
 	scan_back: 'Scanner un autre produit',
-	scan_name_required: 'Le nom du produit est requis.',
 	scan_error_generic: 'Une erreur est survenue.',
 
 	// --- Day badge / item detail (M7) ---
@@ -196,7 +186,6 @@ export const fr: Messages = {
 	item_notes_label: 'Notes',
 	item_notes_placeholder: 'Entamé, à finir…',
 	item_save: 'Enregistrer',
-	item_saved: 'Modifications enregistrées.',
 	item_delete: "Supprimer l'aliment",
 	item_delete_confirm: 'Confirmer la suppression',
 	item_back: '← Retour',
@@ -323,17 +312,13 @@ export interface Messages {
 	join_error_expired: string;
 	join_error_generic: string;
 	// --- Home page ---
-	home_greeting: (name: string) => string;
-	home_active_household: string;
 	home_no_household: string;
 	home_create_or_join: string;
-	home_inventory_placeholder: string;
 	// --- M2 inventory bands ---
 	home_band_urgent: string;
 	home_band_soon: string;
 	home_band_ok: string;
 	// --- M2 home screen ---
-	home_add_item: string;
 	home_filter_all: string;
 	// --- M2 add item ---
 	add_title: string;
@@ -361,7 +346,6 @@ export interface Messages {
 	add_custom_name_label: string;
 	add_custom_name_placeholder: string;
 	add_custom_submit: string;
-	add_cancel: string;
 	add_change_food: string;
 	add_food_not_found: string;
 	add_error_generic: string;
@@ -371,8 +355,6 @@ export interface Messages {
 	// --- M2 date labels ---
 	dlc_label: string;
 	ddm_label: string;
-	// --- M2 item count ---
-	items_count: (n: number) => string;
 	// --- M3 scan ---
 	scan_title: string;
 	scan_instructions: string;
@@ -381,7 +363,6 @@ export interface Messages {
 	scan_detected: string;
 	scan_camera_denied: string;
 	scan_camera_unsupported: string;
-	scan_enable_camera: string;
 	scan_manual_title: string;
 	scan_manual_label: string;
 	scan_manual_placeholder: string;
@@ -400,7 +381,6 @@ export interface Messages {
 	scan_add_submit: string;
 	scan_attribution: string;
 	scan_back: string;
-	scan_name_required: string;
 	scan_error_generic: string;
 	// --- Day badge / item detail (M7) ---
 	day_today: string;
@@ -414,7 +394,6 @@ export interface Messages {
 	item_notes_label: string;
 	item_notes_placeholder: string;
 	item_save: string;
-	item_saved: string;
 	item_delete: string;
 	item_delete_confirm: string;
 	item_back: string;
