@@ -16,7 +16,7 @@
 	<ul class="household-list">
 		{#each data.households as h (h.id)}
 			<li>
-				<a href="/households/{h.id}/members" class="household-name">{h.name}</a>
+				<a href="/households/{h.id}" class="household-name">{h.name}</a>
 				<span class="role-badge">{h.role}</span>
 			</li>
 		{/each}

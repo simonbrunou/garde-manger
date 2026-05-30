@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ params, locals, cookies }) => {
 			secure: !dev
 		});
 
-		redirect(303, `/households/${membership.householdId}/members`);
+		redirect(303, `/households/${membership.householdId}`);
 	} catch (e) {
 		if (e instanceof InvitationError) {
 			return {

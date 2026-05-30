@@ -33,7 +33,7 @@
 	</section>
 {/if}
 
-<p><a href="/households/{data.householdId}/members">{t.invite_back}</a></p>
+<p><a href="/households/{data.householdId}">{t.invite_back}</a></p>
 
 <style>
 	.invite-form {
