@@ -214,7 +214,7 @@ export const actions: Actions = {
 			quantity: quantity ? parseInt(quantity, 10) : 1
 		});
 
-		redirect(303, '/');
+		redirect(303, '/garde-manger');
 	},
 
 	addCustom: async ({ request, locals, cookies }) => {
@@ -268,6 +268,6 @@ export const actions: Actions = {
 			quantity: quantity ? parseInt(quantity, 10) : 1
 		});
 
-		redirect(303, '/');
+		redirect(303, '/garde-manger');
 	}
 };
