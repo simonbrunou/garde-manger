@@ -21,6 +21,7 @@ export interface ItemRow {
 	quantity: number;
 	barcode: string | null;
 	imagePath: string | null; // relative path; null when none
+	category: string | null;
 }
 
 interface Groups {
@@ -88,10 +89,12 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 		// Resolve display name + image (packaged items resolve via the products cache)
 		let name = '—';
 		let imagePath: string | null = null;
+		let category: string | null = null;
 		if (item.foodId) {
 			const food = foodMap.get(item.foodId);
 			if (food) {
 				name = locale === 'fr' ? food.nameFr : food.nameEn;
+				category = food.category ?? null;
 			}
 		} else if (item.kind === 'packaged' && item.barcode && productMap.has(item.barcode)) {
 			const product = productMap.get(item.barcode)!;
@@ -117,7 +120,8 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 			band,
 			quantity: item.quantity,
 			barcode: item.barcode,
-			imagePath
+			imagePath,
+			category
 		};
 
 		groups[band].push(row);
@@ -126,13 +130,18 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 	// Deep-link target from the daily push: focus on items approaching their date.
 	const expiringOnly = url.searchParams.get('filter') === 'expiring';
 
+	const urgentCount = groups.urgent.length;
+	const totalCount = groups.urgent.length + groups.soon.length + groups.ok.length;
+
 	return {
 		noHousehold: false as const,
 		groups,
 		activeHouseholdName: activeHousehold.name,
 		locationFilter: location ?? null,
 		expiringOnly,
-		locale
+		locale,
+		urgentCount,
+		totalCount
 	};
 };
 
