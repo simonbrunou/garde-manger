@@ -2,9 +2,21 @@ import { test, expect, beforeEach, afterEach } from 'bun:test';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { eq, and } from 'drizzle-orm';
 import { createDb, runMigrations, type DB } from './db/client';
-import { users, memberships } from './db/schema';
-import { createHousehold, listForUser, requireMembership, MembershipError } from './households';
+import { users, memberships, households, invitations } from './db/schema';
+import {
+	createHousehold,
+	listForUser,
+	requireMembership,
+	MembershipError,
+	updateHousehold,
+	deleteHousehold,
+	setMemberRole,
+	removeMember,
+	countAdmins,
+	HouseholdError
+} from './households';
 import type { Database } from 'bun:sqlite';
 
 let dir: string;
@@ -137,4 +149,148 @@ test('requireMembership does NOT throw when admin required and user IS admin', (
 	const household = createHousehold(db, { name: 'Admins Only', ownerId: OWNER_ID });
 	const m = requireMembership(db, household.id, OWNER_ID, 'admin');
 	expect(m.role).toBe('admin');
+});
+
+function addMember(householdId: string, userId: string, role: 'admin' | 'member') {
+	db.insert(memberships)
+		.values({ id: crypto.randomUUID(), householdId, userId, role, joinedAt: new Date() })
+		.run();
+}
+
+test('updateHousehold changes name and warnDays', () => {
+	const h = createHousehold(db, { name: 'Old', ownerId: OWNER_ID });
+	const updated = updateHousehold(db, h.id, { name: 'New', warnDays: 7 });
+	expect(updated.name).toBe('New');
+	expect(updated.warnDays).toBe(7);
+	const row = db.select().from(households).where(eq(households.id, h.id)).get();
+	expect(row?.name).toBe('New');
+	expect(row?.warnDays).toBe(7);
+});
+
+test('updateHousehold trims the name', () => {
+	const h = createHousehold(db, { name: 'X', ownerId: OWNER_ID });
+	expect(updateHousehold(db, h.id, { name: '  Trimmed  ' }).name).toBe('Trimmed');
+});
+
+test('updateHousehold rejects empty and oversized names', () => {
+	const h = createHousehold(db, { name: 'X', ownerId: OWNER_ID });
+	expect(() => updateHousehold(db, h.id, { name: '   ' })).toThrow(HouseholdError);
+	expect(() => updateHousehold(db, h.id, { name: 'a'.repeat(81) })).toThrow(HouseholdError);
+	// Accept-side boundary: exactly 80 chars is allowed.
+	expect(updateHousehold(db, h.id, { name: 'a'.repeat(80) }).name.length).toBe(80);
+});
+
+test('updateHousehold rejects out-of-range warnDays', () => {
+	const h = createHousehold(db, { name: 'X', ownerId: OWNER_ID });
+	expect(() => updateHousehold(db, h.id, { warnDays: 31 })).toThrow(HouseholdError);
+	expect(() => updateHousehold(db, h.id, { warnDays: -1 })).toThrow(HouseholdError);
+	expect(() => updateHousehold(db, h.id, { warnDays: 1.5 })).toThrow(HouseholdError);
+	// Accept-side boundaries: 0 and 30 are allowed.
+	expect(updateHousehold(db, h.id, { warnDays: 0 }).warnDays).toBe(0);
+	expect(updateHousehold(db, h.id, { warnDays: 30 }).warnDays).toBe(30);
+});
+
+test('updateHousehold throws not_found for an unknown id', () => {
+	expect(() => updateHousehold(db, 'nope', { name: 'X' })).toThrow(HouseholdError);
+});
+
+test('deleteHousehold removes the household and cascades memberships + invitations', () => {
+	const h = createHousehold(db, { name: 'Doomed', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'member');
+	db.insert(invitations)
+		.values({
+			id: crypto.randomUUID(),
+			householdId: h.id,
+			tokenHash: Buffer.from('x'),
+			role: 'member',
+			createdBy: OWNER_ID,
+			expiresAt: new Date(Date.now() + 100000),
+			usedAt: null,
+			createdAt: new Date()
+		})
+		.run();
+
+	deleteHousehold(db, h.id);
+
+	expect(db.select().from(households).where(eq(households.id, h.id)).get()).toBeUndefined();
+	expect(db.select().from(memberships).where(eq(memberships.householdId, h.id)).all().length).toBe(
+		0
+	);
+	expect(db.select().from(invitations).where(eq(invitations.householdId, h.id)).all().length).toBe(
+		0
+	);
+});
+
+test('deleteHousehold throws not_found for an unknown id', () => {
+	expect(() => deleteHousehold(db, 'nope')).toThrow(HouseholdError);
+});
+
+test('setMemberRole promotes a member to admin', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'member');
+	setMemberRole(db, h.id, MEMBER_ID, 'admin');
+	const m = db
+		.select()
+		.from(memberships)
+		.where(and(eq(memberships.householdId, h.id), eq(memberships.userId, MEMBER_ID)))
+		.get();
+	expect(m?.role).toBe('admin');
+});
+
+test('setMemberRole blocks demoting the last admin', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	expect(() => setMemberRole(db, h.id, OWNER_ID, 'member')).toThrow(HouseholdError);
+});
+
+test('setMemberRole allows demoting one of several admins', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'admin');
+	setMemberRole(db, h.id, OWNER_ID, 'member');
+	const m = db
+		.select()
+		.from(memberships)
+		.where(and(eq(memberships.householdId, h.id), eq(memberships.userId, OWNER_ID)))
+		.get();
+	expect(m?.role).toBe('member');
+});
+
+test('setMemberRole throws not_found for a non-member target', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	expect(() => setMemberRole(db, h.id, MEMBER_ID, 'admin')).toThrow(HouseholdError);
+});
+
+test('removeMember removes a regular member', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'member');
+	removeMember(db, h.id, MEMBER_ID);
+	const m = db
+		.select()
+		.from(memberships)
+		.where(and(eq(memberships.householdId, h.id), eq(memberships.userId, MEMBER_ID)))
+		.get();
+	expect(m).toBeUndefined();
+});
+
+test('removeMember blocks removing the last admin', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	expect(() => removeMember(db, h.id, OWNER_ID)).toThrow(HouseholdError);
+});
+
+test('removeMember lets an admin leave when another admin remains', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	addMember(h.id, MEMBER_ID, 'admin');
+	removeMember(db, h.id, OWNER_ID);
+	expect(
+		db
+			.select()
+			.from(memberships)
+			.where(and(eq(memberships.householdId, h.id), eq(memberships.userId, OWNER_ID)))
+			.get()
+	).toBeUndefined();
+	expect(countAdmins(db, h.id)).toBe(1);
+});
+
+test('removeMember throws not_found for a non-member target', () => {
+	const h = createHousehold(db, { name: 'H', ownerId: OWNER_ID });
+	expect(() => removeMember(db, h.id, MEMBER_ID)).toThrow(HouseholdError);
 });

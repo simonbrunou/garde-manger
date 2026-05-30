@@ -107,3 +107,23 @@ export function acceptInvitation(db: DB, { token, userId }: { token: string; use
 		return membership;
 	});
 }
+
+export function listPendingInvitations(db: DB, householdId: string, now: Date) {
+	return db
+		.select()
+		.from(invitations)
+		.where(eq(invitations.householdId, householdId))
+		.all()
+		.filter((inv) => inv.usedAt === null && inv.expiresAt.getTime() > now.getTime())
+		.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+}
+
+export function revokeInvitation(db: DB, invitationId: string, householdId: string) {
+	const inv = db
+		.select()
+		.from(invitations)
+		.where(and(eq(invitations.id, invitationId), eq(invitations.householdId, householdId)))
+		.get();
+	if (!inv || inv.usedAt !== null) throw new InvitationError('not_found');
+	db.delete(invitations).where(eq(invitations.id, invitationId)).run();
+}

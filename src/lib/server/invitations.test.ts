@@ -3,9 +3,16 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash, randomBytes } from 'node:crypto';
+import { eq } from 'drizzle-orm';
 import { createDb, runMigrations, type DB } from './db/client';
 import { users, invitations, memberships } from './db/schema';
-import { createInvitation, acceptInvitation, InvitationError } from './invitations';
+import {
+	createInvitation,
+	acceptInvitation,
+	InvitationError,
+	listPendingInvitations,
+	revokeInvitation
+} from './invitations';
 import { createHousehold } from './households';
 import type { Database } from 'bun:sqlite';
 
@@ -219,4 +226,62 @@ test('acceptInvitation is idempotent when user is already a member — no duplic
 	// Invite must be marked used.
 	const inviteRows = db.select().from(invitations).all();
 	expect(inviteRows[0].usedAt).not.toBeNull();
+});
+
+test('listPendingInvitations returns only unused, unexpired invites, newest first', () => {
+	const pendingNew = createInvitation(db, { householdId, role: 'member', createdBy: OWNER_ID });
+
+	db.insert(invitations)
+		.values({
+			id: 'inv-expired',
+			householdId,
+			tokenHash: Buffer.from('expired'),
+			role: 'member',
+			createdBy: OWNER_ID,
+			expiresAt: new Date(Date.now() - 1000),
+			usedAt: null,
+			createdAt: new Date(Date.now() - 5000)
+		})
+		.run();
+
+	db.insert(invitations)
+		.values({
+			id: 'inv-used',
+			householdId,
+			tokenHash: Buffer.from('used'),
+			role: 'member',
+			createdBy: OWNER_ID,
+			expiresAt: new Date(Date.now() + 100000),
+			usedAt: new Date(),
+			createdAt: new Date(Date.now() - 4000)
+		})
+		.run();
+
+	const pending = listPendingInvitations(db, householdId, new Date());
+	expect(pending.length).toBe(1);
+	expect(pending[0].id).toBe(pendingNew.invitation.id);
+});
+
+test('listPendingInvitations excludes invites from other households', () => {
+	const other = createHousehold(db, { name: 'Other', ownerId: INVITEE_ID });
+	createInvitation(db, { householdId: other.id, role: 'member', createdBy: INVITEE_ID });
+	expect(listPendingInvitations(db, householdId, new Date()).length).toBe(0);
+});
+
+test('revokeInvitation deletes a pending invite scoped to its household', () => {
+	const { invitation } = createInvitation(db, { householdId, role: 'member', createdBy: OWNER_ID });
+	revokeInvitation(db, invitation.id, householdId);
+	expect(
+		db.select().from(invitations).where(eq(invitations.id, invitation.id)).get()
+	).toBeUndefined();
+});
+
+test('revokeInvitation refuses an invite from a different household', () => {
+	const other = createHousehold(db, { name: 'Other', ownerId: INVITEE_ID });
+	const { invitation } = createInvitation(db, {
+		householdId: other.id,
+		role: 'member',
+		createdBy: INVITEE_ID
+	});
+	expect(() => revokeInvitation(db, invitation.id, householdId)).toThrow(InvitationError);
 });
