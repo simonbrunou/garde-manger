@@ -78,6 +78,9 @@ export function setMemberRole(
 		.get();
 	if (!membership) throw new HouseholdError('not_found');
 
+	// Last-admin guard. This read-then-write is atomic on our runtime: bun:sqlite runs
+	// synchronously and there is no `await` between the count and the update, so two
+	// concurrent requests cannot interleave under the single-connection model.
 	if (membership.role === 'admin' && role === 'member' && countAdmins(db, householdId) <= 1) {
 		throw new HouseholdError('last_admin');
 	}
@@ -96,6 +99,8 @@ export function removeMember(db: DB, householdId: string, targetUserId: string) 
 		.get();
 	if (!membership) throw new HouseholdError('not_found');
 
+	// Last-admin guard — atomic on our runtime (see setMemberRole): synchronous bun:sqlite,
+	// no `await` between the count and the delete.
 	if (membership.role === 'admin' && countAdmins(db, householdId) <= 1) {
 		throw new HouseholdError('last_admin');
 	}

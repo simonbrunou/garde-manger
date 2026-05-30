@@ -176,6 +176,8 @@ test('updateHousehold rejects empty and oversized names', () => {
 	const h = createHousehold(db, { name: 'X', ownerId: OWNER_ID });
 	expect(() => updateHousehold(db, h.id, { name: '   ' })).toThrow(HouseholdError);
 	expect(() => updateHousehold(db, h.id, { name: 'a'.repeat(81) })).toThrow(HouseholdError);
+	// Accept-side boundary: exactly 80 chars is allowed.
+	expect(updateHousehold(db, h.id, { name: 'a'.repeat(80) }).name.length).toBe(80);
 });
 
 test('updateHousehold rejects out-of-range warnDays', () => {
@@ -183,6 +185,9 @@ test('updateHousehold rejects out-of-range warnDays', () => {
 	expect(() => updateHousehold(db, h.id, { warnDays: 31 })).toThrow(HouseholdError);
 	expect(() => updateHousehold(db, h.id, { warnDays: -1 })).toThrow(HouseholdError);
 	expect(() => updateHousehold(db, h.id, { warnDays: 1.5 })).toThrow(HouseholdError);
+	// Accept-side boundaries: 0 and 30 are allowed.
+	expect(updateHousehold(db, h.id, { warnDays: 0 }).warnDays).toBe(0);
+	expect(updateHousehold(db, h.id, { warnDays: 30 }).warnDays).toBe(30);
 });
 
 test('updateHousehold throws not_found for an unknown id', () => {
