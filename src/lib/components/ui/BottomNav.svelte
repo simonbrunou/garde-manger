@@ -10,6 +10,9 @@
 	<a href="/" class="tab" aria-current={path === '/' ? 'page' : undefined}>
 		<Icon name="home" size={22} /><span>{t.nav_home}</span>
 	</a>
+	<a href="/cuisiner" class="tab" aria-current={path.startsWith('/cuisiner') ? 'page' : undefined}>
+		<Icon name="cook" size={22} /><span>{t.nav_cuisiner}</span>
+	</a>
 	<a href="/add" class="fab" aria-label={t.nav_add}>
 		<Icon name="plus" size={26} />
 	</a>
