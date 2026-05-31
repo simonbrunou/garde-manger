@@ -10,6 +10,7 @@ export const fr: Messages = {
 	nav_settings: 'Réglages',
 	nav_household_switcher: 'Changer de foyer',
 	nav_primary: 'Navigation principale',
+	action_cancel: 'Annuler',
 
 	// --- Auth: Login ---
 	auth_login_title: 'Se connecter',
@@ -283,6 +284,7 @@ export interface Messages {
 	nav_settings: string;
 	nav_household_switcher: string;
 	nav_primary: string;
+	action_cancel: string;
 	// --- Auth: Login ---
 	auth_login_title: string;
 	auth_login_submit: string;

@@ -12,6 +12,7 @@ export const en: Messages = {
 	nav_settings: 'Settings',
 	nav_household_switcher: 'Switch household',
 	nav_primary: 'Main navigation',
+	action_cancel: 'Cancel',
 
 	// --- Auth: Login ---
 	auth_login_title: 'Log in',
