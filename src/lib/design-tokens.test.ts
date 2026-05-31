@@ -18,7 +18,13 @@ describe('HIG design tokens', () => {
 		'--text-caption-1',
 		'--text-caption-2'
 	];
-	const semantic = ['--text-tertiary', '--separator', '--tint', '--fill-secondary', '--fill-tertiary'];
+	const semantic = [
+		'--text-tertiary',
+		'--separator',
+		'--tint',
+		'--fill-secondary',
+		'--fill-tertiary'
+	];
 	const systemic = [
 		'--material-bar',
 		'--material-overlay',
@@ -37,7 +43,15 @@ describe('HIG design tokens', () => {
 		});
 	}
 
-	const utilities = ['.t-large-title', '.t-title-2', '.t-headline', '.t-body', '.t-subhead', '.t-footnote', '.t-caption'];
+	const utilities = [
+		'.t-large-title',
+		'.t-title-2',
+		'.t-headline',
+		'.t-body',
+		'.t-subhead',
+		'.t-footnote',
+		'.t-caption'
+	];
 	for (const cls of utilities) {
 		it(`defines utility class ${cls}`, () => {
 			expect(css).toContain(cls);
