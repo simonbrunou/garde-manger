@@ -33,12 +33,4 @@
 	.full {
 		width: 100%;
 	}
-	.btn-danger {
-		background: var(--red);
-		color: var(--on-accent);
-	}
-	.btn-danger:hover {
-		background: var(--red-dark);
-		text-decoration: none;
-	}
 </style>

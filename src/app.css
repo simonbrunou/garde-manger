@@ -22,19 +22,25 @@
 	--text: light-dark(#322c22, #f1eadd);
 	--text-muted: light-dark(#706552, #a89e8b);
 
-	/* Accents (produce palette, brightened for dark) */
+	/* Accents (produce palette, brightened for dark).
+	   --green/--red stay the bright BRAND accent (borders, focus ring, icon
+	   strokes, tints — these only need 3:1). Filled surfaces that carry text
+	   use the darker --green-strong/--red-strong so on-accent text clears 4.5:1. */
 	--green: light-dark(#2f9e44, #43b15a);
-	--green-dark: light-dark(#2b8a3e, #54b366);
+	--green-dark: light-dark(#1f7a38, #54b366);
+	--green-strong: light-dark(#15803d, #43b15a);
 	--green-tint: light-dark(#e9f6ec, rgba(84, 179, 102, 0.15));
 	--amber: light-dark(#e08a1e, #e8b257);
-	--amber-dark: light-dark(#c2740f, #f0c070);
+	--amber-dark: light-dark(#8a5300, #f0c070);
 	--amber-tint: light-dark(#fdf1de, rgba(224, 162, 58, 0.16));
 	--red: light-dark(#d6492f, #ef6a4f);
 	--red-dark: light-dark(#b93c25, #ff8064);
+	--red-strong: light-dark(#b42318, #ef6a4f);
 	--red-tint: light-dark(#fbeae6, rgba(239, 106, 79, 0.16));
 
-	/* Text drawn on a filled accent (green/red) button or badge */
-	--on-accent: #ffffff;
+	/* Text drawn on a filled accent (green/red) button or badge.
+	   Light = white; dark = near-black ink, because dark-theme fills are bright. */
+	--on-accent: light-dark(#ffffff, #082610);
 
 	/* Shape & depth */
 	--radius: 16px;
@@ -151,10 +157,20 @@ a:focus-visible {
 select {
 	-webkit-appearance: none;
 	appearance: none;
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a7e6b' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+	/* Chevron fill matches --text-muted per theme (data-URI SVG can't read a var).
+	   Light = #706552, dark = #a89e8b. Default below is light; overrides follow. */
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23706552' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
 	background-repeat: no-repeat;
 	background-position: right 0.6rem center;
 	padding-right: 1.8rem;
+}
+:root[data-theme='dark'] select {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a89e8b' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) select {
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a89e8b' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+	}
 }
 
 /* ── Buttons ───────────────────────────────────────────────────────────── */
@@ -184,8 +200,8 @@ button.btn {
 	transform: translateY(1px);
 }
 .btn-primary {
-	background: var(--green);
-	color: #fff;
+	background: var(--green-strong);
+	color: var(--on-accent);
 }
 .btn-primary:hover {
 	background: var(--green-dark);
@@ -237,8 +253,22 @@ button.btn {
 .error {
 	color: var(--red-dark);
 	background: var(--red-tint);
-	border: 1px solid #f0b7ac;
+	border: 1px solid color-mix(in srgb, var(--red) 35%, transparent);
 	border-radius: var(--radius-sm);
 	padding: 0.6rem 0.8rem;
 	margin: 0 0 0.9rem;
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────────
+   Respect the OS "reduce motion" setting: collapse transitions/animations to
+   near-instant and disable smooth scrolling, without removing final states. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
 }

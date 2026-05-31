@@ -7,6 +7,10 @@
 	const t = $derived(m(data.locale));
 </script>
 
+<svelte:head>
+	<title>{t.auth_login_title} · Garde-Manger</title>
+</svelte:head>
+
 <main class="auth-page">
 	<div class="auth-card card">
 		<h1 class="auth-title">🥕 {t.auth_login_title}</h1>

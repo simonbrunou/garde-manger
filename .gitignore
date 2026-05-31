@@ -27,6 +27,8 @@ vite.config.ts.timestamp-*
 # Playwright MCP + UI-audit screenshots (scratch)
 .playwright-mcp/
 current-*.png
+audit-shots/
+audit-shots-before/
 # SQLite
 *.db
 

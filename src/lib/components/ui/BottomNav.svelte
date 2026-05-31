@@ -62,7 +62,7 @@
 		border-radius: 50%;
 		display: grid;
 		place-items: center;
-		background: var(--green);
+		background: var(--green-strong);
 		color: var(--on-accent);
 		border: 4px solid var(--bg);
 		box-shadow: 0 8px 18px color-mix(in srgb, var(--green) 38%, transparent);
