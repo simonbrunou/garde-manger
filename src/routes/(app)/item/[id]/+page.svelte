@@ -11,8 +11,6 @@
 
 <svelte:head><title>{t.item_detail_title}</title></svelte:head>
 
-<a class="back" href="/garde-manger">{t.item_back}</a>
-
 <header class="head">
 	<Thumb
 		imagePath={it.imagePath}
@@ -77,12 +75,6 @@
 </details>
 
 <style>
-	.back {
-		display: inline-block;
-		margin-bottom: 0.6rem;
-		font-weight: 700;
-		color: var(--text-muted);
-	}
 	.head {
 		display: flex;
 		align-items: center;
