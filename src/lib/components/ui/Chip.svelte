@@ -14,7 +14,8 @@
 	.chip {
 		display: inline-flex;
 		align-items: center;
-		padding: 0.35rem 0.8rem;
+		min-height: 44px;
+		padding: 0.35rem 0.9rem;
 		border-radius: var(--radius-pill);
 		background: var(--surface-2);
 		color: var(--text-muted);

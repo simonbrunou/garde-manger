@@ -185,6 +185,7 @@ button.btn {
 	align-items: center;
 	justify-content: center;
 	gap: 0.4rem;
+	min-height: 44px;
 	padding: 0.6rem 1.1rem;
 	border: 1px solid transparent;
 	border-radius: var(--radius-pill);
