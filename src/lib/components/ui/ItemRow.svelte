@@ -2,6 +2,7 @@
 	import Thumb from './Thumb.svelte';
 	import DayBadge from './DayBadge.svelte';
 	import Icon from './Icon.svelte';
+	import SwipeActions from './SwipeActions.svelte';
 	import type { Messages } from '$lib/i18n';
 	import type { Band } from '$lib/server/inventory';
 
@@ -32,37 +33,60 @@
 			? `${item.dateKind === 'DLC' ? t.dlc_label : t.ddm_label} ${new Intl.DateTimeFormat(locale, { dateStyle: 'short' }).format(new Date(item.effectiveDate))}`
 			: ''
 	);
+
+	// Hidden forms submitted by the swipe actions (and reused as the click target).
+	let consumeForm: HTMLFormElement | undefined = $state();
+	let discardForm: HTMLFormElement | undefined = $state();
+
+	const swipeActions = $derived([
+		{ label: t.lifecycle_ate, onTrigger: () => consumeForm?.requestSubmit() },
+		{
+			label: t.lifecycle_tossed,
+			variant: 'destructive' as const,
+			onTrigger: () => discardForm?.requestSubmit()
+		}
+	]);
 </script>
 
-<div class="row card">
-	<a class="main" href={`/item/${item.id}`}>
-		<Thumb
-			imagePath={item.imagePath}
-			barcode={item.barcode}
-			category={item.category}
-			alt={item.name}
-		/>
-		<span class="info">
-			<span class="name">{item.name}</span>
-			<span class="meta">
-				{locLabel}{#if item.quantity > 1}&nbsp;· ×{item.quantity}{/if}{#if dateLabel}&nbsp;· {dateLabel}{/if}
+<!-- Hidden lifecycle forms: driven by swipe actions and the inline fallback buttons. -->
+<form method="POST" action="/?/consume" bind:this={consumeForm} hidden>
+	<input type="hidden" name="id" value={item.id} />
+</form>
+<form method="POST" action="/?/discard" bind:this={discardForm} hidden>
+	<input type="hidden" name="id" value={item.id} />
+</form>
+
+<SwipeActions actions={swipeActions}>
+	<div class="row card">
+		<a class="main" href={`/item/${item.id}`}>
+			<Thumb
+				imagePath={item.imagePath}
+				barcode={item.barcode}
+				category={item.category}
+				alt={item.name}
+			/>
+			<span class="info">
+				<span class="name">{item.name}</span>
+				<span class="meta">
+					{locLabel}{#if item.quantity > 1}&nbsp;· ×{item.quantity}{/if}{#if dateLabel}&nbsp;· {dateLabel}{/if}
+				</span>
 			</span>
-		</span>
-		<DayBadge band={item.band} effectiveDate={item.effectiveDate} {t} />
-	</a>
-	{#if item.band === 'urgent'}
-		<div class="actions">
-			<form method="POST" action="/?/consume">
-				<input type="hidden" name="id" value={item.id} />
-				<button class="act eat"><Icon name="check" size={15} />{t.lifecycle_ate}</button>
-			</form>
-			<form method="POST" action="/?/discard">
-				<input type="hidden" name="id" value={item.id} />
-				<button class="act toss"><Icon name="trash" size={15} />{t.lifecycle_tossed}</button>
-			</form>
-		</div>
-	{/if}
-</div>
+			<DayBadge band={item.band} effectiveDate={item.effectiveDate} {t} />
+		</a>
+		{#if item.band === 'urgent'}
+			<!-- Inline fallback for urgent items: always-visible, keyboard-accessible
+			     buttons that submit the same hidden lifecycle forms as the swipe. -->
+			<div class="actions">
+				<button class="act eat" onclick={() => consumeForm?.requestSubmit()}>
+					<Icon name="check" size={15} />{t.lifecycle_ate}
+				</button>
+				<button class="act toss" onclick={() => discardForm?.requestSubmit()}>
+					<Icon name="trash" size={15} />{t.lifecycle_tossed}
+				</button>
+			</div>
+		{/if}
+	</div>
+</SwipeActions>
 
 <style>
 	.row {
@@ -121,13 +145,5 @@
 	.toss {
 		background: var(--surface-2);
 		color: var(--text-muted);
-	}
-	.actions form {
-		flex: 1;
-		display: flex;
-		margin: 0;
-	}
-	.actions form button {
-		width: 100%;
 	}
 </style>
