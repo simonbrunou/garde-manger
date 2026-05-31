@@ -9,6 +9,10 @@
 	const t = $derived(m(data.locale));
 </script>
 
+<svelte:head>
+	<title>Garde-Manger</title>
+</svelte:head>
+
 <OfflineBanner locale={data.locale} />
 <AppHeader households={data.households} activeHouseholdId={data.activeHouseholdId} {t} />
 

@@ -10,6 +10,8 @@
 	const dateLocale = $derived(data.locale === 'en' ? 'en-GB' : 'fr-FR');
 </script>
 
+<svelte:head><title>{t.account_title} · Garde-Manger</title></svelte:head>
+
 <h1>{t.account_title}</h1>
 
 {#if form?.message}

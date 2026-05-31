@@ -27,7 +27,7 @@
 		color: var(--text);
 	}
 	.chip.active {
-		background: var(--green);
+		background: var(--green-strong);
 		color: var(--on-accent);
 	}
 </style>

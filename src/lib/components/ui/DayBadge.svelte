@@ -46,7 +46,7 @@
 		text-align: center;
 	}
 	.badge-urgent {
-		background: var(--red);
+		background: var(--red-strong);
 		color: var(--on-accent);
 		box-shadow: 0 4px 10px color-mix(in srgb, var(--red) 32%, transparent);
 	}
