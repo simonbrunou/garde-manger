@@ -3,6 +3,7 @@
 	import Chip from '$lib/components/ui/Chip.svelte';
 	import ItemRow from '$lib/components/ui/ItemRow.svelte';
 	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import Button from '$lib/components/ui/Button.svelte';
 	let { data } = $props();
 	const t = $derived(m(data.locale));
 	const bands = $derived(
@@ -33,9 +34,9 @@
 <svelte:head><title>Garde-Manger</title></svelte:head>
 
 {#if data.noHousehold}
-	<h1>Garde-Manger</h1>
-	<p>{t.home_no_household}</p>
-	<p><a href="/households">{t.home_create_or_join}</a></p>
+	<EmptyState icon="households" title={t.home_no_household}>
+		<Button href="/households" variant="primary">{t.nav_create_household}</Button>
+	</EmptyState>
 {:else}
 	<header class="head">
 		<h1>{data.activeHouseholdName}</h1>

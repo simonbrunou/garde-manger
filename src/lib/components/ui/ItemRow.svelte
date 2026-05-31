@@ -105,6 +105,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: 0.35rem;
+		min-height: 44px;
 		padding: 0.5rem;
 		border-radius: 11px;
 		border: none;
