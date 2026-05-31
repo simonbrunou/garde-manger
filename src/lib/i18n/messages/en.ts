@@ -7,6 +7,7 @@ export const en: Messages = {
 
 	// --- Navigation (bottom nav) ---
 	nav_home: 'Pantry',
+	nav_back: 'Back',
 	nav_add: 'Add',
 	nav_settings: 'Settings',
 	nav_household_switcher: 'Switch household',

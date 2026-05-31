@@ -5,6 +5,7 @@ export const fr: Messages = {
 
 	// --- Navigation (bottom nav) ---
 	nav_home: 'Garde-manger',
+	nav_back: 'Retour',
 	nav_add: 'Ajouter',
 	nav_settings: 'Réglages',
 	nav_household_switcher: 'Changer de foyer',
@@ -277,6 +278,7 @@ export interface Messages {
 	nav_create_household: string;
 	// --- Navigation (bottom nav) ---
 	nav_home: string;
+	nav_back: string;
 	nav_add: string;
 	nav_settings: string;
 	nav_household_switcher: string;
