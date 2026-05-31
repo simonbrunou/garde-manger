@@ -40,6 +40,22 @@
 	--text: light-dark(#322c22, #f1eadd);
 	--text-muted: light-dark(#706552, #a89e8b);
 
+	/* HIG label hierarchy (label = --text, secondaryLabel = --text-muted). */
+	--text-tertiary: light-dark(#9a8f7c, #7e745f);
+	--text-quaternary: light-dark(#b6ab96, #5f5742);
+
+	/* HIG fills — control backgrounds layered on surfaces. */
+	--fill-primary: light-dark(rgba(50, 44, 34, 0.1), rgba(241, 234, 221, 0.12));
+	--fill-secondary: light-dark(rgba(50, 44, 34, 0.07), rgba(241, 234, 221, 0.09));
+	--fill-tertiary: light-dark(rgba(50, 44, 34, 0.05), rgba(241, 234, 221, 0.06));
+	--fill-quaternary: light-dark(rgba(50, 44, 34, 0.03), rgba(241, 234, 221, 0.04));
+
+	/* Hairline separator (opaque, theme-aware) for list rows and bar edges. */
+	--separator: var(--border);
+
+	/* Single app tint for interactive text/controls/selection. */
+	--tint: var(--green-strong);
+
 	/* Accents (produce palette, brightened for dark).
 	   --green/--red stay the bright BRAND accent (borders, focus ring, icon
 	   strokes, tints — these only need 3:1). Filled surfaces that carry text
@@ -73,6 +89,23 @@
 
 	--container: 640px;
 	--bottom-nav-h: 4.25rem;
+
+	/* Materials — translucent bar treatment with a solid fallback. */
+	--material-bar: color-mix(in srgb, var(--bg) 82%, transparent);
+	--material-overlay: light-dark(rgba(30, 24, 16, 0.32), rgba(0, 0, 0, 0.5));
+
+	/* Metrics (iOS standards). */
+	--layout-margin: 16px;
+	--row-min-h: 44px;
+	--nav-bar-h: 44px;
+	--tab-bar-h: 49px;
+	--radius-grouped: 10px;
+
+	/* Motion — iOS sheet/nav spring curve + durations. */
+	--ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+	--dur-fast: 0.2s;
+	--dur: 0.35s;
+	--dur-sheet: 0.45s;
 
 	font-family: var(--font);
 }
@@ -190,7 +223,7 @@ h3 {
 }
 
 a {
-	color: var(--green-dark);
+	color: var(--tint);
 	text-decoration: none;
 }
 a:hover {
@@ -274,31 +307,47 @@ button.btn {
 .btn:active {
 	transform: translateY(1px);
 }
+/* ── HIG button hierarchy ──────────────────────────────────────────────────
+   filled (high emphasis) · tinted (medium) · gray (low) · plain (text-only).
+   Legacy names alias onto these so existing callers keep working. */
+.btn-filled,
 .btn-primary {
 	background: var(--green-strong);
 	color: var(--on-accent);
 }
+.btn-filled:hover,
 .btn-primary:hover {
 	background: var(--green-dark);
 	text-decoration: none;
 }
+.btn-tinted {
+	background: var(--green-tint);
+	color: var(--green-strong);
+}
+.btn-tinted:hover {
+	background: color-mix(in srgb, var(--green) 16%, var(--green-tint));
+	text-decoration: none;
+}
+.btn-gray,
 .btn-secondary {
 	background: var(--surface-2);
 	color: var(--text);
 	border-color: var(--border);
 }
+.btn-gray:hover,
 .btn-secondary:hover {
-	background: #ece3d3;
+	background: color-mix(in srgb, var(--text) 7%, var(--surface-2));
 	text-decoration: none;
 }
+.btn-plain,
 .btn-ghost {
 	background: transparent;
-	color: var(--text-muted);
+	color: var(--tint);
 	padding: 0.4rem 0.6rem;
 }
+.btn-plain:hover,
 .btn-ghost:hover {
-	background: var(--surface-2);
-	color: var(--text);
+	background: var(--fill-tertiary);
 	text-decoration: none;
 }
 .btn-danger {
@@ -356,4 +405,11 @@ body .offline-banner + .app-header {
 	/* `body` raises specificity to (0,2,1) so this reliably beats AppHeader's
 	   own scoped (0,2,0) rule regardless of stylesheet order. */
 	padding-top: 0.55rem;
+}
+
+/* Material fallback: browsers without backdrop-filter get an opaque bar. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+	:root {
+		--material-bar: var(--bg);
+	}
 }
