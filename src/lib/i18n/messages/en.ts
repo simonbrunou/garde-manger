@@ -252,6 +252,7 @@ export const en: Messages = {
 	cuisiner_subtitle: 'Ideas for items to use up soon',
 	cuisiner_empty_title: 'Nothing to use up',
 	cuisiner_empty_body: 'No items need using up right now.',
+	cuisiner_view_item: 'View item',
 	bilan_streak_zero: 'Back to zero — fresh start!',
 
 	// --- Landing (public) ---

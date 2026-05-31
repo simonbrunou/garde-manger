@@ -252,6 +252,7 @@ export const fr: Messages = {
 	cuisiner_subtitle: 'Idées pour vos aliments à consommer vite',
 	cuisiner_empty_title: 'Rien ne presse',
 	cuisiner_empty_body: "Aucun aliment à consommer rapidement pour l'instant.",
+	cuisiner_view_item: 'Voir le produit',
 	bilan_streak_zero: "Reparti·e à zéro — c'est reparti !",
 
 	// --- Landing (public) ---
@@ -499,6 +500,7 @@ export interface Messages {
 	cuisiner_subtitle: string;
 	cuisiner_empty_title: string;
 	cuisiner_empty_body: string;
+	cuisiner_view_item: string;
 	bilan_streak_zero: string;
 	// --- Landing (public) ---
 	landing_hero_title: string;
