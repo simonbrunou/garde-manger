@@ -413,3 +413,40 @@ body .offline-banner + .app-header {
 		--material-bar: var(--bg);
 	}
 }
+
+/* ── iOS push/pop route transition ──────────────────────────────────────────
+   The new page slides in from the right while the old page parallaxes left,
+   mirroring the iOS navigation push. Driven by onNavigate + startViewTransition
+   in the root layout. Gated on reduced-motion (the View Transitions default
+   cross-fade is also suppressed there). */
+@media not (prefers-reduced-motion: reduce) {
+	@keyframes gm-slide-in-right {
+		from {
+			transform: translateX(100%);
+		}
+		to {
+			transform: translateX(0);
+		}
+	}
+	@keyframes gm-slide-out-left {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-25%);
+		}
+	}
+	::view-transition-old(root) {
+		animation: gm-slide-out-left var(--dur) var(--ease-ios) both;
+	}
+	::view-transition-new(root) {
+		animation: gm-slide-in-right var(--dur) var(--ease-ios) both;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none;
+	}
+}
