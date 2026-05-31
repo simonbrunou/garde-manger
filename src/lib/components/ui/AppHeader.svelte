@@ -56,7 +56,9 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.6rem;
-		padding: 0.55rem 1.1rem;
+		/* Top inset clears the notch / Dynamic Island; the blurred background
+		   bleeds up into it so the status-bar area stays on-brand. */
+		padding: calc(0.55rem + env(safe-area-inset-top)) 1.1rem 0.55rem;
 		max-width: var(--container);
 		margin: 0 auto;
 		background: color-mix(in srgb, var(--bg) 85%, transparent);

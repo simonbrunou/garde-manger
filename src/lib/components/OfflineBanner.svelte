@@ -41,7 +41,8 @@
 		position: sticky;
 		top: 0;
 		z-index: 50;
-		padding: 0.4rem 0.75rem;
+		/* When shown it's the topmost element, so it carries the notch inset too. */
+		padding: calc(0.4rem + env(safe-area-inset-top)) 0.75rem 0.4rem;
 		font-size: 0.85rem;
 		text-align: center;
 		color: var(--amber-dark);

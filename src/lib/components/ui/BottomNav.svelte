@@ -34,8 +34,12 @@
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
-		height: var(--bottom-nav-h);
+		/* Height includes the home-indicator inset so the tab content keeps its
+		   full --bottom-nav-h (border-box would otherwise eat into it). */
+		height: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
 		padding-bottom: env(safe-area-inset-bottom);
+		padding-left: env(safe-area-inset-left);
+		padding-right: env(safe-area-inset-right);
 		background: var(--surface);
 		border-top: 1px solid var(--border);
 	}
