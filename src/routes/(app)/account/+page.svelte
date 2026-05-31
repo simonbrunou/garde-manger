@@ -3,6 +3,8 @@
 	import PasskeyEnroll from '$lib/components/PasskeyEnroll.svelte';
 	import PushSettings from '$lib/components/PushSettings.svelte';
 	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
+	import List from '$lib/components/ui/List.svelte';
+	import ListRow from '$lib/components/ui/ListRow.svelte';
 	import { m } from '$lib/i18n';
 
 	let { form, data }: { form: ActionData; data: PageData } = $props();
@@ -51,10 +53,11 @@
 	<ThemeToggle value={data.theme} {t} />
 </section>
 
-<section class="card account-section">
-	<h2>{t.account_households_section}</h2>
-	<a class="btn btn-secondary" href="/households">{t.account_manage_households}</a>
-</section>
+<div class="account-section">
+	<List header={t.account_households_section}>
+		<ListRow href="/households" title={t.account_manage_households} chevron />
+	</List>
+</div>
 
 <section class="card account-section">
 	<h2>{t.account_passkeys_section}</h2>
