@@ -397,16 +397,6 @@ button.btn {
 	}
 }
 
-/* Safe areas: AppHeader and OfflineBanner are sibling sticky-top elements
-   (separate components, so this cross-component rule lives here). When the
-   offline banner is present it becomes the topmost element and owns the notch
-   inset, so the header drops its own to avoid a doubled gap. */
-body .offline-banner + .app-header {
-	/* `body` raises specificity to (0,2,1) so this reliably beats AppHeader's
-	   own scoped (0,2,0) rule regardless of stylesheet order. */
-	padding-top: 0.55rem;
-}
-
 /* Material fallback: browsers without backdrop-filter get an opaque bar. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
 	:root {
