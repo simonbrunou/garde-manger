@@ -88,6 +88,11 @@
 	.settings {
 		display: inline-flex;
 		align-items: center;
+		justify-content: center;
+		/* 44x44 HIG tap target; negative margin keeps the icon visually flush. */
+		min-width: 44px;
+		min-height: 44px;
+		margin: -0.4rem -0.5rem;
 		color: var(--text-muted);
 	}
 	.settings:hover {

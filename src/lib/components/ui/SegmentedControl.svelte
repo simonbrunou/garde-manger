@@ -54,7 +54,7 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		min-height: 36px;
+		min-height: 44px;
 		padding: 0.35rem 0.6rem;
 		border: none;
 		border-radius: calc(var(--radius-sm) - 2px);
