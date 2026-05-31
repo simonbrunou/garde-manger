@@ -4,20 +4,20 @@
 
 **Goal:** Establish the HIG design foundations — iOS Dynamic Type type ramp, HIG semantic color roles mapped onto the warm brand palette, material/metric/motion tokens, and a HIG button hierarchy — in `src/app.css`, with no structural/navigation change and all tests green.
 
-**Architecture:** Garde-Manger styles live almost entirely in `src/app.css` as CSS custom properties + global classes; thin Svelte wrappers (`Button.svelte`, `Card.svelte`) consume those classes. M1 therefore edits `app.css` and leaves the wrappers mostly untouched (Button gains two optional variants). A vitest regression test parses `app.css` to assert the new tokens exist, mirroring the project's existing `theme.test.ts` style.
+**Architecture:** Garde-Manger styles live almost entirely in `src/app.css` as CSS custom properties + global classes; thin Svelte wrappers (`Button.svelte`, `Card.svelte`) consume those classes. M1 therefore edits `app.css` and leaves the wrappers mostly untouched (Button gains two optional variants). A `bun:test` regression test parses `app.css` to assert the new tokens exist, mirroring the project's existing `theme.test.ts` style.
 
-**Tech Stack:** SvelteKit 2 + Svelte 5 runes, CSS `light-dark()` theming, vitest + jsdom test runner (run via `bunx vitest run`), Bun toolchain.
+**Tech Stack:** SvelteKit 2 + Svelte 5 runes, CSS `light-dark()` theming, **`bun:test`** runner (tests are `*.test.ts`, run via `bun test`; there is no `test` npm script and no vitest), Bun toolchain.
 
 > **Spec:** `docs/superpowers/specs/2026-05-31-apple-hig-implementation-design.md` (§1 Foundations, §4 Button).
-> **Environment note:** This session showed context-protection truncation on large/parallel tool outputs. Keep tool outputs small and sequential; verify file contents with targeted reads, not bulk dumps.
+> **Environment note:** This session showed context-protection truncation (and occasional hallucinated text) on large/parallel tool outputs. Keep tool outputs small and sequential; trust only clean, complete, consistent output; verify file contents with targeted reads, not bulk dumps.
 
 ---
 
 ## File Structure
 
 - **Modify** `src/app.css` — add three token blocks (typography, semantic color, materials/metrics/motion), type utility classes, and refactor `.btn-*` to the HIG hierarchy. This is the single source of design truth.
-- **Modify** `src/lib/components/ui/Button.svelte` — extend the `Variant` union with `tinted` and `plain` (keep `primary`/`secondary`/`ghost`/`danger` as aliases so no caller breaks).
-- **Create** `src/lib/design-tokens.test.ts` — vitest regression test asserting required HIG tokens and utility classes exist in `app.css`.
+- **Modify** `src/lib/components/ui/Button.svelte` — extend the `variant` union with `filled`/`tinted`/`gray`/`plain` (keep `primary`/`secondary`/`ghost`/`danger` as aliases so no caller breaks).
+- **Create** `src/lib/design-tokens.test.ts` — `bun:test` regression test asserting required HIG tokens and utility classes exist in `app.css`.
 - `src/lib/components/ui/Card.svelte` — no change in M1 (grouped-list surface arrives with `List` in M3).
 
 All `--green*/--amber*/--red*/--surface*/--text*/--bg/--border*` tokens already in `app.css` are reused; M1 adds **new** tokens that reference them — no hue changes.
@@ -32,11 +32,11 @@ All `--green*/--amber*/--red*/--surface*/--text*/--bg/--border*` tokens already 
 - [ ] **Step 1: Write the failing test**
 
 ```ts
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-const css = readFileSync(fileURLToPath(new URL('../app.css', import.meta.url)), 'utf8');
+const css = readFileSync(fileURLToPath(new URL('./app.css', import.meta.url).href.replace('/lib/', '/')), 'utf8');
 
 describe('HIG design tokens', () => {
 	const typography = [
@@ -52,13 +52,7 @@ describe('HIG design tokens', () => {
 		'--text-caption-1',
 		'--text-caption-2'
 	];
-	const semantic = [
-		'--text-tertiary',
-		'--separator',
-		'--tint',
-		'--fill-secondary',
-		'--fill-tertiary'
-	];
+	const semantic = ['--text-tertiary', '--separator', '--tint', '--fill-secondary', '--fill-tertiary'];
 	const systemic = [
 		'--material-bar',
 		'--material-overlay',
@@ -71,22 +65,18 @@ describe('HIG design tokens', () => {
 		'--dur-sheet'
 	];
 
-	it.each([...typography, ...semantic, ...systemic])('defines %s', (token) => {
-		expect(css).toContain(`${token}:`);
-	});
+	for (const token of [...typography, ...semantic, ...systemic]) {
+		it(`defines ${token}`, () => {
+			expect(css).toContain(`${token}:`);
+		});
+	}
 
-	const utilities = [
-		'.t-large-title',
-		'.t-title-2',
-		'.t-headline',
-		'.t-body',
-		'.t-subhead',
-		'.t-footnote',
-		'.t-caption'
-	];
-	it.each(utilities)('defines utility class %s', (cls) => {
-		expect(css).toContain(cls);
-	});
+	const utilities = ['.t-large-title', '.t-title-2', '.t-headline', '.t-body', '.t-subhead', '.t-footnote', '.t-caption'];
+	for (const cls of utilities) {
+		it(`defines utility class ${cls}`, () => {
+			expect(css).toContain(cls);
+		});
+	}
 
 	it('keeps the HIG button hierarchy', () => {
 		for (const v of ['.btn-filled', '.btn-tinted', '.btn-gray', '.btn-plain']) {
@@ -96,10 +86,12 @@ describe('HIG design tokens', () => {
 });
 ```
 
+> **Path note:** the test lives at `src/lib/design-tokens.test.ts`; `app.css` is at `src/app.css` (one level up). If the `import.meta.url` path expression above proves awkward under bun, replace the `css` line with a direct relative read: `readFileSync(new URL('../app.css', import.meta.url), 'utf8')` — bun accepts a `URL` directly. Confirm whichever form resolves the file before moving on (the first assertion failing with ENOENT means the path is wrong, not the tokens).
+
 - [ ] **Step 2: Run the test to verify it fails**
 
-Run: `bunx vitest run src/lib/design-tokens.test.ts`
-Expected: FAIL — assertions like `expect(css).toContain('--text-large-title:')` fail because the tokens do not exist yet.
+Run: `bun test src/lib/design-tokens.test.ts`
+Expected: FAIL — assertions like `expect(css).toContain('--text-large-title:')` fail because the tokens do not exist yet. (If it fails with ENOENT, fix the path per the note above first.)
 
 - [ ] **Step 3: Commit the failing test**
 
@@ -141,7 +133,7 @@ Add immediately after the `--font: …;` declaration (before `color-scheme`):
 
 - [ ] **Step 2: Bump base body size to iOS body (17px) and add utility classes**
 
-Change the `body { font-size: 16px; }` rule to `font-size: 17px;`. Then add this block immediately after the `h3 { … }` rule:
+Change the `body { … font-size: 16px; … }` rule to `font-size: 17px;`. Then add this block immediately after the `h3 { … }` rule:
 
 ```css
 /* ── HIG type utility classes ──────────────────────────────────────────── */
@@ -203,7 +195,7 @@ Change the `body { font-size: 16px; }` rule to `font-size: 17px;`. Then add this
 
 - [ ] **Step 3: Re-run the token test**
 
-Run: `bunx vitest run src/lib/design-tokens.test.ts`
+Run: `bun test src/lib/design-tokens.test.ts`
 Expected: typography + utility-class assertions now PASS; semantic/systemic/button assertions still FAIL.
 
 - [ ] **Step 4: Commit**
@@ -248,7 +240,7 @@ Change the `a { color: var(--green-dark); }` rule to `color: var(--tint);` (keep
 
 - [ ] **Step 3: Re-run the token test**
 
-Run: `bunx vitest run src/lib/design-tokens.test.ts`
+Run: `bun test src/lib/design-tokens.test.ts`
 Expected: semantic assertions now PASS; systemic + button assertions still FAIL.
 
 - [ ] **Step 4: Commit**
@@ -263,7 +255,7 @@ git commit -m "feat(hig): semantic color roles (labels, fills, separator, tint)"
 ## Task 4: Material, metric, and motion tokens
 
 **Files:**
-- Modify: `src/app.css` (inside `:root`, in the Shape & depth area)
+- Modify: `src/app.css` (inside `:root`, in the Shape & depth area; plus an `@supports` block at end of file)
 
 - [ ] **Step 1: Add the systemic tokens inside `:root`**
 
@@ -303,7 +295,7 @@ Add this block after the `@media (prefers-reduced-motion: reduce)` block at the 
 
 - [ ] **Step 3: Re-run the token test**
 
-Run: `bunx vitest run src/lib/design-tokens.test.ts`
+Run: `bun test src/lib/design-tokens.test.ts`
 Expected: systemic assertions now PASS; only the button-hierarchy assertion still FAILs.
 
 - [ ] **Step 4: Commit**
@@ -323,7 +315,7 @@ git commit -m "feat(hig): material, metric, and motion tokens with fallback"
 
 - [ ] **Step 1: Add HIG button variant classes in `app.css`**
 
-In the `── Buttons ──` section, after the existing `.btn-danger:hover { … }` rule, add the HIG-named variants and alias the legacy names to them:
+In the `── Buttons ──` section, REPLACE the four legacy variant blocks (`.btn-primary` + `:hover`, `.btn-secondary` + `:hover` with its hardcoded `#ece3d3`, `.btn-ghost` + `:hover`) with the HIG-named variants below, aliasing the legacy names onto them. Leave `.btn`, `.btn:active`, and `.btn-danger`/`.btn-danger:hover` untouched.
 
 ```css
 /* ── HIG button hierarchy ──────────────────────────────────────────────────
@@ -371,27 +363,19 @@ In the `── Buttons ──` section, after the existing `.btn-danger:hover { 
 }
 ```
 
-Then DELETE the now-superseded standalone `.btn-primary`, `.btn-secondary`, `.btn-ghost` rule blocks that appear earlier in the section (the original `.btn-primary { background: var(--green-strong); … }`, `.btn-secondary { … }` with its hardcoded `#ece3d3` hover, and `.btn-ghost { … }`), so each class is defined once. Leave `.btn`, `.btn:active`, and `.btn-danger` as-is.
-
 - [ ] **Step 2: Extend the Button variant union**
 
-In `src/lib/components/ui/Button.svelte`, change line 3 from:
+In `src/lib/components/ui/Button.svelte`, change the `variant = 'primary'` prop type (line 12):
 
 ```ts
-	type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
+		variant?: 'filled' | 'tinted' | 'gray' | 'plain' | 'primary' | 'secondary' | 'ghost' | 'danger';
 ```
 
-to:
-
-```ts
-	type Variant = 'filled' | 'tinted' | 'gray' | 'plain' | 'primary' | 'secondary' | 'ghost' | 'danger';
-```
-
-No other change — the template already renders `class="btn btn-{variant}"`, which now resolves for every name.
+No other change — the template already renders `class="btn btn-{variant}"`, which now resolves for every name. (The `variant = 'primary'` default stays valid.)
 
 - [ ] **Step 3: Run the full token test**
 
-Run: `bunx vitest run src/lib/design-tokens.test.ts`
+Run: `bun test src/lib/design-tokens.test.ts`
 Expected: ALL assertions PASS (button hierarchy now present).
 
 - [ ] **Step 4: Verify Svelte type-check passes**
@@ -414,13 +398,13 @@ git commit -m "feat(hig): HIG button hierarchy (filled/tinted/gray/plain) + alia
 
 - [ ] **Step 1: Run the entire test suite**
 
-Run: `bunx vitest run`
-Expected: PASS — all pre-existing tests plus the new `design-tokens.test.ts` green. (Baseline was 249 green per project memory; expect 249 + new file's cases.)
+Run: `bun test`
+Expected: PASS — all pre-existing tests plus the new `design-tokens.test.ts` green. (Baseline was 249 green per project memory; expect 249 + the new file's cases.)
 
-- [ ] **Step 2: Run lint**
+- [ ] **Step 2: Run lint + format check**
 
-Run: `bunx prettier --check src/app.css src/lib/components/ui/Button.svelte src/lib/design-tokens.test.ts`
-Expected: PASS, or run `bunx prettier --write` on those files and re-check, then amend the relevant commit.
+Run: `bun run lint`
+Expected: PASS. If prettier flags the new/edited files, run `bun run format`, re-run `bun run lint`, and amend the most recent commit with the formatting fix.
 
 - [ ] **Step 3: Live visual verification (light + dark)**
 
@@ -462,7 +446,7 @@ git commit -m "chore(hig): M1 foundations verification fixups"
 
 **Placeholder scan:** none — every code step shows exact CSS/TS.
 
-**Type consistency:** token names in `design-tokens.test.ts` (Task 1) exactly match those added in Tasks 2–5; button class names (`.btn-filled/tinted/gray/plain`) consistent between Task 1 test, Task 5 CSS, and the widened `Variant` union.
+**Type consistency:** token names in `design-tokens.test.ts` (Task 1) exactly match those added in Tasks 2–5; button class names (`.btn-filled/tinted/gray/plain`) consistent between Task 1 test, Task 5 CSS, and the widened `variant` union. Test runner is `bun:test` / `bun test` throughout (project has no vitest).
 
 ---
 
