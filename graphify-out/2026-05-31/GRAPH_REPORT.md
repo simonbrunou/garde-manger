@@ -1,16 +1,16 @@
 # Graph Report - garde-manger  (2026-05-31)
 
 ## Corpus Check
-- 177 files · ~109,106 words
+- 184 files · ~111,680 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2722 nodes · 3526 edges · 278 communities (247 shown, 31 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 69 edges (avg confidence: 0.79)
+- 2740 nodes · 3547 edges · 275 communities (243 shown, 32 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 68 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c33ebac3`
+- Built from commit: `0f6d251e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -270,11 +270,8 @@
 - [[_COMMUNITY_Community 263|Community 263]]
 - [[_COMMUNITY_Community 264|Community 264]]
 - [[_COMMUNITY_Community 265|Community 265]]
-- [[_COMMUNITY_Community 266|Community 266]]
-- [[_COMMUNITY_Community 267|Community 267]]
 - [[_COMMUNITY_Community 268|Community 268]]
 - [[_COMMUNITY_Community 269|Community 269]]
-- [[_COMMUNITY_Community 270|Community 270]]
 - [[_COMMUNITY_Community 271|Community 271]]
 - [[_COMMUNITY_Community 272|Community 272]]
 - [[_COMMUNITY_Community 273|Community 273]]
@@ -334,19 +331,19 @@
 - **Join Household By Token Flow** — token_page_server_load, token_page_svelte, invitations_acceptinvitation, invitations_invitationerror [INFERRED 0.85]
 - **Garde-Manger PWA icon family (GM brand mark)** — icons_icon_192, icons_icon_512, icons_icon_maskable_192, icons_icon_maskable_512, icons_badge_72 [INFERRED 0.85]
 
-## Communities (278 total, 31 thin omitted)
+## Communities (275 total, 32 thin omitted)
 
 ### Community 0 - "Push & Daily-Reminder Cron"
-Cohesion: 0.06
-Nodes (47): POST(), pushSubscriptions, deleteSubscriptionByEndpoint, incrementFailure, PushSender interface, saveSubscription, sendToSubscription, Vapid interface (push) (+39 more)
+Cohesion: 0.09
+Nodes (27): deleteSubscriptionByEndpoint, saveSubscription, buildDailyPayload(), byteLength(), COPY, DailyCopy, deleteSubscriptionByEndpoint(), incrementFailure() (+19 more)
 
 ### Community 1 - "Frontend Lib Imports & Passkeys"
-Cohesion: 0.07
-Nodes (20): @simplewebauthn/browser, statusText, $app/environment, barcode-detector/ponyfill, $lib/barcode, $lib/dates, $lib/i18n, $lib/icons (+12 more)
+Cohesion: 0.06
+Nodes (22): statusText, barcode-detector/ponyfill, $lib/barcode, $lib/dates, $lib/i18n, $lib/icons, $lib/server/inventory, $lib/theme (+14 more)
 
 ### Community 2 - "Barcode Validation & Add Schemas"
-Cohesion: 0.07
-Nodes (37): actions, addPackagedSchema, load(), locationSchema, products, CONTENT_TYPE_BY_EXT, GET(), gtinCheckDigit() (+29 more)
+Cohesion: 0.13
+Nodes (14): ImageStore, LookupDeps, lookupProduct(), maybeDownloadImage(), OffConfig, ParsedOff, parseOffV2(), CFG (+6 more)
 
 ### Community 3 - "Foods Catalogue Schema"
 Cohesion: 0.04
@@ -361,20 +358,20 @@ Cohesion: 0.04
 Nodes (49): autoincrement, name, notNull, primaryKey, type, category, default_location, keywords_en (+41 more)
 
 ### Community 6 - "DB Init & Test Fixtures"
-Cohesion: 0.12
-Nodes (25): createDb(), runMigrations(), makeDb(), makeDb(), makeDb(), shelfLives, makeDb(), users (+17 more)
+Cohesion: 0.15
+Nodes (18): DB, foods, shelfLives, FOOD_SEED, FoodSeed, ShelfLifeSeed, main(), seedFoods() (+10 more)
 
 ### Community 7 - "Household Admin CRUD"
-Cohesion: 0.12
-Nodes (29): load(), (app) layout component, actions, load(), Households list page, ensureAdmin(), fixActiveHousehold(), Household manage hub load (+21 more)
+Cohesion: 0.22
+Nodes (16): load(), (app) layout component, actions, fixActiveHousehold(), setHouseholdCookie(), households module, countAdmins(), createHousehold() (+8 more)
 
 ### Community 8 - "Home Inventory Listing"
-Cohesion: 0.14
-Nodes (25): load(), foods, actions, Groups, ItemRow, load(), Location, activeHouseholdId() (+17 more)
+Cohesion: 0.15
+Nodes (22): actions, Groups, ItemRow, load(), Location, activeHouseholdId(), addCustom(), addFresh() (+14 more)
 
 ### Community 9 - "Inventory-Items FK Schema"
-Cohesion: 0.06
-Nodes (35): inventory_items_added_by_users_id_fk, inventory_items_food_id_foods_id_fk, inventory_items_household_id_households_id_fk, inv_household_status_eff, columns, isUnique, name, columnsFrom (+27 more)
+Cohesion: 0.18
+Nodes (11): inv_household_status_eff, columns, isUnique, name, checkConstraints, compositePrimaryKeys, foreignKeys, indexes (+3 more)
 
 ### Community 10 - "Inventory-Items FK Schema (mig)"
 Cohesion: 0.06
@@ -389,8 +386,8 @@ Cohesion: 0.08
 Nodes (27): app.d.ts (App.Locals types), app.html shell, backup.ts script, Barcode scan (BarcodeDetector + ZXing WASM), Bilan anti-waste stats surface, Bottom tab bar + center FAB navigation, Coolify + Railpack self-hosting, Cuisiner (cook-what's-expiring) surface (+19 more)
 
 ### Community 13 - "PWA Components & Push Endpoints"
-Cohesion: 0.09
-Nodes (25): POST /api/push/subscribe, POST /api/push/unsubscribe, BarcodeScanner component, OfflineBanner component, PushSettings component, categoryIcon, dayBadge(), dates tests (+17 more)
+Cohesion: 0.19
+Nodes (12): categoryIcon, categoryIcon(), MAP, icons tests, ThemeChoice type, Button component, EmptyState component, Icon component (+4 more)
 
 ### Community 14 - "Memberships FK Schema"
 Cohesion: 0.18
@@ -409,8 +406,8 @@ Cohesion: 0.08
 Nodes (24): devDependencies, drizzle-kit, drizzle-orm, eslint, @eslint/compat, eslint-config-prettier, @eslint/js, eslint-plugin-svelte (+16 more)
 
 ### Community 18 - "Invitations FK Schema (mig)"
-Cohesion: 0.25
-Nodes (8): invitations_household_id_households_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
+Cohesion: 0.09
+Nodes (23): invitations_created_by_users_id_fk, invitations_household_id_households_id_fk, checkConstraints, compositePrimaryKeys, columnsFrom, columnsTo, name, onDelete (+15 more)
 
 ### Community 19 - "Invitations FK Schema (mig)"
 Cohesion: 0.25
@@ -421,20 +418,20 @@ Cohesion: 0.16
 Nodes (22): BottomNav app shell (5-slot tab bar + FAB), categoryIcon() category→IconName mapping, dayBadge() + DayBadge urgency badge, computeBestBy DDM estimate, Hand-rolled FR/EN i18n + resolveLocale, householdStats() anti-waste aggregation, FR/EN i18n key parity test, Inline SVG icon sprite + Icon.svelte (+14 more)
 
 ### Community 21 - "Add-Item & DB Seed"
-Cohesion: 0.13
-Nodes (22): actions, load(), add page component, createDb, runMigrations, db index (boot/seed), FOOD_SEED catalogue data, addCustom (+14 more)
+Cohesion: 0.18
+Nodes (17): createDb, runMigrations, db index (boot/seed), FOOD_SEED catalogue data, credentials table, foods table, households table, inventoryItems table (+9 more)
 
 ### Community 22 - "Session & Login/Signup Auth"
-Cohesion: 0.29
-Nodes (7): loginSchema, safeLocalPath(), signupSchema, actions, load(), ./$types, load()
+Cohesion: 0.19
+Nodes (13): setSessionCookie(), createSession(), randomId(), sha256(), verifyAuthentication(), loginSchema, safeLocalPath(), signupSchema (+5 more)
 
 ### Community 23 - "Deploy & Security Architecture"
 Cohesion: 0.16
 Nodes (18): bun:sqlite database, bunx --bun vite build invariant, CSRF Origin check (adapter-node), Garde-Manger design spec, DRAFT shelf-life catalogue (needs food-safety review), /healthz endpoint, Proxy headers (PROTOCOL_HEADER / HOST_HEADER), Pure/testable seam (no $app/$env in logic modules) (+10 more)
 
 ### Community 24 - "Food Catalogue & Best-By"
-Cohesion: 0.15
-Nodes (14): addCustomSchema, addFreshSchema, locationSchema, ./$types, catalogue module, BestByResult, computeBestBy(), Food (+6 more)
+Cohesion: 0.16
+Nodes (12): actions, addCustomSchema, addFreshSchema, load(), locationSchema, add page component, addCustom, addFresh (+4 more)
 
 ### Community 25 - "NPM Scripts"
 Cohesion: 0.12
@@ -461,16 +458,16 @@ Cohesion: 0.19
 Nodes (13): Barcode normalize/validate (GTIN), Cache-first OFF lookup (1 scan ≤ 1 OFF call), HouseholdError, Last-admin protection invariant, Manage household hub (Approach B), ODbL separation (OFF data never in foods/shelf_lives), Open Food Facts integration (cache-first), requireMembership authorization pattern (+5 more)
 
 ### Community 31 - "Invitations Module"
-Cohesion: 0.13
-Nodes (18): DB, credentials, households, invitations, memberships, sessions, acceptInvitation(), createInvitation() (+10 more)
+Cohesion: 0.15
+Nodes (18): invitations, Household manage hub actions, ensureAdmin(), acceptInvitation, createInvitation, InvitationError, revokeInvitation, Invite create action (+10 more)
 
 ### Community 32 - "Schema col: credential_id"
-Cohesion: 0.15
-Nodes (13): credential_id, last_used_at, autoincrement, name, notNull, primaryKey, type, columns (+5 more)
+Cohesion: 0.04
+Nodes (45): autoincrement, default, name, notNull, primaryKey, type, backed_up, counter (+37 more)
 
 ### Community 33 - "Schema col: display_name"
-Cohesion: 0.05
-Nodes (37): display_name, email, locale, password_hash, autoincrement, name, notNull, primaryKey (+29 more)
+Cohesion: 0.15
+Nodes (13): display_name, email, autoincrement, name, notNull, primaryKey, type, autoincrement (+5 more)
 
 ### Community 34 - "Schema col: household_id"
 Cohesion: 0.15
@@ -489,28 +486,28 @@ Cohesion: 0.15
 Nodes (12): dialect, enums, id, internal, indexes, _meta, columns, schemas (+4 more)
 
 ### Community 38 - "Schema col: household_id"
-Cohesion: 0.15
-Nodes (13): household_id, joined_at, autoincrement, name, notNull, primaryKey, type, autoincrement (+5 more)
+Cohesion: 0.11
+Nodes (19): household_id, joined_at, role, autoincrement, name, notNull, primaryKey, type (+11 more)
 
 ### Community 39 - "Schema col: created_at"
-Cohesion: 0.14
-Nodes (14): name, warn_days, columns, autoincrement, name, notNull, primaryKey, type (+6 more)
+Cohesion: 0.10
+Nodes (20): created_at, name, warn_days, autoincrement, name, notNull, primaryKey, type (+12 more)
 
 ### Community 40 - "Schema col: joined_at"
 Cohesion: 0.15
 Nodes (13): joined_at, user_id, autoincrement, name, notNull, primaryKey, type, columns (+5 more)
 
 ### Community 41 - "Schema col: expires_at"
-Cohesion: 0.15
-Nodes (13): expires_at, used_at, autoincrement, name, notNull, primaryKey, type, columns (+5 more)
+Cohesion: 0.33
+Nodes (6): expires_at, autoincrement, name, notNull, primaryKey, type
 
 ### Community 42 - "Migration 0003 Snapshot"
 Cohesion: 0.29
 Nodes (7): checkConstraints, compositePrimaryKeys, foreignKeys, indexes, name, uniqueConstraints, foods
 
 ### Community 43 - "Schema col: brand"
-Cohesion: 0.15
-Nodes (13): autoincrement, name, notNull, primaryKey, type, autoincrement, name, notNull (+5 more)
+Cohesion: 0.13
+Nodes (15): autoincrement, name, notNull, primaryKey, type, brand, image_path, autoincrement (+7 more)
 
 ### Community 44 - "Schema col: credential_id"
 Cohesion: 0.15
@@ -529,44 +526,44 @@ Cohesion: 0.15
 Nodes (13): created_by, expires_at, autoincrement, name, notNull, primaryKey, type, autoincrement (+5 more)
 
 ### Community 48 - "Account & Credentials Page"
-Cohesion: 0.21
-Nodes (11): actions, load(), account page component, deleteCredential(), listCredentials(), vapidPublicKey, ./$types, Vapid (+3 more)
+Cohesion: 0.17
+Nodes (15): actions, load(), account page component, deleteCredential(), listCredentials(), normalizeChoice(), resolveTheme(), theme tests (+7 more)
 
 ### Community 49 - "WebAuthn Endpoints & Session"
-Cohesion: 0.22
-Nodes (14): setSessionCookie, WebAuthn Authenticate Options Endpoint POST, getVapid, WebAuthn Register Options Endpoint POST, WebAuthn Register Verify Endpoint POST, createSession, validateSessionToken, actions (+6 more)
+Cohesion: 0.20
+Nodes (15): clearSessionCookie, SESSION_COOKIE constant, setSessionCookie, WebAuthn Authenticate Options Endpoint POST, WebAuthn Register Options Endpoint POST, WebAuthn Register Verify Endpoint POST, createSession, validateSessionToken (+7 more)
 
 ### Community 50 - "Schema col: secret_hash"
 Cohesion: 0.11
-Nodes (18): expires_at, secret_hash, autoincrement, name, notNull, primaryKey, type, autoincrement (+10 more)
+Nodes (19): expires_at, secret_hash, user_id, autoincrement, name, notNull, primaryKey, type (+11 more)
 
 ### Community 51 - "Icon-Generation Script"
 Cohesion: 0.32
 Nodes (11): blank(), draw_letter(), fill_rect(), main(), make_badge(), make_icon(), pixels: list of rows; each row a list of (r,g,b,a) tuples., Fill the whole canvas with `color`, leaving rounded transparent corners. (+3 more)
 
 ### Community 52 - "WebAuthn Server Module"
-Cohesion: 0.25
-Nodes (9): assertConfig(), authenticationOptions(), registrationOptions(), User, verifyRegistration(), { db, sqlite }, POST(), POST() (+1 more)
+Cohesion: 0.28
+Nodes (9): assertConfig(), authenticationOptions(), registrationOptions(), User, verifyRegistration(), $app/environment, POST(), POST() (+1 more)
 
 ### Community 53 - "Schema col: credentials_credential_id_unique"
 Cohesion: 0.18
-Nodes (11): checkConstraints, compositePrimaryKeys, columns, isUnique, name, indexes, name, uniqueConstraints (+3 more)
+Nodes (11): checkConstraints, compositePrimaryKeys, columns, isUnique, name, foreignKeys, indexes, name (+3 more)
 
 ### Community 54 - "Schema col: users_email_unique"
 Cohesion: 0.11
 Nodes (18): 10. Cross-cutting, 11. Milestones (build order), 12. Testing, 13. Assumptions & open questions, 1. Goals & non-goals, 2. Current-state audit (what we're fixing), 3. Visual direction — "Warm & Friendly" (A × C), 4.1 Light (current — kept) (+10 more)
 
 ### Community 55 - "Schema col: credentials_credential_id_unique"
-Cohesion: 0.18
-Nodes (11): checkConstraints, compositePrimaryKeys, columns, isUnique, name, foreignKeys, indexes, name (+3 more)
+Cohesion: 0.11
+Nodes (19): checkConstraints, compositePrimaryKeys, columns, isUnique, name, foreignKeys, indexes, name (+11 more)
 
 ### Community 56 - "Schema col: inv_household_status_eff"
 Cohesion: 0.06
 Nodes (35): inventory_items_added_by_users_id_fk, inventory_items_food_id_foods_id_fk, inventory_items_household_id_households_id_fk, inv_household_status_eff, columns, isUnique, name, columnsFrom (+27 more)
 
 ### Community 57 - "Schema col: memberships_household_id_user_id"
-Cohesion: 0.18
-Nodes (11): memberships_household_id_user_id_unique, checkConstraints, compositePrimaryKeys, foreignKeys, columns, isUnique, name, indexes (+3 more)
+Cohesion: 0.07
+Nodes (27): memberships_household_id_households_id_fk, memberships_user_id_users_id_fk, memberships_household_id_user_id_unique, checkConstraints, compositePrimaryKeys, foreignKeys, columnsFrom, columnsTo (+19 more)
 
 ### Community 58 - "Schema col: credentials_credential_id_unique"
 Cohesion: 0.18
@@ -585,16 +582,16 @@ Cohesion: 0.22
 Nodes (6): ASSET_SET, ASSETS, NETWORK_ONLY_PREFIXES, networkFirst(), offlineFallback(), sw
 
 ### Community 62 - "Request Hooks (session/locale/theme)"
-Cohesion: 0.35
-Nodes (8): sha256(), validateSessionToken(), resolveLocale(), normalizeChoice(), resolveTheme(), theme tests, ThemeChoice, handle()
+Cohesion: 0.14
+Nodes (15): POST(), cron module, DailyReminderSummary, runDailyReminders(), secretMatches(), cron test, FakeSender, FIXED_NOW (+7 more)
 
 ### Community 63 - "Migration 0000 Snapshot"
 Cohesion: 0.22
 Nodes (8): dialect, enums, id, internal, indexes, prevId, version, views
 
 ### Community 64 - "FK: credentials user id users id fk"
-Cohesion: 0.22
-Nodes (9): foreignKeys, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo (+1 more)
+Cohesion: 0.25
+Nodes (8): columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo, credentials_user_id_users_id_fk
 
 ### Community 65 - "Schema col: effective_date"
 Cohesion: 0.22
@@ -621,12 +618,12 @@ Cohesion: 0.25
 Nodes (8): sessions_user_id_users_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
 
 ### Community 71 - "FK: credentials user id users id fk"
-Cohesion: 0.25
-Nodes (8): columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo, credentials_user_id_users_id_fk
+Cohesion: 0.15
+Nodes (14): load(), Bilan page, { db, sqlite }, load(), Households list page, Household manage hub load, Household manage hub page, listPendingInvitations (+6 more)
 
 ### Community 72 - "FK: sessions user id users id fk"
-Cohesion: 0.25
-Nodes (8): sessions_user_id_users_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
+Cohesion: 0.15
+Nodes (13): sessions_user_id_users_id_fk, compositePrimaryKeys, foreignKeys, indexes, name, columnsFrom, columnsTo, name (+5 more)
 
 ### Community 73 - "FK: inventory items food id foods id fk"
 Cohesion: 0.11
@@ -637,16 +634,16 @@ Cohesion: 0.12
 Nodes (16): Done-when (M1 acceptance), File structure (created/modified in M1), Garde-Manger — M1 Auth & Households Implementation Plan, Milestone context, Task 10: Passkey registration (TDD + enroll island), Task 11: Passkey authentication (TDD + login island) + account passkey mgmt, Task 12: Wire-up, gate, and milestone acceptance, Task 1: Schema + migration for auth & households (+8 more)
 
 ### Community 75 - "FK: memberships household id households id f"
-Cohesion: 0.25
-Nodes (8): memberships_household_id_households_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
+Cohesion: 0.16
+Nodes (14): createDb(), runMigrations(), makeDb(), products, makeDb(), makeDb(), makeDb(), makeDb() (+6 more)
 
 ### Community 76 - "FK: inventory items added by users id fk"
 Cohesion: 0.12
 Nodes (16): Conventions (read once), File map, Garde-Manger M7 · Garde (home) redesign + Item detail — Implementation Plan, Self-review notes, Task 10: Item-detail route — server, Task 11: Item-detail route — page, Task 12: Milestone verification + final review, Task 1: Category icons + `categoryIcon()` (TDD) (+8 more)
 
 ### Community 77 - "FK: memberships user id users id fk"
-Cohesion: 0.25
-Nodes (8): memberships_user_id_users_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
+Cohesion: 0.18
+Nodes (11): POST /api/push/subscribe, POST /api/push/unsubscribe, BarcodeScanner component, OfflineBanner component, PushSettings component, dayBadge(), dates tests, NOW (+3 more)
 
 ### Community 78 - "FK: credentials user id users id fk"
 Cohesion: 0.25
@@ -669,8 +666,8 @@ Cohesion: 0.13
 Nodes (14): Acceptance (M3 done when), Guardrails (apply to every task), M3 — Scanning + Open Food Facts, Task 10 — Self-hosted ZXing WASM + bundle discipline, Task 11 — Final review + merge, Task 1 — `products` schema + migration `0003`, Task 2 — Shared barcode utility `$lib/barcode.ts` (pure), Task 3 — OFF client `$lib/server/off.ts` (pure, cache-first, injectable) (+6 more)
 
 ### Community 83 - "Migration 0004 Snapshot"
-Cohesion: 0.25
-Nodes (7): dialect, id, prevId, name, tables, products, version
+Cohesion: 0.33
+Nodes (5): dialect, id, prevId, tables, version
 
 ### Community 84 - "FK: invitations household id households id f"
 Cohesion: 0.25
@@ -681,8 +678,8 @@ Cohesion: 0.29
 Nodes (6): dest, sqlite, stamp, backup module, backupDatabase(), backup test
 
 ### Community 86 - "Cook-Ideas Module"
-Cohesion: 0.46
-Nodes (5): Idea, IDEAS, cook module, ideasForCategory(), cook test
+Cohesion: 0.33
+Nodes (7): Idea, IDEAS, load(), listActive, cook module, ideasForCategory(), cook test
 
 ### Community 87 - "Invite & Join Flow"
 Cohesion: 0.13
@@ -709,12 +706,12 @@ Cohesion: 0.29
 Nodes (7): tables, users, checkConstraints, compositePrimaryKeys, foreignKeys, name, uniqueConstraints
 
 ### Community 93 - "Schema col: backed_up"
-Cohesion: 0.29
-Nodes (7): autoincrement, default, name, notNull, primaryKey, type, backed_up
+Cohesion: 0.21
+Nodes (9): actions, addPackagedSchema, load(), locationSchema, ./$types, diskImageStore, EXT_BY_CONTENT_TYPE, getOffConfig() (+1 more)
 
 ### Community 94 - "Schema col: counter"
-Cohesion: 0.29
-Nodes (7): counter, autoincrement, default, name, notNull, primaryKey, type
+Cohesion: 0.17
+Nodes (12): users_email_unique, tables, users, checkConstraints, compositePrimaryKeys, columns, isUnique, name (+4 more)
 
 ### Community 95 - "Schema col: locale"
 Cohesion: 0.14
@@ -757,8 +754,8 @@ Cohesion: 0.29
 Nodes (7): autoincrement, default, name, notNull, primaryKey, type, backed_up
 
 ### Community 105 - "Schema col: device_label"
-Cohesion: 0.15
-Nodes (13): credential_id, device_label, autoincrement, name, notNull, primaryKey, type, columns (+5 more)
+Cohesion: 0.11
+Nodes (19): credential_id, device_label, transports, autoincrement, name, notNull, primaryKey, type (+11 more)
 
 ### Community 106 - "Schema col: counter"
 Cohesion: 0.29
@@ -769,20 +766,20 @@ Cohesion: 0.07
 Nodes (28): 1. Foundations (`src/app.css`), 2. Navigation chrome, 3. Sheets, 4. Lists & controls, 5. Per-surface application, 6. Accessibility & quality, `ActionSheet.svelte` (new), Apple HIG implementation for Garde-Manger — Design (+20 more)
 
 ### Community 108 - "Schema col: created_by"
-Cohesion: 0.15
-Nodes (13): created_by, token_hash, autoincrement, name, notNull, primaryKey, type, columns (+5 more)
+Cohesion: 0.11
+Nodes (19): created_by, token_hash, used_at, autoincrement, name, notNull, primaryKey, type (+11 more)
 
 ### Community 109 - "Schema col: foods"
-Cohesion: 0.29
-Nodes (7): checkConstraints, compositePrimaryKeys, foreignKeys, indexes, name, uniqueConstraints, foods
+Cohesion: 0.10
+Nodes (19): dialect, checkConstraints, compositePrimaryKeys, foreignKeys, indexes, name, uniqueConstraints, checkConstraints (+11 more)
 
 ### Community 110 - "Schema col: households"
-Cohesion: 0.29
-Nodes (7): checkConstraints, compositePrimaryKeys, foreignKeys, indexes, name, uniqueConstraints, households
+Cohesion: 0.18
+Nodes (10): After M2: remaining milestones (own plans when reached), Apple HIG — M2 Chrome Wiring Implementation Plan, File Structure, Self-Review, Task 1: Extract HouseholdMenu from AppHeader, Task 2: Wire NavigationBar + HouseholdMenu into Home, drop AppHeader from layout, Task 3: NavigationBar on Bilan, Cuisiner, Account, Task 4: Pushed views get a back button (+2 more)
 
 ### Community 111 - "Schema col: added_at"
-Cohesion: 0.29
-Nodes (7): autoincrement, name, notNull, primaryKey, type, added_at, columns
+Cohesion: 0.33
+Nodes (6): autoincrement, name, notNull, primaryKey, type, added_at
 
 ### Community 112 - "Schema col: is_estimate"
 Cohesion: 0.29
@@ -862,7 +859,7 @@ Nodes (7): checkConstraints, compositePrimaryKeys, foreignKeys, indexes, name, u
 
 ### Community 131 - "Logout & Session Clear"
 Cohesion: 0.36
-Nodes (6): clearSessionCookie(), invalidateSession(), clearSessionCookie, SESSION_COOKIE constant, POST(), invalidateSession
+Nodes (7): clearSessionCookie(), invalidateSession(), validateSessionToken(), resolveLocale(), POST(), invalidateSession, handle()
 
 ### Community 132 - "Package Metadata"
 Cohesion: 0.33
@@ -881,8 +878,8 @@ Cohesion: 0.33
 Nodes (6): id, autoincrement, name, notNull, primaryKey, type
 
 ### Community 136 - "Schema col: device_label"
-Cohesion: 0.33
-Nodes (6): device_label, autoincrement, name, notNull, primaryKey, type
+Cohesion: 0.36
+Nodes (8): CONTENT_TYPE_BY_EXT, GET(), gtinCheckDigit(), isValidBarcode(), normalizeBarcode(), makeUpce(), upcEToUpcA(), productImageDir()
 
 ### Community 137 - "Schema col: created_at"
 Cohesion: 0.33
@@ -965,8 +962,8 @@ Cohesion: 0.33
 Nodes (6): last_used_at, autoincrement, name, notNull, primaryKey, type
 
 ### Community 157 - "Schema col: transports"
-Cohesion: 0.33
-Nodes (6): transports, autoincrement, name, notNull, primaryKey, type
+Cohesion: 0.25
+Nodes (8): inventory_items_added_by_users_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
 
 ### Community 158 - "Schema col: public_key"
 Cohesion: 0.33
@@ -977,16 +974,16 @@ Cohesion: 0.33
 Nodes (6): id, autoincrement, name, notNull, primaryKey, type
 
 ### Community 160 - "Schema col: role"
-Cohesion: 0.33
-Nodes (6): role, autoincrement, name, notNull, primaryKey, type
+Cohesion: 0.25
+Nodes (8): inventory_items_food_id_foods_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
 
 ### Community 161 - "Schema col: used_at"
-Cohesion: 0.33
-Nodes (6): used_at, autoincrement, name, notNull, primaryKey, type
+Cohesion: 0.25
+Nodes (8): inventory_items_household_id_households_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
 
 ### Community 162 - "Schema col: user_id"
-Cohesion: 0.33
-Nodes (6): user_id, autoincrement, name, notNull, primaryKey, type
+Cohesion: 0.29
+Nodes (7): locale, autoincrement, default, name, notNull, primaryKey, type
 
 ### Community 163 - "Schema col: expires_at"
 Cohesion: 0.18
@@ -995,10 +992,6 @@ Nodes (10): Assets written to `static/`, Deliverables, Design direction (approve
 ### Community 164 - "Schema col: token_hash"
 Cohesion: 0.31
 Nodes (8): APP_ROUTES, capture(), main(), PUBLIC_ROUTES, runAxe(), setTheme(), THEMES, VIEWPORTS
-
-### Community 165 - "Migration 0002 Snapshot"
-Cohesion: 0.33
-Nodes (5): dialect, id, prevId, tables, version
 
 ### Community 166 - "Schema col: best_by_date"
 Cohesion: 0.33
@@ -1025,8 +1018,8 @@ Cohesion: 0.33
 Nodes (6): kind, autoincrement, name, notNull, primaryKey, type
 
 ### Community 172 - "Schema col: use_by_date"
-Cohesion: 0.33
-Nodes (6): use_by_date, autoincrement, name, notNull, primaryKey, type
+Cohesion: 0.29
+Nodes (7): use_by_date, columns, autoincrement, name, notNull, primaryKey, type
 
 ### Community 173 - "Schema col: location"
 Cohesion: 0.33
@@ -1041,12 +1034,12 @@ Cohesion: 0.18
 Nodes (10): Done-when (M0 acceptance), File structure (created/modified in M0), Garde-Manger — M0 Foundation Implementation Plan, Scope & milestone context, Task 1: Scaffold the SvelteKit app (Bun, TS, minimal), Task 2: Configure `adapter-node` and verify Bun serving, Task 3: Add Drizzle, then swap the client to `bun:sqlite`, Task 4: First table (`users`) + migration + DB test (TDD) (+2 more)
 
 ### Community 176 - "Schema col: credential_id"
-Cohesion: 0.15
-Nodes (13): credential_id, last_used_at, autoincrement, name, notNull, primaryKey, type, columns (+5 more)
+Cohesion: 0.33
+Nodes (6): credential_id, autoincrement, name, notNull, primaryKey, type
 
 ### Community 177 - "Schema col: device_label"
-Cohesion: 0.33
-Nodes (6): device_label, autoincrement, name, notNull, primaryKey, type
+Cohesion: 0.29
+Nodes (7): device_label, columns, autoincrement, name, notNull, primaryKey, type
 
 ### Community 178 - "Schema col: household_id"
 Cohesion: 0.33
@@ -1069,16 +1062,16 @@ Cohesion: 0.20
 Nodes (9): 1. Build & run, 2. Environment variables (production), 3. Reverse proxy (Traefik / Coolify), 4. Persistent storage (single writer), 5. Healthcheck, 6. Scheduled Tasks (two), 7. Manual smoke checklist (post-deploy), 8. First-run notes (+1 more)
 
 ### Community 183 - "Schema col: created_by"
-Cohesion: 0.33
-Nodes (6): created_by, autoincrement, name, notNull, primaryKey, type
+Cohesion: 0.29
+Nodes (7): created_by, autoincrement, name, notNull, primaryKey, type, columns
 
 ### Community 184 - "Schema col: used_at"
 Cohesion: 0.20
 Nodes (9): Conventions (read once), File map, Garde-Manger M8 · Add / Scan flow — Implementation Plan, Self-review notes, Task 1: i18n key for "change food", Task 2: Redesign `/add` — chooser + focused confirm (scroll-trap fix), Task 3: Restyle `/scan`, Task 4: Restyle `/scan/[barcode]` packaged confirm (+1 more)
 
 ### Community 185 - "Schema col: brand"
-Cohesion: 0.15
-Nodes (13): autoincrement, name, notNull, primaryKey, type, autoincrement, name, notNull (+5 more)
+Cohesion: 0.13
+Nodes (15): autoincrement, name, notNull, primaryKey, type, brand, image_path, autoincrement (+7 more)
 
 ### Community 186 - "Schema col: categories"
 Cohesion: 0.25
@@ -1110,7 +1103,7 @@ Nodes (6): food_id, autoincrement, name, notNull, primaryKey, type
 
 ### Community 193 - "Schema col: image_path"
 Cohesion: 0.33
-Nodes (6): image_path, autoincrement, name, notNull, primaryKey, type
+Nodes (6): password_hash, autoincrement, name, notNull, primaryKey, type
 
 ### Community 194 - "Schema col: kind"
 Cohesion: 0.33
@@ -1149,8 +1142,8 @@ Cohesion: 0.33
 Nodes (6): token_hash, autoincrement, name, notNull, primaryKey, type
 
 ### Community 203 - "Schema col: created_by"
-Cohesion: 0.25
-Nodes (8): invitations_created_by_users_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
+Cohesion: 0.33
+Nodes (6): autoincrement, name, notNull, primaryKey, type, categories
 
 ### Community 204 - "Schema col: last_used_at"
 Cohesion: 0.33
@@ -1197,8 +1190,8 @@ Cohesion: 0.25
 Nodes (8): memberships_user_id_users_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
 
 ### Community 255 - "Community 255"
-Cohesion: 0.25
-Nodes (8): invitations_created_by_users_id_fk, columnsFrom, columnsTo, name, onDelete, onUpdate, tableFrom, tableTo
+Cohesion: 0.13
+Nodes (15): invitations_created_by_users_id_fk, checkConstraints, compositePrimaryKeys, columnsFrom, columnsTo, name, onDelete, onUpdate (+7 more)
 
 ### Community 256 - "Community 256"
 Cohesion: 0.25
@@ -1213,40 +1206,32 @@ Cohesion: 0.29
 Nodes (7): checkConstraints, compositePrimaryKeys, foreignKeys, indexes, name, uniqueConstraints, invitations
 
 ### Community 259 - "Community 259"
-Cohesion: 0.53
-Nodes (5): setSessionCookie(), createSession(), randomId(), verifyAuthentication(), POST()
+Cohesion: 0.33
+Nodes (6): last_used_at, autoincrement, name, notNull, primaryKey, type
 
 ### Community 260 - "Community 260"
-Cohesion: 0.40
-Nodes (4): load(), Bilan page, inventoryItems, householdStats
+Cohesion: 0.20
+Nodes (11): credentials, households, inventoryItems, memberships, pushSubscriptions, sessions, users, UserNotify (+3 more)
 
 ### Community 261 - "Community 261"
 Cohesion: 0.33
-Nodes (6): Household manage hub actions, acceptInvitation, createInvitation, InvitationError, revokeInvitation, Invite create action
+Nodes (6): used_at, autoincrement, name, notNull, primaryKey, type
 
 ### Community 262 - "Community 262"
-Cohesion: 0.29
-Nodes (7): checkConstraints, compositePrimaryKeys, foreignKeys, indexes, name, uniqueConstraints, invitations
+Cohesion: 0.33
+Nodes (6): autoincrement, name, notNull, primaryKey, type, categories
 
 ### Community 263 - "Community 263"
-Cohesion: 0.29
-Nodes (7): checkConstraints, compositePrimaryKeys, foreignKeys, indexes, name, uniqueConstraints, invitations
+Cohesion: 0.33
+Nodes (6): incrementFailure, PushSender interface, sendToSubscription, Vapid interface (push), getVapid, webPushSender
 
 ### Community 264 - "Community 264"
-Cohesion: 0.25
-Nodes (7): dialect, id, prevId, name, tables, products, version
+Cohesion: 0.33
+Nodes (5): dialect, id, prevId, tables, version
 
 ### Community 265 - "Community 265"
-Cohesion: 0.33
-Nodes (6): transports, autoincrement, name, notNull, primaryKey, type
-
-### Community 266 - "Community 266"
-Cohesion: 0.33
-Nodes (6): public_key, autoincrement, name, notNull, primaryKey, type
-
-### Community 267 - "Community 267"
-Cohesion: 0.33
-Nodes (6): created_at, autoincrement, name, notNull, primaryKey, type
+Cohesion: 0.47
+Nodes (3): OffUnavailable, createOffRateLimiter(), offRateLimitGuard
 
 ### Community 268 - "Community 268"
 Cohesion: 0.33
@@ -1255,10 +1240,6 @@ Nodes (6): used_at, autoincrement, name, notNull, primaryKey, type
 ### Community 269 - "Community 269"
 Cohesion: 0.33
 Nodes (6): token_hash, autoincrement, name, notNull, primaryKey, type
-
-### Community 270 - "Community 270"
-Cohesion: 0.33
-Nodes (6): image_path, autoincrement, name, notNull, primaryKey, type
 
 ### Community 271 - "Community 271"
 Cohesion: 0.33
@@ -1281,24 +1262,24 @@ Cohesion: 0.33
 Nodes (6): used_at, autoincrement, name, notNull, primaryKey, type
 
 ## Knowledge Gaps
-- **1747 isolated node(s):** `name`, `private`, `version`, `type`, `packageManager` (+1742 more)
+- **1758 isolated node(s):** `name`, `private`, `version`, `type`, `packageManager` (+1753 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **31 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **32 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `columns` connect `Schema col: added_at` to `Schema col: food_id`, `Schema col: kind`, `Schema col: location`, `Schema col: effective_date`, `Schema col: notes`, `Schema col: custom_name`, `Schema col: use_by_date`, `DB Schema Fragment`, `Inventory-Items FK Schema (mig)`, `Schema col: joined_at`, `Schema col: quantity`, `Schema col: is_estimate`, `Schema col: status`, `Schema col: closed_at`, `Schema col: added_by`, `Schema col: best_by_date`, `Schema col: barcode`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Why does `id` connect `DB Schema Fragment` to `Foods Catalogue Schema (mig)`, `Schema col: credential_id`, `Schema col: joined_at`, `Schema col: created_at`, `Schema col: expires_at`, `Schema col: added_at`?**
+- **Why does `id` connect `DB Schema Fragment` to `Foods Catalogue Schema (mig)`, `Schema col: joined_at`, `Schema col: use_by_date`, `Schema col: device_label`, `DB Schema Fragment`, `Schema col: created_by`?**
+  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+- **Why does `columns` connect `Schema col: use_by_date` to `Schema col: effective_date`, `Schema col: barcode`, `Schema col: best_by_date`, `Schema col: added_by`, `Schema col: closed_at`, `Schema col: custom_name`, `Schema col: food_id`, `Schema col: kind`, `Inventory-Items FK Schema`, `Schema col: location`, `Schema col: notes`, `Schema col: added_at`, `Schema col: is_estimate`, `Schema col: household_id`, `DB Schema Fragment`, `Schema col: quantity`, `Schema col: status`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **Why does `columns` connect `Schema col: added_at` to `Schema col: effective_date`, `Schema col: barcode`, `Schema col: best_by_date`, `Schema col: added_by`, `Schema col: closed_at`, `Schema col: custom_name`, `Schema col: food_id`, `Schema col: kind`, `Schema col: use_by_date`, `Schema col: location`, `Schema col: notes`, `Inventory-Items FK Schema`, `Schema col: is_estimate`, `Schema col: household_id`, `DB Schema Fragment`, `Schema col: quantity`, `Schema col: status`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _1759 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1770 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Push & Daily-Reminder Cron` be split into smaller, more focused modules?**
-  _Cohesion score 0.05888376856118792 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0944741532976827 - nodes in this community are weakly interconnected._
 - **Should `Frontend Lib Imports & Passkeys` be split into smaller, more focused modules?**
-  _Cohesion score 0.07256894049346879 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06291591046581972 - nodes in this community are weakly interconnected._
 - **Should `Barcode Validation & Add Schemas` be split into smaller, more focused modules?**
-  _Cohesion score 0.06778476589797344 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.12857142857142856 - nodes in this community are weakly interconnected._

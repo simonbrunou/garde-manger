@@ -105,8 +105,8 @@
     "semantic_hash": "dc2d05352ed1c1d9718bf4e23e9389e9"
   },
   "/root/garde-manger/src/routes/(app)/+layout.svelte": {
-    "mtime": 1780224648.2911649,
-    "ast_hash": "b104aaece9d2d43475be3251a8444053",
+    "mtime": 1780238449.5305772,
+    "ast_hash": "c2225e13e4476f1ae15443c0a878738a",
     "semantic_hash": ""
   },
   "/root/garde-manger/src/routes/(app)/bilan/+page.server.ts": {
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "/root/garde-manger/src/routes/(app)/item/[id]/+page.svelte": {
-    "mtime": 1780162837.8108537,
-    "ast_hash": "759fd5da1933f4bcea9c769cf3a0ffd6",
+    "mtime": 1780243325.6963816,
+    "ast_hash": "76962e82aec931e56eff5e8eb89d7b01",
     "semantic_hash": ""
   },
   "/root/garde-manger/src/routes/(app)/add/+page.ts": {
@@ -555,9 +555,9 @@
     "semantic_hash": "370478318e787c0f07fc551ca16feeb2"
   },
   "/root/garde-manger/src/lib/components/PushSettings.svelte": {
-    "mtime": 1780065667.2607749,
-    "ast_hash": "4e39835b38cb01fbe678dc95ae3b7fa3",
-    "semantic_hash": "4e39835b38cb01fbe678dc95ae3b7fa3"
+    "mtime": 1780243392.8359265,
+    "ast_hash": "8058bf29ecd575e35383a1ae37eadc2b",
+    "semantic_hash": ""
   },
   "/root/garde-manger/src/lib/components/PasskeyEnroll.svelte": {
     "mtime": 1780019374.2297049,
@@ -580,23 +580,13 @@
     "semantic_hash": ""
   },
   "/root/garde-manger/src/lib/components/ui/Icon.svelte": {
-    "mtime": 1780109317.9070654,
-    "ast_hash": "65e229fd2a35d1db8ea00e5e87b1a04b",
-    "semantic_hash": "65e229fd2a35d1db8ea00e5e87b1a04b"
-  },
-  "/root/garde-manger/src/lib/components/ui/Card.svelte": {
-    "mtime": 1780096998.6876986,
-    "ast_hash": "2b6da2f600ebd354cb12c454576eb90c",
-    "semantic_hash": "2b6da2f600ebd354cb12c454576eb90c"
-  },
-  "/root/garde-manger/src/lib/components/ui/AppHeader.svelte": {
-    "mtime": 1780226360.7155144,
-    "ast_hash": "e901ec41aed0b9259ae37f9cfc2fc79a",
+    "mtime": 1780238242.1129766,
+    "ast_hash": "2f4f28d0a411c48eec2fee565ef526ba",
     "semantic_hash": ""
   },
-  "/root/garde-manger/src/lib/components/ui/Chip.svelte": {
-    "mtime": 1780225004.003749,
-    "ast_hash": "61326a231db104f9413d0f5403c855e4",
+  "/root/garde-manger/src/lib/components/ui/Card.svelte": {
+    "mtime": 1780237527.6407957,
+    "ast_hash": "fdf5e914b9332cbe1484f850508bc76f",
     "semantic_hash": ""
   },
   "/root/garde-manger/src/lib/components/ui/StatTile.svelte": {
@@ -630,8 +620,8 @@
     "semantic_hash": "89315d3d8cfe383e5a0ff06666c0cb57"
   },
   "/root/garde-manger/src/lib/components/ui/BottomNav.svelte": {
-    "mtime": 1780226360.7155144,
-    "ast_hash": "66846ec2257a96b9178c5813ce169e16",
+    "mtime": 1780235307.368774,
+    "ast_hash": "c0bfa407a5bae32d26426d3c5e239741",
     "semantic_hash": ""
   },
   "/root/garde-manger/src/lib/components/ui/ThemeToggle.svelte": {
@@ -650,13 +640,13 @@
     "semantic_hash": "d2af77397c73840d00855d196bde7eb6"
   },
   "/root/garde-manger/src/lib/i18n/messages/fr.ts": {
-    "mtime": 1780162837.8085227,
-    "ast_hash": "4acc52dab326aac40fbfea355912dd08",
+    "mtime": 1780243267.816846,
+    "ast_hash": "ffe33d2bec3fd2872ac7888b3df141e4",
     "semantic_hash": ""
   },
   "/root/garde-manger/src/lib/i18n/messages/en.ts": {
-    "mtime": 1780162837.8085227,
-    "ast_hash": "952754be03100a9511e5a713d4d0fa92",
+    "mtime": 1780243267.8147738,
+    "ast_hash": "7190946b1886b5df68aa789bf10d950e",
     "semantic_hash": ""
   },
   "/root/garde-manger/scripts/gen-icons.py": {
@@ -885,8 +875,8 @@
     "semantic_hash": ""
   },
   "/root/garde-manger/src/routes/(app)/garde-manger/+page.svelte": {
-    "mtime": 1780225004.0047488,
-    "ast_hash": "8fd6a6b2ba4e2029db6527c1f62b3248",
+    "mtime": 1780238186.0523548,
+    "ast_hash": "a2c60387e8fcbdd5625a70f9e9bbc841",
     "semantic_hash": ""
   },
   "/root/garde-manger/docs/superpowers/plans/2026-05-30-public-landing-page.md": {
@@ -937,6 +927,51 @@
   "/root/garde-manger/static/icons/apple-touch-icon-180.png": {
     "mtime": 1780174881.5647914,
     "ast_hash": "7f8f00c117b8f4e2ad2a74eaf6f623fd",
+    "semantic_hash": ""
+  },
+  "/root/garde-manger/src/lib/components/ui/SegmentedControl.svelte": {
+    "mtime": 1780235743.1158233,
+    "ast_hash": "813a3323df8a27018b7911d3207904ed",
+    "semantic_hash": ""
+  },
+  "/root/garde-manger/src/lib/components/ui/NavigationBar.svelte": {
+    "mtime": 1780235506.4374225,
+    "ast_hash": "b259821f9499ce3a2bff9a74db7bc4ea",
+    "semantic_hash": ""
+  },
+  "/root/garde-manger/src/lib/components/ui/ActionSheet.svelte": {
+    "mtime": 1780237624.8861403,
+    "ast_hash": "94b8026c9f8795afe463196e6c3e8cf3",
+    "semantic_hash": ""
+  },
+  "/root/garde-manger/src/lib/components/ui/Sheet.svelte": {
+    "mtime": 1780237602.7482896,
+    "ast_hash": "dc799214ba225fce437662861507addd",
+    "semantic_hash": ""
+  },
+  "/root/garde-manger/src/lib/components/ui/Toggle.svelte": {
+    "mtime": 1780235748.2957883,
+    "ast_hash": "f8eddfcd85bacf025797f981c06c3e92",
+    "semantic_hash": ""
+  },
+  "/root/garde-manger/src/lib/components/ui/List.svelte": {
+    "mtime": 1780235753.4707534,
+    "ast_hash": "1e155508e6932e12c6850cdb12bf8a53",
+    "semantic_hash": ""
+  },
+  "/root/garde-manger/src/lib/components/ui/HouseholdMenu.svelte": {
+    "mtime": 1780238045.4233036,
+    "ast_hash": "f45169f2e7f0fd710305518457e00670",
+    "semantic_hash": ""
+  },
+  "/root/garde-manger/src/lib/components/ui/ListRow.svelte": {
+    "mtime": 1780235761.9646962,
+    "ast_hash": "1fc684438d1ca557ed58c4be6530d152",
+    "semantic_hash": ""
+  },
+  "/root/garde-manger/docs/superpowers/plans/2026-05-31-apple-hig-m2-chrome-wiring.md": {
+    "mtime": 1780237702.811615,
+    "ast_hash": "da9e48658e61216656bfb8c936212bcf",
     "semantic_hash": ""
   }
 }
