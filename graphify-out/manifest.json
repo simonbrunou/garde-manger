@@ -145,8 +145,8 @@
     "semantic_hash": "2f73b773e8334c3d761a83cb5531a26a"
   },
   "/root/garde-manger/src/routes/(app)/account/+page.svelte": {
-    "mtime": 1780224648.2911649,
-    "ast_hash": "3f8c3150289b89f7a0aa0ec4e19b0fba",
+    "mtime": 1780245394.4790897,
+    "ast_hash": "aa8d91be78632dc3aa44c58117570aeb",
     "semantic_hash": ""
   },
   "/root/garde-manger/src/routes/(app)/households/+page.server.ts": {
