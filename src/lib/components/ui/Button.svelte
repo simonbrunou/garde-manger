@@ -9,7 +9,7 @@
 		children,
 		...rest
 	}: {
-		variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+		variant?: 'filled' | 'tinted' | 'gray' | 'plain' | 'primary' | 'secondary' | 'ghost' | 'danger';
 		href?: string;
 		type?: 'button' | 'submit';
 		icon?: IconName;

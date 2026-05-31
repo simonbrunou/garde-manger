@@ -14,6 +14,7 @@
 		| 'x'
 		| 'logout'
 		| 'chevron-right'
+		| 'chevron-left'
 		| 'search'
 		| 'sun'
 		| 'moon'

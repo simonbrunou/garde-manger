@@ -5,10 +5,12 @@ export const fr: Messages = {
 
 	// --- Navigation (bottom nav) ---
 	nav_home: 'Garde-manger',
+	nav_back: 'Retour',
 	nav_add: 'Ajouter',
 	nav_settings: 'Réglages',
 	nav_household_switcher: 'Changer de foyer',
 	nav_primary: 'Navigation principale',
+	action_cancel: 'Annuler',
 
 	// --- Auth: Login ---
 	auth_login_title: 'Se connecter',
@@ -250,6 +252,7 @@ export const fr: Messages = {
 	cuisiner_subtitle: 'Idées pour vos aliments à consommer vite',
 	cuisiner_empty_title: 'Rien ne presse',
 	cuisiner_empty_body: "Aucun aliment à consommer rapidement pour l'instant.",
+	cuisiner_view_item: 'Voir le produit',
 	bilan_streak_zero: "Reparti·e à zéro — c'est reparti !",
 
 	// --- Landing (public) ---
@@ -277,10 +280,12 @@ export interface Messages {
 	nav_create_household: string;
 	// --- Navigation (bottom nav) ---
 	nav_home: string;
+	nav_back: string;
 	nav_add: string;
 	nav_settings: string;
 	nav_household_switcher: string;
 	nav_primary: string;
+	action_cancel: string;
 	// --- Auth: Login ---
 	auth_login_title: string;
 	auth_login_submit: string;
@@ -495,6 +500,7 @@ export interface Messages {
 	cuisiner_subtitle: string;
 	cuisiner_empty_title: string;
 	cuisiner_empty_body: string;
+	cuisiner_view_item: string;
 	bilan_streak_zero: string;
 	// --- Landing (public) ---
 	landing_hero_title: string;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { m } from '$lib/i18n';
-	import Card from '$lib/components/ui/Card.svelte';
+	import List from '$lib/components/ui/List.svelte';
+	import ListRow from '$lib/components/ui/ListRow.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import EmptyState from '$lib/components/ui/EmptyState.svelte';
 	let { data } = $props();
@@ -20,16 +21,16 @@
 		<h1>{t.cuisiner_title}</h1>
 		<p class="sub">{t.cuisiner_subtitle}</p>
 	</header>
-	<div class="list">
+	<div class="groups">
 		{#each data.items as item (item.id)}
-			<Card>
-				<a class="name" href={`/item/${item.id}`}>{item.name}</a>
-				<ul class="ideas">
-					{#each item.ideas as idea (idea)}
-						<li>{idea}</li>
-					{/each}
-				</ul>
-			</Card>
+			<!-- Each food is a grouped list: the food name (a navigable row with a
+			     disclosure chevron) followed by its recipe ideas as plain rows. -->
+			<List header={item.name}>
+				<ListRow href={`/item/${item.id}`} title={t.cuisiner_view_item} chevron />
+				{#each item.ideas as idea (idea)}
+					<ListRow title={idea} />
+				{/each}
+			</List>
 		{/each}
 	</div>
 {/if}
@@ -47,30 +48,9 @@
 		font-weight: 600;
 		font-size: 0.9rem;
 	}
-	.list {
+	.groups {
 		display: flex;
 		flex-direction: column;
-		gap: 0.8rem;
-	}
-	.name {
-		display: inline-block;
-		font-weight: 800;
-		font-size: 1rem;
-		color: inherit;
-		margin-bottom: 0.5rem;
-	}
-	.name:hover {
-		text-decoration: none;
-		color: var(--green-dark);
-	}
-	.ideas {
-		margin: 0;
-		padding-left: 1.1rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.3rem;
-	}
-	.ideas li {
-		color: var(--text);
+		gap: 1.5rem;
 	}
 </style>

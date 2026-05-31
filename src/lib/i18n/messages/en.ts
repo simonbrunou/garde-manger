@@ -7,10 +7,12 @@ export const en: Messages = {
 
 	// --- Navigation (bottom nav) ---
 	nav_home: 'Pantry',
+	nav_back: 'Back',
 	nav_add: 'Add',
 	nav_settings: 'Settings',
 	nav_household_switcher: 'Switch household',
 	nav_primary: 'Main navigation',
+	action_cancel: 'Cancel',
 
 	// --- Auth: Login ---
 	auth_login_title: 'Log in',
@@ -250,6 +252,7 @@ export const en: Messages = {
 	cuisiner_subtitle: 'Ideas for items to use up soon',
 	cuisiner_empty_title: 'Nothing to use up',
 	cuisiner_empty_body: 'No items need using up right now.',
+	cuisiner_view_item: 'View item',
 	bilan_streak_zero: 'Back to zero — fresh start!',
 
 	// --- Landing (public) ---

@@ -7,6 +7,24 @@
 		ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui,
 		'Helvetica Neue', Arial, sans-serif;
 
+	/* ── iOS Dynamic Type ramp ──────────────────────────────────────────────
+	   rem-based so the OS / browser base font size scales every style. Values
+	   are the iOS point sizes ÷ 16 (1rem = 16px). Weights/line-heights per HIG. */
+	--text-large-title: 2.125rem; /* 34 */
+	--text-title-1: 1.75rem; /* 28 */
+	--text-title-2: 1.375rem; /* 22 */
+	--text-title-3: 1.25rem; /* 20 */
+	--text-headline: 1.0625rem; /* 17 semibold */
+	--text-body: 1.0625rem; /* 17 */
+	--text-callout: 1rem; /* 16 */
+	--text-subhead: 0.9375rem; /* 15 */
+	--text-footnote: 0.8125rem; /* 13 */
+	--text-caption-1: 0.75rem; /* 12 */
+	--text-caption-2: 0.6875rem; /* 11 */
+	--lh-tight: 1.15;
+	--lh-snug: 1.25;
+	--lh-normal: 1.4;
+
 	/* Auto by default: light-dark() resolves against this. Forced themes below
 	   narrow color-scheme to a single value. */
 	color-scheme: light dark;
@@ -21,6 +39,22 @@
 	/* Text */
 	--text: light-dark(#322c22, #f1eadd);
 	--text-muted: light-dark(#706552, #a89e8b);
+
+	/* HIG label hierarchy (label = --text, secondaryLabel = --text-muted). */
+	--text-tertiary: light-dark(#9a8f7c, #7e745f);
+	--text-quaternary: light-dark(#b6ab96, #5f5742);
+
+	/* HIG fills — control backgrounds layered on surfaces. */
+	--fill-primary: light-dark(rgba(50, 44, 34, 0.1), rgba(241, 234, 221, 0.12));
+	--fill-secondary: light-dark(rgba(50, 44, 34, 0.07), rgba(241, 234, 221, 0.09));
+	--fill-tertiary: light-dark(rgba(50, 44, 34, 0.05), rgba(241, 234, 221, 0.06));
+	--fill-quaternary: light-dark(rgba(50, 44, 34, 0.03), rgba(241, 234, 221, 0.04));
+
+	/* Hairline separator (opaque, theme-aware) for list rows and bar edges. */
+	--separator: var(--border);
+
+	/* Single app tint for interactive text/controls/selection. */
+	--tint: var(--green-strong);
 
 	/* Accents (produce palette, brightened for dark).
 	   --green/--red stay the bright BRAND accent (borders, focus ring, icon
@@ -56,6 +90,23 @@
 	--container: 640px;
 	--bottom-nav-h: 4.25rem;
 
+	/* Materials — translucent bar treatment with a solid fallback. */
+	--material-bar: color-mix(in srgb, var(--bg) 82%, transparent);
+	--material-overlay: light-dark(rgba(30, 24, 16, 0.32), rgba(0, 0, 0, 0.5));
+
+	/* Metrics (iOS standards). */
+	--layout-margin: 16px;
+	--row-min-h: 44px;
+	--nav-bar-h: 44px;
+	--tab-bar-h: 49px;
+	--radius-grouped: 10px;
+
+	/* Motion — iOS sheet/nav spring curve + durations. */
+	--ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+	--dur-fast: 0.2s;
+	--dur: 0.35s;
+	--dur-sheet: 0.45s;
+
 	font-family: var(--font);
 }
 
@@ -84,7 +135,7 @@ body {
 	background: var(--bg);
 	color: var(--text);
 	font-family: var(--font);
-	font-size: 16px;
+	font-size: 17px;
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
@@ -115,8 +166,64 @@ h3 {
 	margin: 0 0 0.5rem;
 }
 
+/* ── HIG type utility classes ──────────────────────────────────────────── */
+.t-large-title {
+	font-size: var(--text-large-title);
+	font-weight: 800;
+	line-height: var(--lh-tight);
+	letter-spacing: -0.02em;
+}
+.t-title-1 {
+	font-size: var(--text-title-1);
+	font-weight: 700;
+	line-height: var(--lh-tight);
+	letter-spacing: -0.015em;
+}
+.t-title-2 {
+	font-size: var(--text-title-2);
+	font-weight: 700;
+	line-height: var(--lh-snug);
+}
+.t-title-3 {
+	font-size: var(--text-title-3);
+	font-weight: 600;
+	line-height: var(--lh-snug);
+}
+.t-headline {
+	font-size: var(--text-headline);
+	font-weight: 600;
+	line-height: var(--lh-snug);
+}
+.t-body {
+	font-size: var(--text-body);
+	font-weight: 400;
+	line-height: var(--lh-normal);
+}
+.t-callout {
+	font-size: var(--text-callout);
+	font-weight: 400;
+	line-height: var(--lh-normal);
+}
+.t-subhead {
+	font-size: var(--text-subhead);
+	font-weight: 400;
+	line-height: var(--lh-normal);
+}
+.t-footnote {
+	font-size: var(--text-footnote);
+	font-weight: 400;
+	line-height: var(--lh-normal);
+	color: var(--text-muted);
+}
+.t-caption {
+	font-size: var(--text-caption-1);
+	font-weight: 500;
+	line-height: var(--lh-normal);
+	color: var(--text-muted);
+}
+
 a {
-	color: var(--green-dark);
+	color: var(--tint);
 	text-decoration: none;
 }
 a:hover {
@@ -200,31 +307,47 @@ button.btn {
 .btn:active {
 	transform: translateY(1px);
 }
+/* ── HIG button hierarchy ──────────────────────────────────────────────────
+   filled (high emphasis) · tinted (medium) · gray (low) · plain (text-only).
+   Legacy names alias onto these so existing callers keep working. */
+.btn-filled,
 .btn-primary {
 	background: var(--green-strong);
 	color: var(--on-accent);
 }
+.btn-filled:hover,
 .btn-primary:hover {
 	background: var(--green-dark);
 	text-decoration: none;
 }
+.btn-tinted {
+	background: var(--green-tint);
+	color: var(--green-strong);
+}
+.btn-tinted:hover {
+	background: color-mix(in srgb, var(--green) 16%, var(--green-tint));
+	text-decoration: none;
+}
+.btn-gray,
 .btn-secondary {
 	background: var(--surface-2);
 	color: var(--text);
 	border-color: var(--border);
 }
+.btn-gray:hover,
 .btn-secondary:hover {
-	background: #ece3d3;
+	background: color-mix(in srgb, var(--text) 7%, var(--surface-2));
 	text-decoration: none;
 }
+.btn-plain,
 .btn-ghost {
 	background: transparent;
-	color: var(--text-muted);
+	color: var(--tint);
 	padding: 0.4rem 0.6rem;
 }
+.btn-plain:hover,
 .btn-ghost:hover {
-	background: var(--surface-2);
-	color: var(--text);
+	background: var(--fill-tertiary);
 	text-decoration: none;
 }
 .btn-danger {
@@ -274,12 +397,46 @@ button.btn {
 	}
 }
 
-/* Safe areas: AppHeader and OfflineBanner are sibling sticky-top elements
-   (separate components, so this cross-component rule lives here). When the
-   offline banner is present it becomes the topmost element and owns the notch
-   inset, so the header drops its own to avoid a doubled gap. */
-body .offline-banner + .app-header {
-	/* `body` raises specificity to (0,2,1) so this reliably beats AppHeader's
-	   own scoped (0,2,0) rule regardless of stylesheet order. */
-	padding-top: 0.55rem;
+/* Material fallback: browsers without backdrop-filter get an opaque bar. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+	:root {
+		--material-bar: var(--bg);
+	}
+}
+
+/* ── iOS push/pop route transition ──────────────────────────────────────────
+   The new page slides in from the right while the old page parallaxes left,
+   mirroring the iOS navigation push. Driven by onNavigate + startViewTransition
+   in the root layout. Gated on reduced-motion (the View Transitions default
+   cross-fade is also suppressed there). */
+@media not (prefers-reduced-motion: reduce) {
+	@keyframes gm-slide-in-right {
+		from {
+			transform: translateX(100%);
+		}
+		to {
+			transform: translateX(0);
+		}
+	}
+	@keyframes gm-slide-out-left {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-25%);
+		}
+	}
+	::view-transition-old(root) {
+		animation: gm-slide-out-left var(--dur) var(--ease-ios) both;
+	}
+	::view-transition-new(root) {
+		animation: gm-slide-in-right var(--dur) var(--ease-ios) both;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none;
+	}
 }

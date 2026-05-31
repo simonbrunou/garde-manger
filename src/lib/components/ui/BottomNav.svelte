@@ -6,26 +6,28 @@
 	const path = $derived(page.url.pathname);
 </script>
 
-<nav class="bottom-nav" aria-label={t.nav_primary}>
+<!-- HIG tab bar: five equal flat tabs, translucent material, brand tint on the
+	 active tab. The raised "+" FAB was removed in favour of a standard Add tab. -->
+<nav class="tab-bar" aria-label={t.nav_primary}>
 	<a href="/garde-manger" class="tab" aria-current={path === '/garde-manger' ? 'page' : undefined}>
-		<Icon name="home" size={22} /><span>{t.nav_home}</span>
+		<Icon name="home" size={26} /><span>{t.nav_home}</span>
 	</a>
 	<a href="/cuisiner" class="tab" aria-current={path.startsWith('/cuisiner') ? 'page' : undefined}>
-		<Icon name="cook" size={22} /><span>{t.nav_cuisiner}</span>
+		<Icon name="cook" size={26} /><span>{t.nav_cuisiner}</span>
 	</a>
-	<a href="/add" class="fab" aria-label={t.nav_add}>
-		<Icon name="plus" size={26} />
+	<a href="/add" class="tab" aria-current={path.startsWith('/add') ? 'page' : undefined}>
+		<Icon name="plus" size={26} /><span>{t.nav_add}</span>
 	</a>
 	<a href="/bilan" class="tab" aria-current={path.startsWith('/bilan') ? 'page' : undefined}>
-		<Icon name="stats" size={22} /><span>{t.nav_bilan}</span>
+		<Icon name="stats" size={26} /><span>{t.nav_bilan}</span>
 	</a>
 	<a href="/account" class="tab" aria-current={path.startsWith('/account') ? 'page' : undefined}>
-		<Icon name="user" size={22} /><span>{t.nav_settings}</span>
+		<Icon name="user" size={26} /><span>{t.nav_settings}</span>
 	</a>
 </nav>
 
 <style>
-	.bottom-nav {
+	.tab-bar {
 		position: fixed;
 		bottom: 0;
 		left: 0;
@@ -33,46 +35,46 @@
 		z-index: 20;
 		display: flex;
 		justify-content: space-around;
-		align-items: center;
+		align-items: stretch;
 		/* Height includes the home-indicator inset so the tab content keeps its
-		   full --bottom-nav-h (border-box would otherwise eat into it). */
-		height: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
+		   full --tab-bar-h (border-box would otherwise eat into it). */
+		height: calc(var(--tab-bar-h) + env(safe-area-inset-bottom));
 		padding-bottom: env(safe-area-inset-bottom);
 		padding-left: env(safe-area-inset-left);
 		padding-right: env(safe-area-inset-right);
-		background: var(--surface);
-		border-top: 1px solid var(--border);
+		/* Translucent material; @supports fallback in app.css makes this opaque
+		   where backdrop-filter is unsupported. */
+		background: var(--material-bar);
+		backdrop-filter: saturate(140%) blur(12px);
+		-webkit-backdrop-filter: saturate(140%) blur(12px);
+		border-top: 1px solid var(--separator);
 	}
 	.tab {
+		flex: 1;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 3px;
-		font-size: 0.68rem;
-		font-weight: 700;
+		justify-content: center;
+		gap: 2px;
+		min-width: 0;
+		/* 44pt minimum interactive height (HIG). */
+		min-height: 44px;
+		font-size: var(--text-caption-2);
+		font-weight: 600;
 		color: var(--text-muted);
-		min-width: 4rem;
+		transition: color var(--dur-fast);
 	}
 	.tab:hover {
 		text-decoration: none;
 	}
 	.tab[aria-current='page'] {
-		color: var(--green);
+		color: var(--tint);
 	}
-	.fab {
-		width: 54px;
-		height: 54px;
-		margin-top: -1.5rem;
-		border-radius: 50%;
-		display: grid;
-		place-items: center;
-		background: var(--green-strong);
-		color: var(--on-accent);
-		border: 4px solid var(--bg);
-		box-shadow: 0 8px 18px color-mix(in srgb, var(--green) 38%, transparent);
-	}
-	.fab:hover {
-		text-decoration: none;
-		background: var(--green-dark);
+	.tab span {
+		line-height: 1;
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 </style>
