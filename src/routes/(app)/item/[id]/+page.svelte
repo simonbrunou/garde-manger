@@ -83,7 +83,7 @@
 <ActionSheet
 	bind:open={confirmOpen}
 	title={t.item_delete}
-	cancelLabel={t.add_cancel}
+	cancelLabel={t.action_cancel}
 	actions={[
 		{ label: t.item_delete_confirm, destructive: true, onSelect: () => removeForm?.requestSubmit() }
 	]}
