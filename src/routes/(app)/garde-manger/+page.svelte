@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { m } from '$lib/i18n';
+	import NavigationBar from '$lib/components/ui/NavigationBar.svelte';
+	import HouseholdMenu from '$lib/components/ui/HouseholdMenu.svelte';
+	import Icon from '$lib/components/ui/Icon.svelte';
 	import SegmentedControl from '$lib/components/ui/SegmentedControl.svelte';
 	import ItemRow from '$lib/components/ui/ItemRow.svelte';
 	import EmptyState from '$lib/components/ui/EmptyState.svelte';
@@ -44,10 +47,18 @@
 		<Button href="/households" variant="primary">{t.nav_create_household}</Button>
 	</EmptyState>
 {:else}
-	<header class="head">
-		<h1>{data.activeHouseholdName}</h1>
-		<p class="sub">{t.home_subtitle(data.totalCount, data.urgentCount)}</p>
-	</header>
+	<NavigationBar title={data.activeHouseholdName}>
+		{#snippet leading()}
+			<HouseholdMenu households={data.households} activeHouseholdId={data.activeHouseholdId} {t} />
+		{/snippet}
+		{#snippet trailing()}
+			<a class="settings" href="/account" aria-label={t.nav_settings}>
+				<Icon name="settings" size={22} />
+			</a>
+		{/snippet}
+	</NavigationBar>
+
+	<p class="sub">{t.home_subtitle(data.totalCount, data.urgentCount)}</p>
 
 	<div class="filters">
 		<SegmentedControl
@@ -74,14 +85,17 @@
 {/if}
 
 <style>
-	.head {
-		margin-bottom: 0.8rem;
+	.settings {
+		display: inline-flex;
+		align-items: center;
+		color: var(--text-muted);
 	}
-	.head h1 {
-		margin: 0;
+	.settings:hover {
+		color: var(--text);
+		text-decoration: none;
 	}
 	.sub {
-		margin: 0.1rem 0 0;
+		margin: 0.1rem 0 0.8rem;
 		color: var(--text-muted);
 		font-weight: 600;
 		font-size: 0.9rem;
