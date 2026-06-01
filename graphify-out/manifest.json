@@ -620,8 +620,8 @@
     "semantic_hash": "89315d3d8cfe383e5a0ff06666c0cb57"
   },
   "/root/garde-manger/src/lib/components/ui/BottomNav.svelte": {
-    "mtime": 1780301475.1220682,
-    "ast_hash": "a8fcbe5b975a14f7698a432b9837a48e",
+    "mtime": 1780305488.7220345,
+    "ast_hash": "effb2de42baceae09d458e00ee7416c2",
     "semantic_hash": ""
   },
   "/root/garde-manger/src/lib/components/ui/ThemeToggle.svelte": {
