@@ -14,95 +14,108 @@
 
 <svelte:head><title>{t.account_title} · Garde-Manger</title></svelte:head>
 
-{#if form?.message}
-	<p class="error" role="alert">{form.message}</p>
-{/if}
-{#if form?.success}
-	<p class="success" role="status">{t.account_profile_updated}</p>
-{/if}
-
-<section class="card account-section">
-	<h2>{t.account_profile_section}</h2>
-	<form method="POST" action="?/updateProfile" class="account-form">
-		<div class="field">
-			<label for="displayName">{t.account_display_name_label}</label>
-			<input
-				type="text"
-				id="displayName"
-				name="displayName"
-				value={data.user.displayName}
-				required
-				maxlength="80"
-			/>
-		</div>
-		<div class="field">
-			<label for="locale">{t.account_locale_label}</label>
-			<select id="locale" name="locale">
-				<option value="fr" selected={data.user.locale === 'fr'}>{t.account_locale_fr}</option>
-				<option value="en" selected={data.user.locale === 'en'}>{t.account_locale_en}</option>
-			</select>
-		</div>
-		<button type="submit" class="btn btn-primary">{t.account_save}</button>
-	</form>
-</section>
-
-<section class="card account-section">
-	<h2>{t.account_theme_section}</h2>
-	<ThemeToggle value={data.theme} {t} />
-</section>
-
-<div class="account-section">
-	<List header={t.account_households_section}>
-		<ListRow href="/households" title={t.account_manage_households} chevron />
-	</List>
-</div>
-
-<section class="card account-section">
-	<h2>{t.account_passkeys_section}</h2>
-
-	{#if data.credentials.length === 0}
-		<p class="muted">{t.account_no_passkeys}</p>
-	{:else}
-		<ul class="passkey-list">
-			{#each data.credentials as cred (cred.id)}
-				<li>
-					<span class="passkey-name">{cred.deviceLabel ?? 'Passkey'}</span>
-					{#if cred.createdAt}
-						<span class="passkey-meta">
-							— {t.account_passkey_added}
-							{new Date(cred.createdAt).toLocaleDateString(dateLocale)}</span
-						>
-					{/if}
-					{#if cred.lastUsedAt}
-						<span class="passkey-meta"
-							>, {t.account_passkey_last_used}
-							{new Date(cred.lastUsedAt).toLocaleDateString(dateLocale)}</span
-						>
-					{/if}
-					<form method="POST" action="?/removePasskey" class="passkey-remove">
-						<input type="hidden" name="id" value={cred.id} />
-						<button type="submit" class="btn btn-ghost">{t.account_passkey_delete}</button>
-					</form>
-				</li>
-			{/each}
-		</ul>
+<!-- Uniform vertical gap between every card, including PushSettings (which is a
+     separate component without the .account-section margin) — prevents the
+     Notifications/Session cards from touching. -->
+<div class="account">
+	{#if form?.message}
+		<p class="error" role="alert">{form.message}</p>
+	{/if}
+	{#if form?.success}
+		<p class="success" role="status">{t.account_profile_updated}</p>
 	{/if}
 
-	<PasskeyEnroll />
-</section>
+	<section class="card account-section">
+		<h2>{t.account_profile_section}</h2>
+		<form method="POST" action="?/updateProfile" class="account-form">
+			<div class="field">
+				<label for="displayName">{t.account_display_name_label}</label>
+				<input
+					type="text"
+					id="displayName"
+					name="displayName"
+					value={data.user.displayName}
+					required
+					maxlength="80"
+				/>
+			</div>
+			<div class="field">
+				<label for="locale">{t.account_locale_label}</label>
+				<select id="locale" name="locale">
+					<option value="fr" selected={data.user.locale === 'fr'}>{t.account_locale_fr}</option>
+					<option value="en" selected={data.user.locale === 'en'}>{t.account_locale_en}</option>
+				</select>
+			</div>
+			<button type="submit" class="btn btn-primary">{t.account_save}</button>
+		</form>
+	</section>
 
-<PushSettings locale={data.locale} vapidPublicKey={data.vapidPublicKey} />
+	<section class="card account-section">
+		<h2>{t.account_theme_section}</h2>
+		<ThemeToggle value={data.theme} {t} />
+	</section>
 
-<section class="card account-section">
-	<h2>{t.account_session_section}</h2>
-	<form method="POST" action="/logout">
-		<button type="submit" class="btn btn-danger logout-button">{t.account_logout}</button>
-	</form>
-</section>
+	<div class="account-section">
+		<List header={t.account_households_section}>
+			<ListRow href="/households" title={t.account_manage_households} chevron />
+		</List>
+	</div>
+
+	<section class="card account-section">
+		<h2>{t.account_passkeys_section}</h2>
+
+		{#if data.credentials.length === 0}
+			<p class="muted">{t.account_no_passkeys}</p>
+		{:else}
+			<ul class="passkey-list">
+				{#each data.credentials as cred (cred.id)}
+					<li>
+						<span class="passkey-name">{cred.deviceLabel ?? 'Passkey'}</span>
+						{#if cred.createdAt}
+							<span class="passkey-meta">
+								— {t.account_passkey_added}
+								{new Date(cred.createdAt).toLocaleDateString(dateLocale)}</span
+							>
+						{/if}
+						{#if cred.lastUsedAt}
+							<span class="passkey-meta"
+								>, {t.account_passkey_last_used}
+								{new Date(cred.lastUsedAt).toLocaleDateString(dateLocale)}</span
+							>
+						{/if}
+						<form method="POST" action="?/removePasskey" class="passkey-remove">
+							<input type="hidden" name="id" value={cred.id} />
+							<button type="submit" class="btn btn-ghost">{t.account_passkey_delete}</button>
+						</form>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+
+		<PasskeyEnroll />
+	</section>
+
+	<PushSettings locale={data.locale} vapidPublicKey={data.vapidPublicKey} />
+
+	<section class="card account-section">
+		<h2>{t.account_session_section}</h2>
+		<form method="POST" action="/logout">
+			<button type="submit" class="btn btn-danger logout-button">{t.account_logout}</button>
+		</form>
+	</section>
+</div>
 
 <style>
-	.account-section {
-		margin-bottom: 1rem;
+	.account {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	/* Make every direct child a uniform block; PushSettings renders its own
+	   <section> with no helper class, so target the container's children too. */
+	.account > :global(*) {
+		margin: 0;
 	}
 
 	.account-form {
