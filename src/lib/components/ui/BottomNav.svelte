@@ -7,7 +7,8 @@
 </script>
 
 <!-- HIG tab bar: four equal flat tabs, translucent material, brand tint on the
-	 active tab. The raised "+" FAB was removed in favour of a standard Add tab.
+	 active tab. The group is width-capped and centered so the tabs stay
+	 comfortably grouped on wide screens instead of stretching too sparse.
 	 Settings/account is reached via the top-bar gear, not a tab (HIG: tabs are
 	 for frequent peer destinations). -->
 <nav class="tab-bar" aria-label={t.nav_primary}>
@@ -33,7 +34,7 @@
 		right: 0;
 		z-index: 20;
 		display: flex;
-		justify-content: space-around;
+		justify-content: center;
 		align-items: stretch;
 		/* Height includes the home-indicator inset so the tab content keeps its
 		   full --tab-bar-h (border-box would otherwise eat into it). */
@@ -49,7 +50,10 @@
 		border-top: 1px solid var(--separator);
 	}
 	.tab {
-		flex: 1;
+		/* Grow to share the bar, but cap width so four tabs stay grouped near
+		   the center on wide screens instead of stretching too sparse. */
+		flex: 1 1 0;
+		max-width: 6.5rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
