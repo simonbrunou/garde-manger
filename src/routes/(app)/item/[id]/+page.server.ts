@@ -2,17 +2,26 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { foods, products } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
-import { requireMembership, MembershipError } from '$lib/server/households';
+import {
+	requireMembership,
+	MembershipError,
+	listForUser,
+	resolveActiveHouseholdId
+} from '$lib/server/households';
 import { getItemScoped, updateItem, deleteItem, setStatus, bandFor } from '$lib/server/inventory';
 import type { PageServerLoad, Actions } from './$types';
 
-function activeHouseholdId(cookies: import('@sveltejs/kit').Cookies): string | null {
-	return cookies.get('gm_household') ?? null;
+// Resolve the active household for an action: validate the cookie against the user's
+// memberships and fall back to their first household (mirrors the layout). A raw cookie
+// read here would 403 a valid member whose cookie went stale. See households.ts.
+function actionHousehold(cookies: import('@sveltejs/kit').Cookies, userId: string): string | null {
+	const households = listForUser(db, userId);
+	return resolveActiveHouseholdId(cookies.get('gm_household') ?? null, households);
 }
 
-export const load: PageServerLoad = async ({ params, locals, cookies, parent }) => {
+export const load: PageServerLoad = async ({ params, locals, parent }) => {
 	const { locale, households, activeHouseholdId: parentHouseholdId } = await parent();
-	const hh = activeHouseholdId(cookies) ?? parentHouseholdId;
+	const hh = parentHouseholdId;
 	if (!hh) redirect(303, '/garde-manger');
 	try {
 		requireMembership(db, hh, locals.user!.id);
@@ -70,7 +79,7 @@ export const load: PageServerLoad = async ({ params, locals, cookies, parent }) 
 
 export const actions: Actions = {
 	update: async ({ request, params, locals, cookies }) => {
-		const hh = activeHouseholdId(cookies);
+		const hh = actionHousehold(cookies, locals.user!.id);
 		if (!hh) error(400, 'No active household');
 		try {
 			requireMembership(db, hh, locals.user!.id);
@@ -103,7 +112,7 @@ export const actions: Actions = {
 	},
 
 	consume: async ({ params, locals, cookies }) => {
-		const hh = activeHouseholdId(cookies);
+		const hh = actionHousehold(cookies, locals.user!.id);
 		if (!hh) error(400, 'No active household');
 		try {
 			requireMembership(db, hh, locals.user!.id);
@@ -118,7 +127,7 @@ export const actions: Actions = {
 	},
 
 	discard: async ({ params, locals, cookies }) => {
-		const hh = activeHouseholdId(cookies);
+		const hh = actionHousehold(cookies, locals.user!.id);
 		if (!hh) error(400, 'No active household');
 		try {
 			requireMembership(db, hh, locals.user!.id);
@@ -133,7 +142,7 @@ export const actions: Actions = {
 	},
 
 	remove: async ({ params, locals, cookies }) => {
-		const hh = activeHouseholdId(cookies);
+		const hh = actionHousehold(cookies, locals.user!.id);
 		if (!hh) error(400, 'No active household');
 		try {
 			requireMembership(db, hh, locals.user!.id);

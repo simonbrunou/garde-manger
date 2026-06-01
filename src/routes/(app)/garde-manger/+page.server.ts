@@ -2,7 +2,12 @@ import { error, redirect } from '@sveltejs/kit';
 import { inArray } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { foods, products } from '$lib/server/db/schema';
-import { requireMembership, MembershipError } from '$lib/server/households';
+import {
+	requireMembership,
+	MembershipError,
+	listForUser,
+	resolveActiveHouseholdId
+} from '$lib/server/households';
 import { listActive, setStatus, bandFor } from '$lib/server/inventory';
 import type { PageServerLoad, Actions } from './$types';
 import type { Band } from '$lib/server/inventory';
@@ -153,7 +158,11 @@ export const actions: Actions = {
 		const id = (formData.get('id') as string | null) ?? '';
 		if (!id) error(400, 'Missing id');
 
-		const activeHouseholdId = resolveActiveHouseholdId(cookies);
+		const households = listForUser(db, locals.user!.id);
+		const activeHouseholdId = resolveActiveHouseholdId(
+			cookies.get('gm_household') ?? null,
+			households
+		);
 		if (!activeHouseholdId) error(400, 'No active household');
 
 		try {
@@ -178,7 +187,11 @@ export const actions: Actions = {
 		const id = (formData.get('id') as string | null) ?? '';
 		if (!id) error(400, 'Missing id');
 
-		const activeHouseholdId = resolveActiveHouseholdId(cookies);
+		const households = listForUser(db, locals.user!.id);
+		const activeHouseholdId = resolveActiveHouseholdId(
+			cookies.get('gm_household') ?? null,
+			households
+		);
 		if (!activeHouseholdId) error(400, 'No active household');
 
 		try {
@@ -198,9 +211,3 @@ export const actions: Actions = {
 		redirect(303, target);
 	}
 };
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function resolveActiveHouseholdId(cookies: import('@sveltejs/kit').Cookies): string | null {
-	return cookies.get('gm_household') ?? null;
-}

@@ -1,7 +1,12 @@
 import { error, redirect, fail } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { db } from '$lib/server/db';
-import { requireMembership, MembershipError, listForUser } from '$lib/server/households';
+import {
+	requireMembership,
+	MembershipError,
+	listForUser,
+	resolveActiveHouseholdId
+} from '$lib/server/households';
 import { searchFoods, computeBestBy } from '$lib/server/catalogue';
 import { addFresh, addCustom } from '$lib/server/inventory';
 import { foods, shelfLives } from '$lib/server/db/schema';
@@ -10,14 +15,6 @@ import { m } from '$lib/i18n';
 import type { PageServerLoad, Actions } from './$types';
 
 const HOUSEHOLD_COOKIE = 'gm_household';
-
-function resolveActiveHouseholdId(
-	cookieId: string | null,
-	households: { id: string }[]
-): string | null {
-	const ids = households.map((h) => h.id);
-	return cookieId && ids.includes(cookieId) ? cookieId : (households[0]?.id ?? null);
-}
 
 // ── Load ──────────────────────────────────────────────────────────────────────
 

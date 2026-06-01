@@ -135,6 +135,21 @@ export function createHousehold(db: DB, { name, ownerId }: { name: string; owner
 	});
 }
 
+/**
+ * Resolve the active household id the way the app layout does: trust the cookie
+ * only when it points to a household the user is actually a member of, otherwise
+ * fall back to their first household. Actions MUST use this rather than reading the
+ * raw cookie — a stale cookie (e.g. left over after being removed from a household)
+ * would otherwise authorise against a household the user no longer belongs to and 403.
+ */
+export function resolveActiveHouseholdId(
+	cookieId: string | null,
+	households: { id: string }[]
+): string | null {
+	const ids = households.map((h) => h.id);
+	return cookieId && ids.includes(cookieId) ? cookieId : (households[0]?.id ?? null);
+}
+
 export function listForUser(db: DB, userId: string) {
 	const rows = db
 		.select({

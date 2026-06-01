@@ -8,6 +8,7 @@ import { users, memberships, households, invitations } from './db/schema';
 import {
 	createHousehold,
 	listForUser,
+	resolveActiveHouseholdId,
 	requireMembership,
 	MembershipError,
 	updateHousehold,
@@ -106,6 +107,29 @@ test('requireMembership returns the membership for a valid member', () => {
 	const m = requireMembership(db, household.id, MEMBER_ID);
 	expect(m.userId).toBe(MEMBER_ID);
 	expect(m.role).toBe('member');
+});
+
+test('resolveActiveHouseholdId keeps a cookie that matches a member household', () => {
+	const a = createHousehold(db, { name: 'A', ownerId: MEMBER_ID });
+	const b = createHousehold(db, { name: 'B', ownerId: MEMBER_ID });
+	const list = listForUser(db, MEMBER_ID);
+
+	expect(resolveActiveHouseholdId(b.id, list)).toBe(b.id);
+	expect(resolveActiveHouseholdId(a.id, list)).toBe(a.id);
+});
+
+test('resolveActiveHouseholdId falls back when the cookie points to a non-member household', () => {
+	// Owner's private household — the member is NOT in it.
+	const ownerOnly = createHousehold(db, { name: 'Owner Only', ownerId: OWNER_ID });
+	// The household the member actually belongs to.
+	const shared = createHousehold(db, { name: 'Shared', ownerId: MEMBER_ID });
+	const list = listForUser(db, MEMBER_ID);
+
+	// A stale cookie pointing at a household the member no longer/never belonged to
+	// must resolve to one of THEIR households — never the stale id (which would 403).
+	expect(resolveActiveHouseholdId(ownerOnly.id, list)).toBe(shared.id);
+	// Unset cookie falls back too.
+	expect(resolveActiveHouseholdId(null, list)).toBe(shared.id);
 });
 
 test('requireMembership throws MembershipError("not_member") for a non-member', () => {
