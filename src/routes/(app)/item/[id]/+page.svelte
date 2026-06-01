@@ -4,13 +4,9 @@
 	import DayBadge from '$lib/components/ui/DayBadge.svelte';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
-	import ActionSheet from '$lib/components/ui/ActionSheet.svelte';
 	let { data } = $props();
 	const t = $derived(m(data.locale));
 	const it = $derived(data.item);
-
-	let confirmOpen = $state(false);
-	let removeForm: HTMLFormElement | undefined = $state();
 </script>
 
 <svelte:head><title>{t.item_detail_title}</title></svelte:head>
@@ -71,23 +67,14 @@
 	</form>
 </div>
 
-<div class="danger">
-	<Button variant="danger" icon="trash" full onclick={() => (confirmOpen = true)}>
-		{t.item_delete}
-	</Button>
-</div>
-
-<!-- Hidden form submitted by the action-sheet's destructive choice. -->
-<form method="POST" action="?/remove" bind:this={removeForm} hidden></form>
-
-<ActionSheet
-	bind:open={confirmOpen}
-	title={t.item_delete}
-	cancelLabel={t.action_cancel}
-	actions={[
-		{ label: t.item_delete_confirm, destructive: true, onSelect: () => removeForm?.requestSubmit() }
-	]}
-/>
+<!-- Destructive delete as a native <details> disclosure: works with no JS, and
+     the two-step expand-then-confirm guards against accidental deletion. -->
+<details class="danger">
+	<summary>{t.item_delete}</summary>
+	<form method="POST" action="?/remove">
+		<Button type="submit" variant="danger" icon="trash" full>{t.item_delete_confirm}</Button>
+	</form>
+</details>
 
 <style>
 	.head {
@@ -125,6 +112,15 @@
 		display: flex;
 	}
 	.danger {
+		margin-top: 0.5rem;
+	}
+	.danger summary {
+		color: var(--red-dark);
+		font-weight: 700;
+		cursor: pointer;
+		padding: 0.5rem 0;
+	}
+	.danger form {
 		margin-top: 0.5rem;
 	}
 	.added {

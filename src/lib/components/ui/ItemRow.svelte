@@ -34,9 +34,13 @@
 			: ''
 	);
 
-	// Hidden forms submitted by the swipe actions (and reused as the click target).
-	let consumeForm: HTMLFormElement | undefined = $state();
-	let discardForm: HTMLFormElement | undefined = $state();
+	// Real lifecycle forms (work with NO JS). The inline urgent buttons submit
+	// them via the HTML `form=` attribute; the optional swipe enhancement submits
+	// the same forms via requestSubmit() when JS is available. Unique ids per row.
+	const consumeId = `consume-${item.id}`;
+	const discardId = `discard-${item.id}`;
+	let consumeForm: HTMLFormElement | null = $state(null);
+	let discardForm: HTMLFormElement | null = $state(null);
 
 	const swipeActions = $derived([
 		{ label: t.lifecycle_ate, onTrigger: () => consumeForm?.requestSubmit() },
@@ -48,11 +52,11 @@
 	]);
 </script>
 
-<!-- Hidden lifecycle forms: driven by swipe actions and the inline fallback buttons. -->
-<form method="POST" action="/?/consume" bind:this={consumeForm} hidden>
+<!-- Lifecycle forms with ids so buttons can submit them via `form=` with no JS. -->
+<form id={consumeId} method="POST" action="/?/consume" bind:this={consumeForm} hidden>
 	<input type="hidden" name="id" value={item.id} />
 </form>
-<form method="POST" action="/?/discard" bind:this={discardForm} hidden>
+<form id={discardId} method="POST" action="/?/discard" bind:this={discardForm} hidden>
 	<input type="hidden" name="id" value={item.id} />
 </form>
 
@@ -74,13 +78,13 @@
 			<DayBadge band={item.band} effectiveDate={item.effectiveDate} {t} />
 		</a>
 		{#if item.band === 'urgent'}
-			<!-- Inline fallback for urgent items: always-visible, keyboard-accessible
-			     buttons that submit the same hidden lifecycle forms as the swipe. -->
+			<!-- Always-visible, no-JS urgent actions: submit the lifecycle forms above
+			     via the `form=` attribute (works without client JS). -->
 			<div class="actions">
-				<button class="act eat" onclick={() => consumeForm?.requestSubmit()}>
+				<button type="submit" form={consumeId} class="act eat">
 					<Icon name="check" size={15} />{t.lifecycle_ate}
 				</button>
-				<button class="act toss" onclick={() => discardForm?.requestSubmit()}>
+				<button type="submit" form={discardId} class="act toss">
 					<Icon name="trash" size={15} />{t.lifecycle_tossed}
 				</button>
 			</div>
