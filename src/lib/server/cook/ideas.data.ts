@@ -3,6 +3,10 @@ export interface Idea {
 	en: string;
 }
 
+/** Fallback shown when an expiring item has no category-specific idea
+ * (e.g. free-text custom items). Keeps the cook screen useful for everything. */
+export const GENERIC_IDEA: Idea = { fr: 'À consommer en priorité', en: 'Use it up soon' };
+
 /** Curated, offline use-it-up ideas keyed by foods.category. Draft culinary
  * suggestions only — not food-safety advice. */
 export const IDEAS: Record<string, Idea[]> = {

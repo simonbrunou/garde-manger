@@ -4,7 +4,7 @@ import { db } from '$lib/server/db';
 import { foods } from '$lib/server/db/schema';
 import { requireMembership, MembershipError } from '$lib/server/households';
 import { listActive, bandFor } from '$lib/server/inventory';
-import { ideasForCategory } from '$lib/server/cook';
+import { ideasForCategory, GENERIC_IDEA } from '$lib/server/cook';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, parent }) => {
@@ -35,8 +35,12 @@ export const load: PageServerLoad = async ({ locals, parent }) => {
 		if (band !== 'urgent' && band !== 'soon') continue;
 		const food = it.foodId ? foodMap.get(it.foodId) : undefined;
 		const category = food?.category ?? null;
-		const ideas = ideasForCategory(category).map((i) => (locale === 'fr' ? i.fr : i.en));
-		if (ideas.length === 0) continue; // only items we have ideas for
+		// Curated ideas when the category has them; otherwise a generic use-it-up
+		// nudge so custom/uncategorised items still surface here.
+		const curated = ideasForCategory(category);
+		const ideas = (curated.length > 0 ? curated : [GENERIC_IDEA]).map((i) =>
+			locale === 'fr' ? i.fr : i.en
+		);
 		const name = food ? (locale === 'fr' ? food.nameFr : food.nameEn) : (it.customName ?? '—');
 		expiring.push({ id: it.id, name, band, ideas });
 	}
