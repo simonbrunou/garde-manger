@@ -14,8 +14,6 @@
 
 <svelte:head><title>{t.account_title} · Garde-Manger</title></svelte:head>
 
-<h1>{t.account_title}</h1>
-
 {#if form?.message}
 	<p class="error" role="alert">{form.message}</p>
 {/if}

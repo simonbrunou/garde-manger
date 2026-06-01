@@ -18,10 +18,7 @@
 {:else if empty}
 	<EmptyState icon="stats" title={t.bilan_empty_title} body={t.bilan_empty_body} />
 {:else if s}
-	<header class="head">
-		<h1>{t.bilan_title}</h1>
-		<p class="sub">{t.bilan_month_subtitle}</p>
-	</header>
+	<p class="sub">{t.bilan_month_subtitle}</p>
 	<div class="tiles">
 		<StatTile value={s.eaten} label={t.bilan_eaten} tone="eaten" />
 		<StatTile value={s.wasted} label={t.bilan_wasted} tone="wasted" />
@@ -36,14 +33,8 @@
 {/if}
 
 <style>
-	.head {
-		margin-bottom: 1rem;
-	}
-	.head h1 {
-		margin: 0;
-	}
 	.sub {
-		margin: 0.1rem 0 0;
+		margin: 0 0 1rem;
 		color: var(--text-muted);
 		font-weight: 600;
 		font-size: 0.9rem;

@@ -17,10 +17,7 @@
 {:else if data.items.length === 0}
 	<EmptyState icon="cook" title={t.cuisiner_empty_title} body={t.cuisiner_empty_body} />
 {:else}
-	<header class="head">
-		<h1>{t.cuisiner_title}</h1>
-		<p class="sub">{t.cuisiner_subtitle}</p>
-	</header>
+	<p class="sub">{t.cuisiner_subtitle}</p>
 	<div class="groups">
 		{#each data.items as item (item.id)}
 			<!-- Each food is a grouped list: the food name (a navigable row with a
@@ -36,14 +33,8 @@
 {/if}
 
 <style>
-	.head {
-		margin-bottom: 1rem;
-	}
-	.head h1 {
-		margin: 0;
-	}
 	.sub {
-		margin: 0.1rem 0 0;
+		margin: 0 0 1rem;
 		color: var(--text-muted);
 		font-weight: 600;
 		font-size: 0.9rem;

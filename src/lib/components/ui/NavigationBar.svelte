@@ -38,7 +38,14 @@
 	class:hairline={!large || collapsed}
 >
 	<div class="slot leading">{@render leading?.()}</div>
-	<div class="inline-title" aria-hidden={large && !collapsed}>{title}</div>
+	{#if large}
+		<!-- On large bars the big title below is the page <h1>; this inline copy
+		     just fades in on scroll, so it's a presentational div. -->
+		<div class="inline-title" aria-hidden={!collapsed}>{title}</div>
+	{:else}
+		<!-- On inline bars this IS the page's sole heading. -->
+		<h1 class="inline-title">{title}</h1>
+	{/if}
 	<div class="slot trailing">{@render trailing?.()}</div>
 </header>
 
@@ -82,6 +89,7 @@
 		justify-content: flex-end;
 	}
 	.inline-title {
+		margin: 0;
 		font-size: var(--text-headline);
 		font-weight: 600;
 		text-align: center;
