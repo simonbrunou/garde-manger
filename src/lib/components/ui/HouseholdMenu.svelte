@@ -12,9 +12,9 @@
 
 {#if households.length > 0}
 	<details class="switcher">
-		<summary aria-label={t.nav_household_switcher}>
-			<span class="hh-name">{active?.name ?? households[0].name}</span>
-			<Icon name="chevron-right" size={16} class="chev" />
+		<summary aria-label={t.nav_household_switcher} title={active?.name ?? households[0].name}>
+			<Icon name="households" size={20} />
+			<Icon name="chevron-right" size={14} class="chev" />
 		</summary>
 		<div class="menu">
 			<form method="POST" action="/households?/switch">
@@ -48,13 +48,21 @@
 	.switcher summary {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.3rem;
-		padding: 0.35rem 0.7rem;
+		justify-content: center;
+		gap: 0.15rem;
+		/* Compact icon button: 44pt tap target, never wraps; the household name
+		   lives in the large title below, so it isn't repeated here. */
+		min-width: 44px;
+		min-height: 44px;
+		margin: -0.4rem -0.4rem;
+		padding: 0 0.4rem;
 		border-radius: var(--radius-pill);
-		background: var(--surface-2);
-		font-weight: 800;
+		color: var(--text-muted);
 		cursor: pointer;
 		list-style: none;
+	}
+	.switcher summary:hover {
+		color: var(--text);
 	}
 	.switcher summary::-webkit-details-marker {
 		display: none;
