@@ -6,8 +6,10 @@
 	const path = $derived(page.url.pathname);
 </script>
 
-<!-- HIG tab bar: five equal flat tabs, translucent material, brand tint on the
-	 active tab. The raised "+" FAB was removed in favour of a standard Add tab. -->
+<!-- HIG tab bar: four equal flat tabs, translucent material, brand tint on the
+	 active tab. The raised "+" FAB was removed in favour of a standard Add tab.
+	 Settings/account is reached via the top-bar gear, not a tab (HIG: tabs are
+	 for frequent peer destinations). -->
 <nav class="tab-bar" aria-label={t.nav_primary}>
 	<a href="/garde-manger" class="tab" aria-current={path === '/garde-manger' ? 'page' : undefined}>
 		<Icon name="home" size={26} /><span>{t.nav_home}</span>
@@ -20,9 +22,6 @@
 	</a>
 	<a href="/bilan" class="tab" aria-current={path.startsWith('/bilan') ? 'page' : undefined}>
 		<Icon name="stats" size={26} /><span>{t.nav_bilan}</span>
-	</a>
-	<a href="/account" class="tab" aria-current={path.startsWith('/account') ? 'page' : undefined}>
-		<Icon name="user" size={26} /><span>{t.nav_settings}</span>
 	</a>
 </nav>
 
