@@ -36,9 +36,9 @@
 
 	// Real lifecycle forms (work with NO JS). The inline urgent buttons submit
 	// them via the HTML `form=` attribute; the optional swipe enhancement submits
-	// the same forms via requestSubmit() when JS is available. Unique ids per row.
-	const consumeId = `consume-${item.id}`;
-	const discardId = `discard-${item.id}`;
+	// the same forms via requestSubmit() when JS is available. Ids track the prop.
+	const consumeId = $derived(`consume-${item.id}`);
+	const discardId = $derived(`discard-${item.id}`);
 	let consumeForm: HTMLFormElement | null = $state(null);
 	let discardForm: HTMLFormElement | null = $state(null);
 
