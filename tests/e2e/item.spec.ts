@@ -184,13 +184,19 @@ test('Quantity floored at 1: setting 0 must not persist 0', async ({ page }) => 
 
 	await page.goto(`/item/${itemId}`);
 
-	// The quantity input has min=1; force a 0 to probe server-side flooring.
+	// The quantity input has min=1; bypass the native constraint (as add.spec does) so
+	// the 0 actually reaches the server and exercises its flooring (Math.max(1, …)).
 	const qty = page.getByLabel('Quantity');
-	await qty.fill('0');
+	await qty.evaluate((el: HTMLInputElement) => {
+		el.removeAttribute('min');
+		el.value = '0';
+	});
+	await expect(qty).toHaveValue('0');
 	await page.getByRole('button', { name: 'Save' }).click();
 	await page.waitForURL(`**/item/${itemId}`);
 
-	// Intended behavior: quantity is floored to at least 1 (0 must never persist).
+	// Intended: 0 is floored to 1 (never persisted as 0). The seed was 3, so a value of
+	// exactly 1 also proves the form submitted (it wasn't blocked by native validation).
 	const row = db.getItem(itemId)!;
-	expect(Number(row.quantity)).toBeGreaterThanOrEqual(1);
+	expect(Number(row.quantity)).toBe(1);
 });

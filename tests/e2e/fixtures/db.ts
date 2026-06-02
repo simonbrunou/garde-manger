@@ -8,7 +8,11 @@
 import { DatabaseSync } from 'node:sqlite';
 import { randomBytes, createHash } from 'node:crypto';
 
-const DB_PATH = process.env.DATABASE_PATH ?? '.e2e/run.db';
+// Pinned to the same path playwright.config.ts gives the server via webServer.env.
+// Do NOT honor an ambient DATABASE_PATH: the runner process may have one exported
+// (a dev's real DB) while the app is always on .e2e/run.db — that mismatch would seed
+// the wrong database and could mutate non-test data.
+const DB_PATH = '.e2e/run.db';
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30; // 30 days (matches session.ts)
 
 function withDb<T>(fn: (d: DatabaseSync) => T): T {
