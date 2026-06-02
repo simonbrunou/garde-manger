@@ -25,12 +25,6 @@
 			title: t.landing_feature_scan_title,
 			body: t.landing_feature_scan_body,
 			tone: 'green'
-		},
-		{
-			icon: 'cook',
-			title: t.landing_feature_cook_title,
-			body: t.landing_feature_cook_body,
-			tone: 'red'
 		}
 	] satisfies FeatureCard[]);
 </script>

@@ -254,13 +254,6 @@ export const en: Messages = {
 	bilan_empty_title: 'Nothing to report yet',
 	bilan_empty_body: 'Mark items as eaten or thrown away to track your waste.',
 
-	// --- Cuisiner (M10) ---
-	nav_cuisiner: 'Cook',
-	cuisiner_title: 'Cook',
-	cuisiner_subtitle: 'Ideas for items to use up soon',
-	cuisiner_empty_title: 'Nothing to use up',
-	cuisiner_empty_body: 'No items need using up right now.',
-	cuisiner_view_item: 'View item',
 	bilan_streak_zero: 'Back to zero — fresh start!',
 
 	// --- Landing (public) ---
@@ -275,8 +268,6 @@ export const en: Messages = {
 	landing_feature_expiry_body: 'Get notified before food goes bad.',
 	landing_feature_scan_title: 'Barcode scan',
 	landing_feature_scan_body: 'Add a product just by scanning it.',
-	landing_feature_cook_title: 'Recipe ideas',
-	landing_feature_cook_body: "Cook from what's already in your kitchen.",
 	landing_closing_prompt: 'Ready to stop wasting food?',
 	landing_meta_description: 'Garde-Manger — track your food stock, cut waste, and cook smart.'
 };

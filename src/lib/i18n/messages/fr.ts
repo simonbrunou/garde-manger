@@ -254,13 +254,6 @@ export const fr: Messages = {
 	bilan_empty_title: 'Pas encore de bilan',
 	bilan_empty_body: 'Marquez des aliments comme mangés ou jetés pour suivre votre anti-gaspi.',
 
-	// --- Cuisiner (M10) ---
-	nav_cuisiner: 'Cuisiner',
-	cuisiner_title: 'Cuisiner',
-	cuisiner_subtitle: 'Idées pour vos aliments à consommer vite',
-	cuisiner_empty_title: 'Rien ne presse',
-	cuisiner_empty_body: "Aucun aliment à consommer rapidement pour l'instant.",
-	cuisiner_view_item: 'Voir le produit',
 	bilan_streak_zero: "Reparti·e à zéro — c'est reparti !",
 
 	// --- Landing (public) ---
@@ -275,8 +268,6 @@ export const fr: Messages = {
 	landing_feature_expiry_body: 'Soyez prévenu avant que ça ne périme.',
 	landing_feature_scan_title: 'Scan code-barres',
 	landing_feature_scan_body: 'Ajoutez un produit en le scannant.',
-	landing_feature_cook_title: 'Idées recettes',
-	landing_feature_cook_body: 'Cuisinez à partir de ce que vous avez déjà.',
 	landing_closing_prompt: 'Prêt à arrêter le gaspillage ?',
 	landing_meta_description:
 		'Garde-Manger — suivez votre stock alimentaire, évitez le gaspillage et cuisinez malin.'
@@ -510,13 +501,6 @@ export interface Messages {
 	bilan_streak_none: string;
 	bilan_empty_title: string;
 	bilan_empty_body: string;
-	// --- Cuisiner (M10) ---
-	nav_cuisiner: string;
-	cuisiner_title: string;
-	cuisiner_subtitle: string;
-	cuisiner_empty_title: string;
-	cuisiner_empty_body: string;
-	cuisiner_view_item: string;
 	bilan_streak_zero: string;
 	// --- Landing (public) ---
 	landing_hero_title: string;
@@ -529,8 +513,6 @@ export interface Messages {
 	landing_feature_expiry_body: string;
 	landing_feature_scan_title: string;
 	landing_feature_scan_body: string;
-	landing_feature_cook_title: string;
-	landing_feature_cook_body: string;
 	landing_closing_prompt: string;
 	landing_meta_description: string;
 }
