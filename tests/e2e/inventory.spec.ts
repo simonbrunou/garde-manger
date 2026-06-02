@@ -203,3 +203,38 @@ test('consume from the list removes the item from the active list', async ({ pag
 	const active = db.getActiveItems(hid).map((r) => r.id as string);
 	expect(active).not.toContain(id);
 });
+
+test('eaten on a multi-unit item decrements before closing the row', async ({ page }) => {
+	const hid = await dedicatedHousehold(page);
+	const oid = ownerId();
+	const name = `multi-${randomUUID()}`;
+	// Urgent (past) so the inline "Eaten" button shows without needing focus. Qty 2.
+	const id = db.seedItem({
+		householdId: hid,
+		addedBy: oid,
+		customName: name,
+		useByDate: utcMidnight(-1),
+		quantity: 2
+	});
+
+	await page.goto('/garde-manger');
+	const row = () => page.locator('section.band .row').filter({ has: page.getByText(name) });
+
+	// First "Eaten": decrements to 1, row stays on the list.
+	let consumed = page.waitForResponse(
+		(r) => r.request().method() === 'POST' && r.url().includes('/garde-manger')
+	);
+	await row().getByRole('button', { name: 'Eaten' }).click();
+	await consumed;
+	await expect(page.getByText(name)).toBeVisible();
+	expect(db.getActiveItems(hid).map((r) => r.id as string)).toContain(id);
+
+	// Second "Eaten": closes the row, it disappears from the active list.
+	consumed = page.waitForResponse(
+		(r) => r.request().method() === 'POST' && r.url().includes('/garde-manger')
+	);
+	await row().getByRole('button', { name: 'Eaten' }).click();
+	await consumed;
+	await expect(page.getByText(name)).toHaveCount(0);
+	expect(db.getActiveItems(hid).map((r) => r.id as string)).not.toContain(id);
+});

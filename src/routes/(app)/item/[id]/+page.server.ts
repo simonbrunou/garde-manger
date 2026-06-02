@@ -8,7 +8,7 @@ import {
 	listForUser,
 	resolveActiveHouseholdId
 } from '$lib/server/households';
-import { getItemScoped, updateItem, deleteItem, setStatus, bandFor } from '$lib/server/inventory';
+import { getItemScoped, updateItem, deleteItem, recordUse, bandFor } from '$lib/server/inventory';
 import type { PageServerLoad, Actions } from './$types';
 
 // Resolve the active household for an action: validate the cookie against the user's
@@ -126,7 +126,7 @@ export const actions: Actions = {
 			if (e instanceof MembershipError) error(403, 'Forbidden');
 			throw e;
 		}
-		if (!setStatus(db, { id: params.id, householdId: hh, status: 'consumed' })) {
+		if (!recordUse(db, { id: params.id, householdId: hh, outcome: 'consumed' })) {
 			error(404, 'Not found');
 		}
 		redirect(303, '/garde-manger');
@@ -141,7 +141,7 @@ export const actions: Actions = {
 			if (e instanceof MembershipError) error(403, 'Forbidden');
 			throw e;
 		}
-		if (!setStatus(db, { id: params.id, householdId: hh, status: 'discarded' })) {
+		if (!recordUse(db, { id: params.id, householdId: hh, outcome: 'discarded' })) {
 			error(404, 'Not found');
 		}
 		redirect(303, '/garde-manger');

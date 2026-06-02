@@ -8,7 +8,7 @@ import {
 	listForUser,
 	resolveActiveHouseholdId
 } from '$lib/server/households';
-import { listActive, setStatus, bandFor } from '$lib/server/inventory';
+import { listActive, recordUse, bandFor } from '$lib/server/inventory';
 import type { PageServerLoad, Actions } from './$types';
 import type { Band } from '$lib/server/inventory';
 
@@ -172,7 +172,7 @@ export const actions: Actions = {
 			throw e;
 		}
 
-		const consumed = setStatus(db, { id, householdId: activeHouseholdId, status: 'consumed' });
+		const consumed = recordUse(db, { id, householdId: activeHouseholdId, outcome: 'consumed' });
 		if (!consumed) error(404, 'Item not found in your active household');
 
 		const locationParam = url.searchParams.get('location');
@@ -201,7 +201,7 @@ export const actions: Actions = {
 			throw e;
 		}
 
-		const discarded = setStatus(db, { id, householdId: activeHouseholdId, status: 'discarded' });
+		const discarded = recordUse(db, { id, householdId: activeHouseholdId, outcome: 'discarded' });
 		if (!discarded) error(404, 'Item not found in your active household');
 
 		const locationParam = url.searchParams.get('location');
