@@ -1,4 +1,4 @@
-import { test, expect, loginAs, setActiveHousehold } from './fixtures/test';
+import { test, expect, setActiveHousehold } from './fixtures/test';
 import * as db from './fixtures/db';
 
 // The /add route lets a user add inventory items three ways: scanner, fresh-produce

@@ -26,5 +26,6 @@ jobs:
       - name: Lint
         run: bun run lint
 
-      - name: Test
-        run: bun test
+      - name: Unit tests
+        # e2e specs (tests/e2e) run under Playwright via `bun run test:e2e`, not Bun.
+        run: bun test ./src

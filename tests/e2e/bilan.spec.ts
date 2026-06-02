@@ -1,4 +1,4 @@
-import { test, expect, loginAs, setActiveHousehold } from './fixtures/test';
+import { test, expect, setActiveHousehold } from './fixtures/test';
 import * as db from './fixtures/db';
 import { utcMidnight } from './fixtures/dates';
 
