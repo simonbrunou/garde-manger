@@ -1,4 +1,4 @@
-import { timingSafeEqual } from 'node:crypto';
+import { timingSafeEqual, createHash } from 'node:crypto';
 import { inArray } from 'drizzle-orm';
 import type { DB } from './db/client';
 import { users } from './db/schema';
@@ -8,7 +8,8 @@ import {
 	listSubscriptionsForUser,
 	sendToSubscription,
 	type PushSender,
-	type Vapid
+	type Vapid,
+	type HostResolver
 } from './push';
 
 /**
@@ -36,7 +37,7 @@ export interface DailyReminderSummary {
  */
 export async function runDailyReminders(
 	db: DB,
-	opts: { vapid: Vapid; sender: PushSender; origin: string; now?: Date }
+	opts: { vapid: Vapid; sender: PushSender; origin: string; now?: Date; resolve?: HostResolver }
 ): Promise<DailyReminderSummary> {
 	const now = opts.now ?? new Date();
 	const today = now.toISOString().slice(0, 10);
@@ -80,7 +81,8 @@ export async function runDailyReminders(
 			const outcome = await sendToSubscription(db, sub, payload, opts.vapid, {
 				sender: opts.sender,
 				now,
-				today
+				today,
+				resolve: opts.resolve
 			});
 			if (outcome === 'ok') {
 				summary.devicesSent++;
@@ -98,15 +100,14 @@ export async function runDailyReminders(
 }
 
 /**
- * Constant-time, length-guarded comparison of a cron secret. An unequal length
- * (or an absent presented value) fails WITHOUT throwing, so callers never leak a
- * length oracle through an exception. `timingSafeEqual` requires equal-length
- * buffers, hence the explicit length guard before comparing.
+ * Constant-time comparison of a cron secret. Both sides are hashed to fixed-size
+ * SHA-256 digests before comparing, so the comparison is fully length-independent
+ * (no length-based early return that could leak the secret's length via timing).
+ * Only an absent presented value short-circuits.
  */
 export function secretMatches(expected: string, presented: string | null | undefined): boolean {
 	if (!expected || presented == null) return false;
-	const a = Buffer.from(expected, 'utf8');
-	const b = Buffer.from(presented, 'utf8');
-	if (a.length !== b.length) return false;
+	const a = createHash('sha256').update(expected, 'utf8').digest();
+	const b = createHash('sha256').update(presented, 'utf8').digest();
 	return timingSafeEqual(a, b);
 }

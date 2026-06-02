@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ locals, cookies }) => {
 
 	const options = await registrationOptions(db, user);
 
-	cookies.set('gm_wa_chal', options.challenge, {
+	cookies.set('gm_wa_reg_chal', options.challenge, {
 		httpOnly: true,
 		secure: !dev,
 		sameSite: 'lax',

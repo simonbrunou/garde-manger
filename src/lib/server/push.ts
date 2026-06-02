@@ -1,6 +1,19 @@
+import { lookup } from 'node:dns/promises';
 import { eq, and, desc, inArray } from 'drizzle-orm';
 import type { DB } from './db/client';
 import { pushSubscriptions } from './db/schema';
+
+/** Resolve a hostname to its IP address strings. Returns [] on failure. */
+export type HostResolver = (host: string) => Promise<string[]>;
+
+export const resolveHostIps: HostResolver = async (host) => {
+	try {
+		const res = await lookup(host, { all: true });
+		return res.map((r) => r.address);
+	} catch {
+		return [];
+	}
+};
 
 // Cap subscriptions per user: bounds table bloat and the daily cron fan-out, and
 // limits the blast radius of the SSRF surface (the cron POSTs to each endpoint).
@@ -146,6 +159,31 @@ export function isSafePushEndpoint(endpoint: string): boolean {
 	return !isPrivateOrLocalHost(url.hostname.toLowerCase());
 }
 
+function isIpLiteral(host: string): boolean {
+	return /^\d{1,3}(\.\d{1,3}){3}$/.test(host) || host.includes(':');
+}
+
+/**
+ * Send-time SSRF check. The subscribe-time `isSafePushEndpoint` validates the
+ * literal endpoint string, but the value is stored and the daily cron POSTs to it
+ * later — so we re-validate here and, when a resolver is supplied, resolve the
+ * host and reject if ANY resolved IP is private/loopback/link-local. This closes
+ * the time-of-check/time-of-use gap and DNS-rebinding (a public hostname that
+ * resolves to an internal address). An unresolvable host is treated as unsafe.
+ */
+export async function isEndpointSendable(
+	endpoint: string,
+	resolve?: HostResolver
+): Promise<boolean> {
+	if (!isSafePushEndpoint(endpoint)) return false; // https + not a private literal
+	if (!resolve) return true; // no resolver supplied → literal check only
+	const host = new URL(endpoint).hostname.toLowerCase().replace(/^\[/, '').replace(/\]$/, '');
+	if (isIpLiteral(host)) return true; // already vetted as a public literal above
+	const ips = await resolve(host);
+	if (ips.length === 0) return false; // unresolved → conservative reject
+	return ips.every((ip) => !isPrivateOrLocalHost(ip));
+}
+
 // ── Subscription persistence ────────────────────────────────────────────────────
 
 /**
@@ -229,10 +267,16 @@ export async function sendToSubscription(
 	sub: typeof pushSubscriptions.$inferSelect,
 	payload: string,
 	vapid: Vapid,
-	deps: { sender: PushSender; now?: Date; today?: string }
+	deps: { sender: PushSender; now?: Date; today?: string; resolve?: HostResolver }
 ): Promise<SendOutcome> {
 	const now = deps.now ?? new Date();
 	const today = deps.today ?? toIsoDate(now);
+
+	// SSRF guard re-checked at SEND time (the endpoint is client-supplied and the
+	// server POSTs to it here). Don't send to an unsafe/internal endpoint.
+	if (!(await isEndpointSendable(sub.endpoint, deps.resolve))) {
+		return recordFailure(db, sub.id);
+	}
 
 	const target: WebPushTarget = {
 		endpoint: sub.endpoint,
@@ -244,8 +288,7 @@ export async function sendToSubscription(
 		status = await deps.sender.send(target, payload, { vapid });
 	} catch {
 		// Transport blew up unexpectedly — treat as a soft failure, keep the row.
-		incrementFailure(db, sub.id);
-		return 'failed';
+		return recordFailure(db, sub.id);
 	}
 
 	if (status >= 200 && status < 300) {
@@ -261,21 +304,35 @@ export async function sendToSubscription(
 		return 'pruned';
 	}
 
-	incrementFailure(db, sub.id);
-	return 'failed';
+	return recordFailure(db, sub.id);
 }
 
-function incrementFailure(db: DB, id: string): void {
+// Prune a subscription once it has failed this many times in a row: a row that
+// keeps failing (without ever returning 404/410) is effectively dead.
+const MAX_CONSECUTIVE_FAILURES = 10;
+
+/**
+ * Record a failed send: increment failureCount, and once it reaches the cap,
+ * delete the row (→ 'pruned') instead of letting dead subscriptions accumulate
+ * forever. Returns the outcome to report.
+ */
+function recordFailure(db: DB, id: string): SendOutcome {
 	const row = db
 		.select({ failureCount: pushSubscriptions.failureCount })
 		.from(pushSubscriptions)
 		.where(eq(pushSubscriptions.id, id))
 		.get();
-	if (!row) return;
+	if (!row) return 'failed';
+	const next = row.failureCount + 1;
+	if (next >= MAX_CONSECUTIVE_FAILURES) {
+		db.delete(pushSubscriptions).where(eq(pushSubscriptions.id, id)).run();
+		return 'pruned';
+	}
 	db.update(pushSubscriptions)
-		.set({ failureCount: row.failureCount + 1 })
+		.set({ failureCount: next })
 		.where(eq(pushSubscriptions.id, id))
 		.run();
+	return 'failed';
 }
 
 /** Format a Date as a UTC 'YYYY-MM-DD' string. */

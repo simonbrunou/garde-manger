@@ -70,7 +70,7 @@ export async function registrationOptions(db: DB, user: User) {
 		})),
 		authenticatorSelection: {
 			residentKey: 'preferred',
-			userVerification: 'preferred'
+			userVerification: 'required'
 		}
 	});
 
@@ -96,12 +96,13 @@ export async function verifyRegistration(
 		expectedChallenge: string;
 		deviceLabel?: string;
 	}
-): Promise<{ verified: boolean }> {
+): Promise<{ verified: boolean; reason?: 'duplicate' }> {
 	const result = await verifyRegistrationResponse({
 		response,
 		expectedChallenge,
 		expectedOrigin: ORIGIN,
-		expectedRPID: RP_ID
+		expectedRPID: RP_ID,
+		requireUserVerification: true
 	});
 
 	if (!result.verified || !result.registrationInfo) {
@@ -131,7 +132,7 @@ export async function verifyRegistration(
 		// Unique constraint violation on credentialId → duplicate, return gracefully
 		const msg = err instanceof Error ? err.message : String(err);
 		if (msg.includes('UNIQUE constraint') || msg.includes('unique constraint')) {
-			return { verified: false };
+			return { verified: false, reason: 'duplicate' };
 		}
 		throw err;
 	}
@@ -148,7 +149,7 @@ export async function authenticationOptions(_db: DB) {
 	assertConfig();
 	const options = await generateAuthenticationOptions({
 		rpID: RP_ID,
-		userVerification: 'preferred',
+		userVerification: 'required',
 		allowCredentials: [] // empty → usernameless / resident-key flow
 	});
 
@@ -185,6 +186,7 @@ export async function verifyAuthentication(
 			expectedChallenge,
 			expectedOrigin: ORIGIN,
 			expectedRPID: RP_ID,
+			requireUserVerification: true,
 			// v13: credential is WebAuthnCredential { id, publicKey, counter, transports }
 			credential: {
 				id: cred.credentialId,

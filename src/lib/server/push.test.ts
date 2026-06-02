@@ -11,6 +11,7 @@ import {
 	listSubscriptionsForUser,
 	sendToSubscription,
 	isSafePushEndpoint,
+	isEndpointSendable,
 	type PushSender,
 	type WebPushTarget,
 	type Vapid
@@ -322,6 +323,23 @@ describe('sendToSubscription', () => {
 		expect(outcome).toBe('failed');
 		expect(getById(db, sub.id)?.failureCount).toBe(1);
 	});
+
+	it('prunes a subscription once it crosses the consecutive-failure cap', async () => {
+		const sub = seedSub();
+		// One short of the cap; the next failure should delete the row.
+		db.update(pushSubscriptions)
+			.set({ failureCount: 9 })
+			.where(eq(pushSubscriptions.id, sub.id))
+			.run();
+		const sender = makeSender({ status: 500 });
+		const outcome = await sendToSubscription(db, sub, PAYLOAD, VAPID, {
+			sender,
+			now: FIXED_NOW,
+			today: TODAY
+		});
+		expect(outcome).toBe('pruned');
+		expect(getById(db, sub.id)).toBeUndefined();
+	});
 });
 
 // ── isSafePushEndpoint (SSRF guard) ─────────────────────────────────────────
@@ -351,6 +369,103 @@ describe('isSafePushEndpoint', () => {
 	it('rejects garbage', () => {
 		expect(isSafePushEndpoint('not a url')).toBe(false);
 		expect(isSafePushEndpoint('')).toBe(false);
+	});
+});
+
+// ── send-time SSRF guard ────────────────────────────────────────────────────
+describe('sendToSubscription SSRF guard (send-time re-validation)', () => {
+	let db: DB;
+	beforeEach(() => {
+		db = makeDb();
+		makeUser(db, 'user-a');
+	});
+
+	const PAYLOAD = buildDailyPayload({ count: 1, locale: 'fr', origin: ORIGIN });
+
+	it('refuses to send to a stored unsafe endpoint and never calls the sender', async () => {
+		// saveSubscription does not validate, so a private endpoint can be persisted.
+		saveSubscription(db, 'user-a', {
+			endpoint: 'https://127.0.0.1/x',
+			keys: { p256dh: 'p', auth: 'a' }
+		});
+		const sub = listSubscriptionsForUser(db, 'user-a')[0];
+		const sender = makeSender({ status: 201 });
+
+		const outcome = await sendToSubscription(db, sub, PAYLOAD, VAPID, {
+			sender,
+			now: FIXED_NOW,
+			today: TODAY
+		});
+
+		expect(outcome).toBe('failed');
+		expect(sender.calls).toHaveLength(0);
+		expect(getById(db, sub.id)?.failureCount).toBe(1);
+	});
+
+	it('refuses when the host resolves to a private IP (DNS rebinding), no send', async () => {
+		saveSubscription(db, 'user-a', SUB_A);
+		const sub = listSubscriptionsForUser(db, 'user-a')[0];
+		const sender = makeSender({ status: 201 });
+
+		const outcome = await sendToSubscription(db, sub, PAYLOAD, VAPID, {
+			sender,
+			now: FIXED_NOW,
+			today: TODAY,
+			resolve: async () => ['10.0.0.5']
+		});
+
+		expect(outcome).toBe('failed');
+		expect(sender.calls).toHaveLength(0);
+	});
+
+	it('sends when the host resolves to a public IP', async () => {
+		saveSubscription(db, 'user-a', SUB_A);
+		const sub = listSubscriptionsForUser(db, 'user-a')[0];
+		const sender = makeSender({ status: 201 });
+
+		const outcome = await sendToSubscription(db, sub, PAYLOAD, VAPID, {
+			sender,
+			now: FIXED_NOW,
+			today: TODAY,
+			resolve: async () => ['93.184.216.34']
+		});
+
+		expect(outcome).toBe('ok');
+		expect(sender.calls).toHaveLength(1);
+	});
+});
+
+describe('isEndpointSendable', () => {
+	it('mirrors isSafePushEndpoint when no resolver is given', async () => {
+		expect(await isEndpointSendable('https://fcm.googleapis.com/x')).toBe(true);
+		expect(await isEndpointSendable('http://fcm.googleapis.com/x')).toBe(false);
+		expect(await isEndpointSendable('https://127.0.0.1/x')).toBe(false);
+	});
+
+	it('rejects when any resolved IP is private/loopback/link-local', async () => {
+		expect(
+			await isEndpointSendable('https://evil.example/x', async () => ['169.254.169.254'])
+		).toBe(false);
+		expect(
+			await isEndpointSendable('https://evil.example/x', async () => ['93.184.216.34', '10.0.0.1'])
+		).toBe(false);
+	});
+
+	it('accepts a host that resolves only to public IPs; rejects unresolvable', async () => {
+		expect(
+			await isEndpointSendable('https://fcm.googleapis.com/x', async () => ['142.250.1.1'])
+		).toBe(true);
+		expect(await isEndpointSendable('https://nx.example/x', async () => [])).toBe(false);
+	});
+
+	it('skips DNS for a public IP-literal endpoint (already vetted)', async () => {
+		let called = false;
+		const ok = await isEndpointSendable('https://93.184.216.34/x', async () => {
+			called = true;
+			return [];
+		});
+		expect(ok).toBe(true);
+		expect(called).toBe(false);
 	});
 });
 

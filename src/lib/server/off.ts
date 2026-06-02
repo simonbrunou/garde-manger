@@ -56,9 +56,11 @@ export interface ParsedOff {
 }
 
 const DEFAULT_TIMEOUT_MS = 3500;
-const DEFAULT_IMAGE_CONTENT_TYPE = 'image/jpeg';
 // Never buffer an unbounded image body into memory (product photos are small).
 const MAX_IMAGE_BYTES = 2_000_000;
+// Bound the product JSON too: a fields-scoped OFF response is a few KB; this is
+// generous headroom while still refusing a hostile/oversized body.
+const MAX_JSON_BYTES = 512_000;
 
 // ── parseOffV2 (pure) ─────────────────────────────────────────────────────────
 
@@ -151,12 +153,15 @@ async function maybeDownloadImage(
 			redirect: 'manual'
 		});
 		if (!res.ok) return null;
+		// Only accept genuine image responses: an allowlisted URL that returns
+		// non-image content (or no content-type) is treated as "no image".
+		const contentType = (res.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase();
+		if (!contentType.startsWith('image/')) return null;
 		// Size guard: reject before buffering an oversized body into memory.
 		const declared = Number(res.headers.get('content-length') ?? '0');
 		if (declared > MAX_IMAGE_BYTES) return null;
 		const bytes = new Uint8Array(await res.arrayBuffer());
 		if (bytes.byteLength > MAX_IMAGE_BYTES) return null;
-		const contentType = res.headers.get('content-type') ?? DEFAULT_IMAGE_CONTENT_TYPE;
 		return await imageStore.save(barcode, bytes, contentType);
 	} catch {
 		// Non-fatal: a missing/failed image must never fail the lookup.
@@ -230,7 +235,11 @@ export async function lookupProduct(
 
 	let json: unknown;
 	try {
-		json = await res.json();
+		const declared = Number(res.headers.get('content-length') ?? '0');
+		if (declared > MAX_JSON_BYTES) throw new Error('oversized');
+		const text = await res.text();
+		if (text.length > MAX_JSON_BYTES) throw new Error('oversized');
+		json = JSON.parse(text);
 	} catch {
 		throw new OffUnavailable();
 	}

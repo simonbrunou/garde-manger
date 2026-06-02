@@ -7,7 +7,7 @@ import { setSessionCookie } from '$lib/server/auth/cookies';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
-	const chal = cookies.get('gm_wa_chal');
+	const chal = cookies.get('gm_wa_auth_chal');
 	if (!chal) {
 		error(400, 'Challenge manquant ou expiré');
 	}
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 	});
 
 	// Single-use: delete the challenge cookie regardless of outcome
-	cookies.delete('gm_wa_chal', { path: '/' });
+	cookies.delete('gm_wa_auth_chal', { path: '/' });
 
 	if (result.verified && result.userId) {
 		const { token, session } = await createSession(db, result.userId);

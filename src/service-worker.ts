@@ -8,9 +8,8 @@ import { build, files, version } from '$service-worker';
 // Give `self` the correct ServiceWorkerGlobalScope typing inside the worker.
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
-// Per-deployment cache names so a new version invalidates the old caches.
+// Per-deployment cache name so a new version invalidates the old cache.
 const CACHE = 'gm-cache-' + version;
-const DYNAMIC = 'gm-dynamic-' + version;
 
 // Precache the app shell AND the scanner WASM: `build` includes every Vite-emitted
 // hashed asset (the zxing .wasm is imported with `?url`, so it lands here), and
@@ -25,15 +24,6 @@ const NETWORK_ONLY_PREFIXES = ['/api', '/internal', '/logout', '/login'];
 
 function isNetworkOnly(pathname: string): boolean {
 	return NETWORK_ONLY_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + '/'));
-}
-
-/** Delete every key in the dynamic cache (session-boundary / logout purge). */
-async function clearDynamic(): Promise<void> {
-	try {
-		await caches.delete(DYNAMIC);
-	} catch {
-		// Ignore: clearing the cache is best-effort and must never break a response.
-	}
 }
 
 // ── install: precache the app shell + WASM, then take over immediately ──────────
@@ -52,7 +42,7 @@ sw.addEventListener('activate', (event) => {
 	event.waitUntil(
 		(async () => {
 			for (const key of await caches.keys()) {
-				if (key !== CACHE && key !== DYNAMIC) await caches.delete(key);
+				if (key !== CACHE) await caches.delete(key);
 			}
 			await sw.clients.claim();
 		})()
@@ -75,15 +65,7 @@ sw.addEventListener('fetch', (event) => {
 	const isNavigation = request.mode === 'navigate';
 
 	// SECURITY: never cache authenticated/dynamic/sensitive routes.
-	if (isNetworkOnly(url.pathname)) {
-		// At the session boundary (navigating to /login or /logout) purge the
-		// dynamic cache so a different user on this device cannot read the previous
-		// user's cached pages while offline.
-		if (isNavigation && (url.pathname === '/login' || url.pathname === '/logout')) {
-			event.waitUntil(clearDynamic());
-		}
-		return; // network-only: don't call respondWith, let it pass through.
-	}
+	if (isNetworkOnly(url.pathname)) return; // network-only passthrough
 
 	// Content-hashed build assets + static files are immutable → cache-first.
 	if (ASSET_SET.has(url.pathname)) {
@@ -91,9 +73,12 @@ sw.addEventListener('fetch', (event) => {
 		return;
 	}
 
-	// Navigations and other same-origin GETs (inventory pages, view-only offline)
-	// → network-first with a cached fallback.
-	event.respondWith(networkFirst(request, isNavigation));
+	// Everything else (page navigations and their `__data.json` payloads) is
+	// rendered with the active user's data. SECURITY: we deliberately do NOT
+	// persist these — a user-agnostic cache would let another user on a shared
+	// device read the previous user's data offline. Go to the network; for an
+	// uncached navigation that fails, show the inline offline page.
+	event.respondWith(networkWithOfflineFallback(request, isNavigation));
 });
 
 /** Immutable assets: serve from cache, fall back to the network on a miss. */
@@ -109,39 +94,22 @@ async function cacheFirst(key: string, request: Request): Promise<Response> {
 }
 
 /**
- * Network-first: try the network, store a fresh good copy in the dynamic cache,
- * and on failure fall back to the cached copy. For navigations with nothing
- * cached, return a tiny inline offline page rather than erroring.
+ * Network-only for dynamic/authenticated content: never persist the response.
+ * For a navigation that fails offline, return a tiny inline offline page rather
+ * than erroring; other failed requests propagate.
  */
-async function networkFirst(request: Request, isNavigation: boolean): Promise<Response> {
+async function networkWithOfflineFallback(
+	request: Request,
+	isNavigation: boolean
+): Promise<Response> {
 	try {
 		const response = await fetch(request);
 
 		// Offline, `fetch` may resolve to a non-Response — guard before using it.
 		if (!(response instanceof Response)) throw new Error('invalid fetch response');
 
-		// Only cache safe, complete responses. Never cache opaque (cross-origin,
-		// unreadable) responses or non-2xx errors.
-		if (response.ok && response.type !== 'opaque') {
-			const clone = response.clone();
-			try {
-				const cache = await caches.open(DYNAMIC);
-				await cache.put(request, clone);
-			} catch {
-				// Caching is best-effort; never let it break the live response.
-			}
-		}
-
 		return response;
 	} catch (err) {
-		try {
-			const cache = await caches.open(DYNAMIC);
-			const cached = await cache.match(request);
-			if (cached) return cached;
-		} catch {
-			// fall through to the offline fallback
-		}
-
 		if (isNavigation) return offlineFallback();
 		throw err;
 	}
@@ -217,14 +185,6 @@ sw.addEventListener('notificationclick', (event) => {
 			return sw.clients.openWindow(navigate);
 		})()
 	);
-});
-
-// ── message: belt-and-suspenders cache clear (e.g. on logout from the page) ─────
-sw.addEventListener('message', (event) => {
-	const data = event.data as { type?: string } | undefined;
-	if (data && data.type === 'clear-cache') {
-		event.waitUntil(clearDynamic());
-	}
 });
 
 export {};

@@ -122,6 +122,9 @@ export const en: Messages = {
 	join_error_already_used: 'This invitation link has already been used.',
 	join_error_expired: 'This invitation link has expired.',
 	join_error_generic: 'An error occurred with this invitation link.',
+	join_confirm_title: 'Join household',
+	join_confirm_prompt: 'You have been invited to join',
+	join_confirm_button: 'Join this household',
 
 	// --- Home page ---
 	home_no_household: 'You do not have a household yet.',

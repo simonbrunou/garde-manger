@@ -120,6 +120,9 @@ export const fr: Messages = {
 	join_error_already_used: "Ce lien d'invitation a déjà été utilisé.",
 	join_error_expired: "Ce lien d'invitation a expiré.",
 	join_error_generic: "Une erreur est survenue avec ce lien d'invitation.",
+	join_confirm_title: 'Rejoindre le foyer',
+	join_confirm_prompt: 'Vous avez été invité à rejoindre',
+	join_confirm_button: 'Rejoindre ce foyer',
 
 	// --- Home page ---
 	home_no_household: "Vous n'avez pas encore de foyer.",
@@ -384,6 +387,9 @@ export interface Messages {
 	join_error_already_used: string;
 	join_error_expired: string;
 	join_error_generic: string;
+	join_confirm_title: string;
+	join_confirm_prompt: string;
+	join_confirm_button: string;
 	// --- Home page ---
 	home_no_household: string;
 	home_create_or_join: string;

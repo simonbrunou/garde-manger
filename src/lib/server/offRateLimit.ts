@@ -30,3 +30,29 @@ export function createOffRateLimiter(opts: { maxPerWindow: number; windowMs: num
 
 /** Shared app instance: 12 live OFF calls per rolling 60s (headroom under OFF's ~15/min). */
 export const offRateLimitGuard = createOffRateLimiter({ maxPerWindow: 12, windowMs: 60_000 });
+
+/**
+ * Per-actor sliding-window limiter, applied IN FRONT of the global one so a
+ * single member cannot consume the whole shared OFF budget and starve scanning
+ * for everyone. State is keyed by userId; memory is bounded by the active-user
+ * count (single-instance deployment).
+ */
+export function createPerUserOffRateLimiter(opts: { maxPerWindow: number; windowMs: number }) {
+	const byUser = new Map<string, number[]>();
+	return function guard(userId: string, now: Date): void {
+		const t = now.getTime();
+		const arr = byUser.get(userId) ?? [];
+		while (arr.length > 0 && arr[0] <= t - opts.windowMs) arr.shift();
+		if (arr.length >= opts.maxPerWindow) {
+			throw new OffUnavailable('Open Food Facts rate limit reached — try again shortly');
+		}
+		arr.push(t);
+		byUser.set(userId, arr);
+	};
+}
+
+/** Each user: 6 live OFF calls per rolling 60s — one actor can't drain the global 12/60s budget. */
+export const perUserOffRateLimitGuard = createPerUserOffRateLimiter({
+	maxPerWindow: 6,
+	windowMs: 60_000
+});

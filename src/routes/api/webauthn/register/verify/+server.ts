@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ locals, cookies, request }) => {
 		error(401, 'Authentification requise');
 	}
 
-	const chal = cookies.get('gm_wa_chal');
+	const chal = cookies.get('gm_wa_reg_chal');
 	if (!chal) {
 		error(400, 'Challenge manquant ou expiré');
 	}
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ locals, cookies, request }) => {
 			? body.deviceLabel.trim().slice(0, 120)
 			: 'Passkey';
 
-	const { verified } = await verifyRegistration(db, {
+	const { verified, reason } = await verifyRegistration(db, {
 		user,
 		response: body,
 		expectedChallenge: chal,
@@ -42,9 +42,12 @@ export const POST: RequestHandler = async ({ locals, cookies, request }) => {
 	});
 
 	// Single-use: delete the challenge cookie regardless of outcome
-	cookies.delete('gm_wa_chal', { path: '/' });
+	cookies.delete('gm_wa_reg_chal', { path: '/' });
 
 	if (!verified) {
+		if (reason === 'duplicate') {
+			error(409, 'Cette passkey est déjà enregistrée');
+		}
 		error(400, 'Vérification échouée');
 	}
 

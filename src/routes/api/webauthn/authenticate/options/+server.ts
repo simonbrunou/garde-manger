@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types';
 export const POST: RequestHandler = async ({ cookies }) => {
 	const options = await authenticationOptions(db);
 
-	cookies.set('gm_wa_chal', options.challenge, {
+	cookies.set('gm_wa_auth_chal', options.challenge, {
 		httpOnly: true,
 		secure: !dev,
 		sameSite: 'lax',

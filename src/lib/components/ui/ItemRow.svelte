@@ -77,24 +77,46 @@
 			</span>
 			<DayBadge band={item.band} effectiveDate={item.effectiveDate} {t} />
 		</a>
-		{#if item.band === 'urgent'}
-			<!-- Always-visible, no-JS urgent actions: submit the lifecycle forms above
-			     via the `form=` attribute (works without client JS). -->
-			<div class="actions">
-				<button type="submit" form={consumeId} class="act eat">
-					<Icon name="check" size={15} />{t.lifecycle_ate}
-				</button>
-				<button type="submit" form={discardId} class="act toss">
-					<Icon name="trash" size={15} />{t.lifecycle_tossed}
-				</button>
-			</div>
-		{/if}
+		<!-- No-JS lifecycle actions: submit the forms above via the `form=` attribute.
+		     Urgent rows show them inline; other rows keep them keyboard- and
+		     screen-reader-reachable (revealed on focus) so the pointer-only swipe
+		     gesture is never the sole path to these actions. -->
+		<div class="actions" class:reveal-on-focus={item.band !== 'urgent'}>
+			<button type="submit" form={consumeId} class="act eat">
+				<Icon name="check" size={15} />{t.lifecycle_ate}
+			</button>
+			<button type="submit" form={discardId} class="act toss">
+				<Icon name="trash" size={15} />{t.lifecycle_tossed}
+			</button>
+		</div>
 	</div>
 </SwipeActions>
 
 <style>
 	.row {
 		padding: 0.7rem 0.8rem;
+		position: relative;
+	}
+	/* Keep non-urgent actions in the DOM (keyboard/SR reachable) but visually
+	   hidden until a child is focused — pointer users use the swipe gesture. */
+	.actions.reveal-on-focus {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+	.actions.reveal-on-focus:focus-within {
+		position: static;
+		width: auto;
+		height: auto;
+		margin: 0.6rem 0 0;
+		overflow: visible;
+		clip-path: none;
+		white-space: normal;
 	}
 	.main {
 		display: flex;

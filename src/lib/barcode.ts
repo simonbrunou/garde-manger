@@ -85,7 +85,12 @@ export function normalizeBarcode(raw: string): string | null {
 			return isValidBarcode(ean13) ? ean13 : null;
 		}
 		case 8: {
-			// Ambiguous: could be a genuine EAN-8 or a UPC-E starting with 0/1.
+			// RESIDUAL AMBIGUITY: an 8-digit, 0/1-prefixed code can be valid as BOTH a
+			// UPC-E and an EAN-8 (the UPC-A check digit sometimes coincides with the
+			// EAN-8 check). There is no context-free way to disambiguate. We
+			// DELIBERATELY prefer the UPC-E reading for 0/1-prefixed codes (US small
+			// packages overwhelmingly use UPC-E), expanding to EAN-13; only if that
+			// expansion is not itself a valid GTIN do we fall back to EAN-8 as-is.
 			if (code[0] === '0' || code[0] === '1') {
 				const upca = upcEToUpcA(code);
 				if (upca) {

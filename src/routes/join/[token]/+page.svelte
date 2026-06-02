@@ -1,20 +1,25 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
 	import { m } from '$lib/i18n';
 
-	let { data }: { data: PageData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 	const t = $derived(m(data.locale ?? 'fr'));
+	const errorMessage = $derived(data.error ?? form?.error);
 </script>
 
 <main class="join-page">
 	<div class="join-card card">
-		{#if data.error}
+		{#if errorMessage}
 			<h1 class="join-title">{t.join_invalid_title}</h1>
-			<p class="error" role="alert">{data.error}</p>
+			<p class="error" role="alert">{errorMessage}</p>
 			<p class="join-alt"><a href="/">{t.join_back_home}</a></p>
 		{:else}
-			<h1 class="join-title">🥕 {t.join_joining_title}</h1>
-			<p class="muted">{t.join_redirecting}</p>
+			<h1 class="join-title">🥕 {t.join_confirm_title}</h1>
+			<p class="muted">{t.join_confirm_prompt} <strong>{data.householdName}</strong></p>
+			<form method="POST">
+				<button type="submit" class="join-button">{t.join_confirm_button}</button>
+			</form>
+			<p class="join-alt"><a href="/">{t.join_back_home}</a></p>
 		{/if}
 	</div>
 </main>
@@ -39,5 +44,22 @@
 
 	.join-alt {
 		margin: 1.1rem 0 0;
+	}
+
+	.join-button {
+		margin-top: 1.25rem;
+		width: 100%;
+		padding: 0.75rem 1rem;
+		font-size: 1rem;
+		font-weight: 600;
+		color: #fff;
+		background: #16a34a;
+		border: none;
+		border-radius: 0.75rem;
+		cursor: pointer;
+	}
+
+	.join-button:hover {
+		background: #15803d;
 	}
 </style>

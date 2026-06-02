@@ -45,5 +45,11 @@ export function getVapid(): Vapid {
 
 /** The VAPID public key is safe to expose to the browser (needed to subscribe). */
 export function vapidPublicKey(): string {
-	return env.VAPID_PUBLIC_KEY || DEV_VAPID_PUBLIC;
+	const publicKey = env.VAPID_PUBLIC_KEY ?? '';
+	// Mirror getVapid(): never let the dev key leak into production, where it would
+	// silently produce subscriptions the prod private key can't deliver to.
+	if (!dev && !publicKey) {
+		throw new Error('Web Push requires VAPID_PUBLIC_KEY in production');
+	}
+	return publicKey || DEV_VAPID_PUBLIC;
 }
