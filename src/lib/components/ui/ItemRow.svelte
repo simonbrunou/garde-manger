@@ -53,10 +53,10 @@
 </script>
 
 <!-- Lifecycle forms with ids so buttons can submit them via `form=` with no JS. -->
-<form id={consumeId} method="POST" action="/?/consume" bind:this={consumeForm} hidden>
+<form id={consumeId} method="POST" action="?/consume" bind:this={consumeForm} hidden>
 	<input type="hidden" name="id" value={item.id} />
 </form>
-<form id={discardId} method="POST" action="/?/discard" bind:this={discardForm} hidden>
+<form id={discardId} method="POST" action="?/discard" bind:this={discardForm} hidden>
 	<input type="hidden" name="id" value={item.id} />
 </form>
 

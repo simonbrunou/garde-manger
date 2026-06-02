@@ -1,987 +1,858 @@
 {
-  "/root/garde-manger/package.json": {
-    "mtime": 1780331704.9612446,
-    "ast_hash": "3706c63415b31e5663b7193302b97b17",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/vite.config.ts": {
-    "mtime": 1780014272.2279727,
-    "ast_hash": "c0b083df13ec8b53b799b7ca69dc4721",
-    "semantic_hash": "c0b083df13ec8b53b799b7ca69dc4721"
-  },
-  "/root/garde-manger/drizzle.config.ts": {
-    "mtime": 1780014272.1939728,
-    "ast_hash": "c658031ed559880ca2eec07ab2180e7b",
-    "semantic_hash": "c658031ed559880ca2eec07ab2180e7b"
-  },
-  "/root/garde-manger/tsconfig.json": {
-    "mtime": 1780014272.2269728,
-    "ast_hash": "cd4aa32f8869d5b3f0445d0b5f6acbe6",
-    "semantic_hash": "cd4aa32f8869d5b3f0445d0b5f6acbe6"
-  },
-  "/root/garde-manger/svelte.config.js": {
-    "mtime": 1780041027.7121048,
-    "ast_hash": "f8b4c27c91862babb58d20664761bd3f",
-    "semantic_hash": "f8b4c27c91862babb58d20664761bd3f"
-  },
-  "/root/garde-manger/eslint.config.js": {
-    "mtime": 1780019374.228705,
-    "ast_hash": "bb1d4391b4490dc9563f001a6b29d3ab",
-    "semantic_hash": "bb1d4391b4490dc9563f001a6b29d3ab"
-  },
-  "/root/garde-manger/src/hooks.server.ts": {
-    "mtime": 1780096998.6866848,
-    "ast_hash": "82c7b4c5e900d5dd94781a2fd8ef3114",
-    "semantic_hash": "82c7b4c5e900d5dd94781a2fd8ef3114"
-  },
-  "/root/garde-manger/src/service-worker.ts": {
-    "mtime": 1780039637.9808931,
-    "ast_hash": "89ad43683dcbd62e1cba43e18804d3ee",
-    "semantic_hash": "89ad43683dcbd62e1cba43e18804d3ee"
-  },
-  "/root/garde-manger/src/app.d.ts": {
-    "mtime": 1780023662.0007744,
-    "ast_hash": "387fc7dc1629934311d4ffe4db32726a",
-    "semantic_hash": "387fc7dc1629934311d4ffe4db32726a"
-  },
-  "/root/garde-manger/src/routes/+layout.svelte": {
-    "mtime": 1780224648.2921648,
-    "ast_hash": "c4e4af1e68cae9d2492985c117efd7e0",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/join/[token]/+page.server.ts": {
-    "mtime": 1780142654.483721,
-    "ast_hash": "51e851c64bd8f58dc68f2c0e8f0e1b4b",
-    "semantic_hash": "51e851c64bd8f58dc68f2c0e8f0e1b4b"
-  },
-  "/root/garde-manger/src/routes/join/[token]/+page.svelte": {
-    "mtime": 1780065745.8632722,
-    "ast_hash": "2492536a1a0ef9730ffa2313c2eee422",
-    "semantic_hash": "2492536a1a0ef9730ffa2313c2eee422"
-  },
-  "/root/garde-manger/src/routes/(auth)/+layout.server.ts": {
-    "mtime": 1780023662.0039482,
-    "ast_hash": "ffea3ca0fdcb378debaa22ae09310144",
-    "semantic_hash": "ffea3ca0fdcb378debaa22ae09310144"
-  },
-  "/root/garde-manger/src/routes/(auth)/+layout.ts": {
-    "mtime": 1780019374.232664,
-    "ast_hash": "dc2d05352ed1c1d9718bf4e23e9389e9",
-    "semantic_hash": "dc2d05352ed1c1d9718bf4e23e9389e9"
-  },
-  "/root/garde-manger/src/routes/(auth)/login/+page.ts": {
-    "mtime": 1780019374.2328765,
-    "ast_hash": "162f1f1f69f3d076403831a3b9fda3e5",
-    "semantic_hash": "162f1f1f69f3d076403831a3b9fda3e5"
-  },
-  "/root/garde-manger/src/routes/(auth)/login/+page.server.ts": {
-    "mtime": 1780162837.8108537,
-    "ast_hash": "0248949bb91c9e0c373e1c0af5166027",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(auth)/login/+page.svelte": {
-    "mtime": 1780224648.2911649,
-    "ast_hash": "b5335988b583a2951bca4956b68d9912",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(auth)/signup/+page.server.ts": {
-    "mtime": 1780162837.8108537,
-    "ast_hash": "f043f8ea6f846e864087944cb59dd558",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(auth)/signup/+page.svelte": {
-    "mtime": 1780224648.2921648,
-    "ast_hash": "94978b1f011f0714fbc215a7a4585d74",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/+layout.server.ts": {
-    "mtime": 1780164231.5671437,
-    "ast_hash": "a97c12054ddab6829dca55864ee4a8f9",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/+layout.ts": {
-    "mtime": 1780276734.4922037,
-    "ast_hash": "15ef38642b744a1b7e8740a79e319510",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/+layout.svelte": {
-    "mtime": 1780248257.876339,
-    "ast_hash": "356ff5b1c9375f8f2dd1107bd5a76fe2",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/bilan/+page.server.ts": {
-    "mtime": 1780278389.9763825,
-    "ast_hash": "05d168478d49803ad85e522c35902560",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/bilan/+page.svelte": {
-    "mtime": 1780278866.3983135,
-    "ast_hash": "dbb1db14753d6d51169029705181add7",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/products/[barcode]/image/+server.ts": {
-    "mtime": 1780036968.3405895,
-    "ast_hash": "b91afa7c2f176de50e52acebbc776cbd",
-    "semantic_hash": "b91afa7c2f176de50e52acebbc776cbd"
-  },
-  "/root/garde-manger/src/routes/(app)/cuisiner/+page.server.ts": {
-    "mtime": 1780315874.577053,
-    "ast_hash": "4b7ec40423e70af2c3d265973345fa23",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/cuisiner/+page.svelte": {
-    "mtime": 1780278868.7512984,
-    "ast_hash": "49e52894df65b9227c40436ce9f6a999",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/account/+page.ts": {
-    "mtime": 1780019374.2321393,
-    "ast_hash": "519d0253bcbc5f426992f7ecf6f7235d",
-    "semantic_hash": "519d0253bcbc5f426992f7ecf6f7235d"
-  },
-  "/root/garde-manger/src/routes/(app)/account/+page.server.ts": {
-    "mtime": 1780096998.6876986,
-    "ast_hash": "2f73b773e8334c3d761a83cb5531a26a",
-    "semantic_hash": "2f73b773e8334c3d761a83cb5531a26a"
-  },
-  "/root/garde-manger/src/routes/(app)/account/+page.svelte": {
-    "mtime": 1780279554.1989543,
-    "ast_hash": "be9da855804811b4112580a77b42010d",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/households/+page.server.ts": {
-    "mtime": 1780041027.7121048,
-    "ast_hash": "176e33d486babc5c09359845d79ba57c",
-    "semantic_hash": "176e33d486babc5c09359845d79ba57c"
-  },
-  "/root/garde-manger/src/routes/(app)/households/+page.svelte": {
-    "mtime": 1780142654.483721,
-    "ast_hash": "bcfc6a9a271cf63db42c73cc6a68d6d9",
-    "semantic_hash": "bcfc6a9a271cf63db42c73cc6a68d6d9"
-  },
-  "/root/garde-manger/src/routes/(app)/households/[id]/+page.server.ts": {
-    "mtime": 1780142654.483721,
-    "ast_hash": "038747eea5c296ff98af96000007b933",
-    "semantic_hash": "038747eea5c296ff98af96000007b933"
-  },
-  "/root/garde-manger/src/routes/(app)/households/[id]/+page.svelte": {
-    "mtime": 1780163911.5732942,
-    "ast_hash": "2ba9b591f621852ae4d53a2e1b9a9d89",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/households/[id]/invite/+page.server.ts": {
-    "mtime": 1780023662.0039482,
-    "ast_hash": "4b09d49e73bb11c18e3e343ad18cfc92",
-    "semantic_hash": "4b09d49e73bb11c18e3e343ad18cfc92"
-  },
-  "/root/garde-manger/src/routes/(app)/households/[id]/invite/+page.svelte": {
-    "mtime": 1780142654.483721,
-    "ast_hash": "c37de984d724c1c86264750d971163f4",
-    "semantic_hash": "c37de984d724c1c86264750d971163f4"
-  },
-  "/root/garde-manger/src/routes/(app)/item/[id]/+page.server.ts": {
-    "mtime": 1780334935.7226582,
-    "ast_hash": "ed7ed073593b47d386d42d109106917b",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/item/[id]/+page.svelte": {
-    "mtime": 1780276757.5450506,
-    "ast_hash": "a98fb63f3c0d224b219a016e7501924e",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/add/+page.ts": {
-    "mtime": 1780023662.0039482,
-    "ast_hash": "dc2d05352ed1c1d9718bf4e23e9389e9",
-    "semantic_hash": "dc2d05352ed1c1d9718bf4e23e9389e9"
-  },
-  "/root/garde-manger/src/routes/(app)/add/+page.server.ts": {
-    "mtime": 1780334950.181561,
-    "ast_hash": "058d35e8904ef0d485ec0fcc23e13e89",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/add/+page.svelte": {
-    "mtime": 1780103959.8287756,
-    "ast_hash": "bb854f31608a376cb44599c244b890d5",
-    "semantic_hash": "bb854f31608a376cb44599c244b890d5"
-  },
-  "/root/garde-manger/src/routes/(app)/scan/+page.ts": {
-    "mtime": 1780036968.3407645,
-    "ast_hash": "519d0253bcbc5f426992f7ecf6f7235d",
-    "semantic_hash": "519d0253bcbc5f426992f7ecf6f7235d"
-  },
-  "/root/garde-manger/src/routes/(app)/scan/+page.server.ts": {
-    "mtime": 1780036968.3405895,
-    "ast_hash": "f818851856506e039810810795dfa87a",
-    "semantic_hash": "f818851856506e039810810795dfa87a"
-  },
-  "/root/garde-manger/src/routes/(app)/scan/+page.svelte": {
-    "mtime": 1780103959.8287756,
-    "ast_hash": "acec5f7c2db1e76dfc59319d41fb3b2f",
-    "semantic_hash": "acec5f7c2db1e76dfc59319d41fb3b2f"
-  },
-  "/root/garde-manger/src/routes/(app)/scan/[barcode]/+page.ts": {
-    "mtime": 1780036968.3409724,
-    "ast_hash": "dc2d05352ed1c1d9718bf4e23e9389e9",
-    "semantic_hash": "dc2d05352ed1c1d9718bf4e23e9389e9"
-  },
-  "/root/garde-manger/src/routes/(app)/scan/[barcode]/+page.server.ts": {
-    "mtime": 1780334961.223487,
-    "ast_hash": "93f947c4f8f9947f866a631b9ce3c5ca",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/scan/[barcode]/+page.svelte": {
-    "mtime": 1780103959.8287756,
-    "ast_hash": "6341bab41e0c57aea54ddae3f8110389",
-    "semantic_hash": "6341bab41e0c57aea54ddae3f8110389"
-  },
-  "/root/garde-manger/src/routes/api/webauthn/authenticate/options/+server.ts": {
-    "mtime": 1780019374.2331765,
-    "ast_hash": "4e82554465b7ff152c2e6e3f6b1c6c98",
-    "semantic_hash": "4e82554465b7ff152c2e6e3f6b1c6c98"
-  },
-  "/root/garde-manger/src/routes/api/webauthn/authenticate/verify/+server.ts": {
-    "mtime": 1780041027.7121048,
-    "ast_hash": "e64918171b3b7857f0c60252f127eb5b",
-    "semantic_hash": "e64918171b3b7857f0c60252f127eb5b"
-  },
-  "/root/garde-manger/src/routes/api/webauthn/register/options/+server.ts": {
-    "mtime": 1780019374.2333567,
-    "ast_hash": "b85d65e02b1c3955ac299cb9ace2db94",
-    "semantic_hash": "b85d65e02b1c3955ac299cb9ace2db94"
-  },
-  "/root/garde-manger/src/routes/api/webauthn/register/verify/+server.ts": {
-    "mtime": 1780041027.7121048,
-    "ast_hash": "995502f38bbd8b04de8f6ffb8efbe5c5",
-    "semantic_hash": "995502f38bbd8b04de8f6ffb8efbe5c5"
-  },
-  "/root/garde-manger/src/routes/api/push/subscribe/+server.ts": {
-    "mtime": 1780039637.9807181,
-    "ast_hash": "d8d76f7ae2f947e09f352a2f5fb0787b",
-    "semantic_hash": "d8d76f7ae2f947e09f352a2f5fb0787b"
-  },
-  "/root/garde-manger/src/routes/api/push/unsubscribe/+server.ts": {
-    "mtime": 1780039637.9807181,
-    "ast_hash": "5d1511b38392b0cf66a7b0327d8f8467",
-    "semantic_hash": "5d1511b38392b0cf66a7b0327d8f8467"
-  },
-  "/root/garde-manger/src/routes/internal/cron/check-expiry/+server.ts": {
-    "mtime": 1780039637.9808931,
-    "ast_hash": "524aba4828290efd8a17845db0b72e2c",
-    "semantic_hash": "524aba4828290efd8a17845db0b72e2c"
-  },
-  "/root/garde-manger/src/routes/logout/+server.ts": {
-    "mtime": 1780019374.233612,
-    "ast_hash": "ce2a24c859f254942beecebae518cb92",
-    "semantic_hash": "ce2a24c859f254942beecebae518cb92"
-  },
-  "/root/garde-manger/src/routes/healthz/+server.ts": {
-    "mtime": 1780014272.2239728,
-    "ast_hash": "b8cfc5eb2b53e4dd1fc948b3c1dd47be",
-    "semantic_hash": "b8cfc5eb2b53e4dd1fc948b3c1dd47be"
-  },
-  "/root/garde-manger/src/lib/theme.test.ts": {
-    "mtime": 1780096998.6876986,
-    "ast_hash": "c516487f539d2aa7bd2a60b9f64b9176",
-    "semantic_hash": "c516487f539d2aa7bd2a60b9f64b9176"
-  },
-  "/root/garde-manger/src/lib/barcode.test.ts": {
-    "mtime": 1780036968.3380344,
-    "ast_hash": "6927b893f004df2f1c085a1864f1fdd8",
-    "semantic_hash": "6927b893f004df2f1c085a1864f1fdd8"
-  },
-  "/root/garde-manger/src/lib/validation.ts": {
-    "mtime": 1780162837.8095226,
-    "ast_hash": "33553a94f487c920a29716b45a070c41",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/index.ts": {
-    "mtime": 1780014272.205973,
-    "ast_hash": "ffcb0e97b69eb555d5739e9efe961ca0",
-    "semantic_hash": "ffcb0e97b69eb555d5739e9efe961ca0"
-  },
-  "/root/garde-manger/src/lib/barcode.ts": {
-    "mtime": 1780036968.3380344,
-    "ast_hash": "6f9c503951399c6160487ea103dc47ae",
-    "semantic_hash": "6f9c503951399c6160487ea103dc47ae"
-  },
-  "/root/garde-manger/src/lib/dates.ts": {
-    "mtime": 1780100840.51955,
-    "ast_hash": "42c53dab3cefefe12b59933cca5bd7fa",
-    "semantic_hash": "42c53dab3cefefe12b59933cca5bd7fa"
-  },
-  "/root/garde-manger/src/lib/icons.ts": {
-    "mtime": 1780100840.5205503,
-    "ast_hash": "d8836b558c811fbc466923802fe51cd7",
-    "semantic_hash": "d8836b558c811fbc466923802fe51cd7"
-  },
-  "/root/garde-manger/src/lib/dates.test.ts": {
-    "mtime": 1780100840.51955,
-    "ast_hash": "64fccc46213268ea3e0c41eb5c06d2cf",
-    "semantic_hash": "64fccc46213268ea3e0c41eb5c06d2cf"
-  },
-  "/root/garde-manger/src/lib/icons.test.ts": {
-    "mtime": 1780100840.5205503,
-    "ast_hash": "980941fca2264d52853876f0499904e5",
-    "semantic_hash": "980941fca2264d52853876f0499904e5"
-  },
-  "/root/garde-manger/src/lib/theme.ts": {
-    "mtime": 1780096998.6876986,
-    "ast_hash": "1ed4640a95d9f9874ff810214606ab2f",
-    "semantic_hash": "1ed4640a95d9f9874ff810214606ab2f"
-  },
-  "/root/garde-manger/src/lib/server/offRateLimit.ts": {
-    "mtime": 1780036968.3390346,
-    "ast_hash": "c321e53128a6f3f0e788fa92d7d84dab",
-    "semantic_hash": "c321e53128a6f3f0e788fa92d7d84dab"
-  },
-  "/root/garde-manger/src/lib/server/cook.ts": {
-    "mtime": 1780315849.2172472,
-    "ast_hash": "224a8b404a61218c982d1905587ddfff",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/server/reminders.ts": {
-    "mtime": 1780039637.9790087,
-    "ast_hash": "24510e6e5a8ee6c0e6befed714a99cd7",
-    "semantic_hash": "24510e6e5a8ee6c0e6befed714a99cd7"
-  },
-  "/root/garde-manger/src/lib/server/stats.ts": {
-    "mtime": 1780107844.135074,
-    "ast_hash": "9ce94948b4fcd22e4b9530e15ab219e0",
-    "semantic_hash": "9ce94948b4fcd22e4b9530e15ab219e0"
-  },
-  "/root/garde-manger/src/lib/server/catalogue.ts": {
-    "mtime": 1780023662.0022278,
-    "ast_hash": "78673e82a626a1718b77aa00ebf18c88",
-    "semantic_hash": "78673e82a626a1718b77aa00ebf18c88"
-  },
-  "/root/garde-manger/src/lib/server/health.test.ts": {
-    "mtime": 1780014272.2169728,
-    "ast_hash": "e6a58087ed72107f239eb8d2dd10f5a3",
-    "semantic_hash": "e6a58087ed72107f239eb8d2dd10f5a3"
-  },
-  "/root/garde-manger/src/lib/server/catalogue.test.ts": {
-    "mtime": 1780023662.0022278,
-    "ast_hash": "85d6b6bdc80030b689a5e349036d7fca",
-    "semantic_hash": "85d6b6bdc80030b689a5e349036d7fca"
-  },
-  "/root/garde-manger/src/lib/server/backup.ts": {
-    "mtime": 1780041027.7121048,
-    "ast_hash": "80abe44135306b81c068292fe92d08d6",
-    "semantic_hash": "80abe44135306b81c068292fe92d08d6"
-  },
-  "/root/garde-manger/src/lib/server/offRateLimit.test.ts": {
-    "mtime": 1780036968.3390346,
-    "ast_hash": "037194a7e111b5c7be0e76bc471c9327",
-    "semantic_hash": "037194a7e111b5c7be0e76bc471c9327"
-  },
-  "/root/garde-manger/src/lib/server/productConfig.ts": {
-    "mtime": 1780036968.3390346,
-    "ast_hash": "af3a1af48d437e87f475ad3d36716eb5",
-    "semantic_hash": "af3a1af48d437e87f475ad3d36716eb5"
-  },
-  "/root/garde-manger/src/lib/server/reminders.test.ts": {
-    "mtime": 1780039637.9790087,
-    "ast_hash": "2fc86c7e2e0f01f8f1cc2095d8a2ec79",
-    "semantic_hash": "2fc86c7e2e0f01f8f1cc2095d8a2ec79"
-  },
-  "/root/garde-manger/src/lib/server/households.test.ts": {
-    "mtime": 1780334883.30401,
-    "ast_hash": "1efb5b90ad0b149f4885511f45a2ff58",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/server/cron.test.ts": {
-    "mtime": 1780162837.8085227,
-    "ast_hash": "2a607a82be75a1cb53ac2ba444e43cfb",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/server/pushConfig.ts": {
-    "mtime": 1780039637.9790087,
-    "ast_hash": "a75b5395aa81b9a02c32f2aa6e674122",
-    "semantic_hash": "a75b5395aa81b9a02c32f2aa6e674122"
-  },
-  "/root/garde-manger/src/lib/server/off.ts": {
-    "mtime": 1780036968.3390346,
-    "ast_hash": "5f290062b4bf65641bd1fe533f779da3",
-    "semantic_hash": "5f290062b4bf65641bd1fe533f779da3"
-  },
-  "/root/garde-manger/src/lib/server/households.ts": {
-    "mtime": 1780334861.5771558,
-    "ast_hash": "a176358169e71c929488c2f725ee40ac",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/server/backup.test.ts": {
-    "mtime": 1780041027.7121048,
-    "ast_hash": "09c174a4c4d6cee68899213e46c617f8",
-    "semantic_hash": "09c174a4c4d6cee68899213e46c617f8"
-  },
-  "/root/garde-manger/src/lib/server/cron.ts": {
-    "mtime": 1780039637.9790087,
-    "ast_hash": "704a7389f847b6ec1b03f496badaef9c",
-    "semantic_hash": "704a7389f847b6ec1b03f496badaef9c"
-  },
-  "/root/garde-manger/src/lib/server/inventory.test.ts": {
-    "mtime": 1780100840.5205503,
-    "ast_hash": "cba08339e37cb726c0e879833a9bb83a",
-    "semantic_hash": "cba08339e37cb726c0e879833a9bb83a"
-  },
-  "/root/garde-manger/src/lib/server/push.test.ts": {
-    "mtime": 1780162837.8085227,
-    "ast_hash": "b7b31775302c02fa011871252a7b590b",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/server/push.ts": {
-    "mtime": 1780162837.8095226,
-    "ast_hash": "2ab8473e1d109bb7f0345774c6884d11",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/server/stats.test.ts": {
-    "mtime": 1780107844.135074,
-    "ast_hash": "ad006e2b786e26ad93b5c496bab22cf7",
-    "semantic_hash": "ad006e2b786e26ad93b5c496bab22cf7"
-  },
-  "/root/garde-manger/src/lib/server/inventory.ts": {
-    "mtime": 1780100840.5205503,
-    "ast_hash": "b9140bcbbd33a8162144294b945c3ed6",
-    "semantic_hash": "b9140bcbbd33a8162144294b945c3ed6"
-  },
-  "/root/garde-manger/src/lib/server/off.test.ts": {
-    "mtime": 1780036968.3390346,
-    "ast_hash": "6edf45a0e9857acfe78d089d42ee3ee9",
-    "semantic_hash": "6edf45a0e9857acfe78d089d42ee3ee9"
-  },
-  "/root/garde-manger/src/lib/server/invitations.test.ts": {
-    "mtime": 1780142654.483721,
-    "ast_hash": "ed213b738d766fd9d826a00cdc56f973",
-    "semantic_hash": "ed213b738d766fd9d826a00cdc56f973"
-  },
-  "/root/garde-manger/src/lib/server/health.ts": {
-    "mtime": 1780014272.2199728,
-    "ast_hash": "220dcb2240bc6b09881ad42abc0888af",
-    "semantic_hash": "220dcb2240bc6b09881ad42abc0888af"
-  },
-  "/root/garde-manger/src/lib/server/cook.test.ts": {
-    "mtime": 1780109317.9070654,
-    "ast_hash": "418fea2004f6a420f616310c2fdc7a4e",
-    "semantic_hash": "418fea2004f6a420f616310c2fdc7a4e"
-  },
-  "/root/garde-manger/src/lib/server/invitations.ts": {
-    "mtime": 1780142654.483721,
-    "ast_hash": "064e4546f9f9dffb925da0b581eaa40f",
-    "semantic_hash": "064e4546f9f9dffb925da0b581eaa40f"
-  },
-  "/root/garde-manger/src/lib/server/webPushSender.ts": {
-    "mtime": 1780039637.9790087,
-    "ast_hash": "468871bc63e1256bcd1a17035e148a59",
-    "semantic_hash": "468871bc63e1256bcd1a17035e148a59"
-  },
-  "/root/garde-manger/src/lib/server/cook/ideas.data.ts": {
-    "mtime": 1780315845.0922787,
-    "ast_hash": "4513b6e62df70494f388e0f5d559195c",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/server/seed/foods.data.ts": {
-    "mtime": 1780023662.0022278,
-    "ast_hash": "d1e442c04168c4020eed90c731ce28ba",
-    "semantic_hash": "d1e442c04168c4020eed90c731ce28ba"
-  },
-  "/root/garde-manger/src/lib/server/seed/seed.ts": {
-    "mtime": 1780023662.003212,
-    "ast_hash": "6b69f106bb48513d27308a9d808db662",
-    "semantic_hash": "6b69f106bb48513d27308a9d808db662"
-  },
-  "/root/garde-manger/src/lib/server/seed/seed.test.ts": {
-    "mtime": 1780023662.003212,
-    "ast_hash": "782186d351884b0cb1e0f5a6e709fb0b",
-    "semantic_hash": "782186d351884b0cb1e0f5a6e709fb0b"
-  },
-  "/root/garde-manger/src/lib/server/db/client.ts": {
-    "mtime": 1780014272.2119727,
-    "ast_hash": "fb4297418c8573c8a6588bf05a163d6d",
-    "semantic_hash": "fb4297418c8573c8a6588bf05a163d6d"
-  },
-  "/root/garde-manger/src/lib/server/db/schema.ts": {
-    "mtime": 1780039637.9790087,
-    "ast_hash": "9effb529946a7d066ad6c36954def58a",
-    "semantic_hash": "9effb529946a7d066ad6c36954def58a"
-  },
-  "/root/garde-manger/src/lib/server/db/client.test.ts": {
-    "mtime": 1780014272.208973,
-    "ast_hash": "5afd9d53737a883fe6fea9237cc42c62",
-    "semantic_hash": "5afd9d53737a883fe6fea9237cc42c62"
-  },
-  "/root/garde-manger/src/lib/server/db/index.ts": {
-    "mtime": 1780023662.0022278,
-    "ast_hash": "70790bfd701614d6326e5e873e0cd747",
-    "semantic_hash": "70790bfd701614d6326e5e873e0cd747"
-  },
-  "/root/garde-manger/src/lib/server/db/schema.test.ts": {
-    "mtime": 1780019374.2309704,
-    "ast_hash": "385a9be4e108438eb9349567edc82867",
-    "semantic_hash": "385a9be4e108438eb9349567edc82867"
-  },
-  "/root/garde-manger/src/lib/server/db/schema-push.test.ts": {
-    "mtime": 1780039637.9790087,
-    "ast_hash": "6019ffada53d9ffda743dbb168876600",
-    "semantic_hash": "6019ffada53d9ffda743dbb168876600"
-  },
-  "/root/garde-manger/src/lib/server/db/schema-products.test.ts": {
-    "mtime": 1780036968.3390346,
-    "ast_hash": "0c0e57fb22f7fefec249e9eda4b3dc00",
-    "semantic_hash": "0c0e57fb22f7fefec249e9eda4b3dc00"
-  },
-  "/root/garde-manger/src/lib/server/db/schema-inventory.test.ts": {
-    "mtime": 1780023662.0022278,
-    "ast_hash": "09f6885d55c1e0f5d6c806189f606e87",
-    "semantic_hash": "09f6885d55c1e0f5d6c806189f606e87"
-  },
-  "/root/garde-manger/src/lib/server/auth/cookies.ts": {
-    "mtime": 1780019374.2308214,
-    "ast_hash": "c69ddf872a941c666e236fb3854c6be8",
-    "semantic_hash": "c69ddf872a941c666e236fb3854c6be8"
-  },
-  "/root/garde-manger/src/lib/server/auth/session.ts": {
-    "mtime": 1780019374.2309704,
-    "ast_hash": "845a5b909d90ee734a5595416208eb94",
-    "semantic_hash": "845a5b909d90ee734a5595416208eb94"
-  },
-  "/root/garde-manger/src/lib/server/auth/session.test.ts": {
-    "mtime": 1780019374.2309704,
-    "ast_hash": "92075cad068d69023849b23591674380",
-    "semantic_hash": "92075cad068d69023849b23591674380"
-  },
-  "/root/garde-manger/src/lib/server/auth/webauthn.ts": {
-    "mtime": 1780019374.2309704,
-    "ast_hash": "370478318e787c0f07fc551ca16feeb2",
-    "semantic_hash": "370478318e787c0f07fc551ca16feeb2"
-  },
-  "/root/garde-manger/src/lib/components/PushSettings.svelte": {
-    "mtime": 1780243682.8379617,
-    "ast_hash": "4e39835b38cb01fbe678dc95ae3b7fa3",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/PasskeyEnroll.svelte": {
-    "mtime": 1780019374.2297049,
-    "ast_hash": "7fdeb8848a23e874c7ae4b89b2bdebbd",
-    "semantic_hash": "7fdeb8848a23e874c7ae4b89b2bdebbd"
-  },
-  "/root/garde-manger/src/lib/components/BarcodeScanner.svelte": {
-    "mtime": 1780065680.8816876,
-    "ast_hash": "d3a9e967252aa87861cf54bc1716e405",
-    "semantic_hash": "d3a9e967252aa87861cf54bc1716e405"
-  },
-  "/root/garde-manger/src/lib/components/OfflineBanner.svelte": {
-    "mtime": 1780226360.7155144,
-    "ast_hash": "0575c8ee8d42ea1249a1838b0f9e2fae",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/PasskeyLogin.svelte": {
-    "mtime": 1780162837.8085227,
-    "ast_hash": "fee8a200f754e4d386f00a0d35f6e813",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/Icon.svelte": {
-    "mtime": 1780245949.4173012,
-    "ast_hash": "2f4f28d0a411c48eec2fee565ef526ba",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/Card.svelte": {
-    "mtime": 1780245949.41701,
-    "ast_hash": "fdf5e914b9332cbe1484f850508bc76f",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/StatTile.svelte": {
-    "mtime": 1780107844.134074,
-    "ast_hash": "6e595363b08406957a139e36beadc207",
-    "semantic_hash": "6e595363b08406957a139e36beadc207"
-  },
-  "/root/garde-manger/src/lib/components/ui/Button.svelte": {
-    "mtime": 1780245949.41701,
-    "ast_hash": "6251a3f6291c81c47c2223fade7161cb",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/DayBadge.svelte": {
-    "mtime": 1780224648.2911649,
-    "ast_hash": "96a9af9d767179427de0eacf7f4e6e8f",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/ItemRow.svelte": {
-    "mtime": 1780277075.9279487,
-    "ast_hash": "ec145b4fca7e96fd447d2769af6a9d22",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/Thumb.svelte": {
-    "mtime": 1780100840.51955,
-    "ast_hash": "5a07d4775952ef7abbd5be3040bb210f",
-    "semantic_hash": "5a07d4775952ef7abbd5be3040bb210f"
-  },
-  "/root/garde-manger/src/lib/components/ui/EmptyState.svelte": {
-    "mtime": 1780096998.6876986,
-    "ast_hash": "89315d3d8cfe383e5a0ff06666c0cb57",
-    "semantic_hash": "89315d3d8cfe383e5a0ff06666c0cb57"
-  },
-  "/root/garde-manger/src/lib/components/ui/BottomNav.svelte": {
-    "mtime": 1780306117.8272195,
-    "ast_hash": "effb2de42baceae09d458e00ee7416c2",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/ThemeToggle.svelte": {
-    "mtime": 1780096998.6876986,
-    "ast_hash": "b69ad98b596aa7c9b7768c802374b009",
-    "semantic_hash": "b69ad98b596aa7c9b7768c802374b009"
-  },
-  "/root/garde-manger/src/lib/i18n/i18n.test.ts": {
-    "mtime": 1780122780.3831851,
-    "ast_hash": "1d85f314022f2dd223482ffaf06e0c2a",
-    "semantic_hash": "1d85f314022f2dd223482ffaf06e0c2a"
-  },
-  "/root/garde-manger/src/lib/i18n/index.ts": {
-    "mtime": 1780023662.0020666,
-    "ast_hash": "d2af77397c73840d00855d196bde7eb6",
-    "semantic_hash": "d2af77397c73840d00855d196bde7eb6"
-  },
-  "/root/garde-manger/src/lib/i18n/messages/fr.ts": {
-    "mtime": 1780245949.418301,
-    "ast_hash": "82317cfac98bd11d77ccb010d6542249",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/i18n/messages/en.ts": {
-    "mtime": 1780245949.4173012,
-    "ast_hash": "9caf35a0335f7c0b7ffb4c19a44cbfe0",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/scripts/gen-icons.py": {
-    "mtime": 1780039637.9780087,
-    "ast_hash": "c98f2faffca5a060105322689c11a1a0",
-    "semantic_hash": "c98f2faffca5a060105322689c11a1a0"
-  },
-  "/root/garde-manger/scripts/backup.ts": {
-    "mtime": 1780041027.7111046,
-    "ast_hash": "59d41cd25b296f1fae4d84c165274b90",
-    "semantic_hash": "59d41cd25b296f1fae4d84c165274b90"
-  },
-  "/root/garde-manger/drizzle/0002_living_payback.sql": {
-    "mtime": 1780023661.9997745,
-    "ast_hash": "7a2d28e98c98c3d26c77958f8c67b2ae",
-    "semantic_hash": "7a2d28e98c98c3d26c77958f8c67b2ae"
-  },
-  "/root/garde-manger/drizzle/0001_furry_preak.sql": {
-    "mtime": 1780019374.228705,
-    "ast_hash": "19595cce44f6c138158f0c61b73d5d91",
-    "semantic_hash": "19595cce44f6c138158f0c61b73d5d91"
-  },
-  "/root/garde-manger/drizzle/0003_wonderful_reptil.sql": {
-    "mtime": 1780036968.3380344,
-    "ast_hash": "403958aa04733764cb186d0adada5dcc",
-    "semantic_hash": "403958aa04733764cb186d0adada5dcc"
-  },
-  "/root/garde-manger/drizzle/0004_free_stone_men.sql": {
-    "mtime": 1780039637.9780087,
-    "ast_hash": "40b903b07bcea201b499fba21487857c",
-    "semantic_hash": "40b903b07bcea201b499fba21487857c"
-  },
-  "/root/garde-manger/drizzle/0000_clean_wilson_fisk.sql": {
-    "mtime": 1780014272.1939728,
-    "ast_hash": "e9c0204212033c1fd3d002310a5c38c9",
-    "semantic_hash": "e9c0204212033c1fd3d002310a5c38c9"
-  },
-  "/root/garde-manger/drizzle/meta/0003_snapshot.json": {
-    "mtime": 1780036968.3380344,
-    "ast_hash": "e246209a7526e9d7845989977028058d",
-    "semantic_hash": "e246209a7526e9d7845989977028058d"
-  },
-  "/root/garde-manger/drizzle/meta/0004_snapshot.json": {
-    "mtime": 1780039637.9780087,
-    "ast_hash": "93d516e0ef690083261b73cc8c64fa26",
-    "semantic_hash": "93d516e0ef690083261b73cc8c64fa26"
-  },
-  "/root/garde-manger/drizzle/meta/_journal.json": {
-    "mtime": 1780039637.9780087,
-    "ast_hash": "f8dc69b479d698899d419d92f1f98d79",
-    "semantic_hash": "f8dc69b479d698899d419d92f1f98d79"
-  },
-  "/root/garde-manger/drizzle/meta/0000_snapshot.json": {
-    "mtime": 1780014272.1950016,
-    "ast_hash": "37c4da244d27dea36aff036682c68662",
-    "semantic_hash": "37c4da244d27dea36aff036682c68662"
-  },
-  "/root/garde-manger/drizzle/meta/0001_snapshot.json": {
-    "mtime": 1780019374.228705,
-    "ast_hash": "4d8319c319d86db8c5853e2e940cfbdd",
-    "semantic_hash": "4d8319c319d86db8c5853e2e940cfbdd"
-  },
-  "/root/garde-manger/drizzle/meta/0002_snapshot.json": {
-    "mtime": 1780023662.0007744,
-    "ast_hash": "3544158dee9eb9cc8c6bc3d9975b6649",
-    "semantic_hash": "3544158dee9eb9cc8c6bc3d9975b6649"
-  },
-  "/root/garde-manger/.claude/settings.json": {
-    "mtime": 1780162112.1084197,
-    "ast_hash": "87f0d903477984d0587a02f8fe185263",
-    "semantic_hash": "87f0d903477984d0587a02f8fe185263"
-  },
-  "/root/garde-manger/.vscode/extensions.json": {
-    "mtime": 1780014272.1759732,
-    "ast_hash": "528da115f68aadbb1ab102af848a9129",
-    "semantic_hash": "528da115f68aadbb1ab102af848a9129"
-  },
-  "/root/garde-manger/DEPLOY.md": {
-    "mtime": 1780041027.7111046,
-    "ast_hash": "54c144daa0f9ff5e35ad62ac0d2ed3c5",
-    "semantic_hash": "54c144daa0f9ff5e35ad62ac0d2ed3c5"
-  },
-  "/root/garde-manger/CLAUDE.md": {
-    "mtime": 1780283512.7978506,
-    "ast_hash": "bfd08bb836ee94ee4f16be3ffc711a16",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/README.md": {
-    "mtime": 1780041027.7111046,
-    "ast_hash": "010aea2f0a2c17de3ed5a95444b0d6c3",
-    "semantic_hash": "010aea2f0a2c17de3ed5a95444b0d6c3"
-  },
-  "/root/garde-manger/static/robots.txt": {
-    "mtime": 1780014272.2249727,
-    "ast_hash": "d2ab914a1820906bd49451cb0a108119",
-    "semantic_hash": "d2ab914a1820906bd49451cb0a108119"
-  },
-  "/root/garde-manger/src/app.html": {
-    "mtime": 1780226360.7155144,
-    "ast_hash": "6ef1a58ebb5d59a2e2bbd95b58a837dc",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m6-foundation.md": {
-    "mtime": 1780096998.6863601,
-    "ast_hash": "08e5d068b57f600f706031502b4fc29d",
-    "semantic_hash": "08e5d068b57f600f706031502b4fc29d"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m1-auth.md": {
-    "mtime": 1780019374.228705,
-    "ast_hash": "2ffe3fa55505ea8c352b02551af913e8",
-    "semantic_hash": "2ffe3fa55505ea8c352b02551af913e8"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-30-household-admin-crud.md": {
-    "mtime": 1780137614.4848998,
-    "ast_hash": "6e89f829b321f7504aa0f9530064974e",
-    "semantic_hash": "6e89f829b321f7504aa0f9530064974e"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m5-deploy.md": {
-    "mtime": 1780041027.7111046,
-    "ast_hash": "704ebf387182a9e4efda600f1bcb08bc",
-    "semantic_hash": "704ebf387182a9e4efda600f1bcb08bc"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m4-pwa.md": {
-    "mtime": 1780039637.9780087,
-    "ast_hash": "dd717b4d45b7e93ace19ab227d2ee6f0",
-    "semantic_hash": "dd717b4d45b7e93ace19ab227d2ee6f0"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m7-home-detail.md": {
-    "mtime": 1780100840.51955,
-    "ast_hash": "9717b0182aeea90498a014060e18a205",
-    "semantic_hash": "9717b0182aeea90498a014060e18a205"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-28-garde-manger-m0-foundation.md": {
-    "mtime": 1780014272.186973,
-    "ast_hash": "866f1478dd0bb6ad3fb395e945587102",
-    "semantic_hash": "866f1478dd0bb6ad3fb395e945587102"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m3-scan.md": {
-    "mtime": 1780036968.3380344,
-    "ast_hash": "c06accf424139225534ce61f95858073",
-    "semantic_hash": "c06accf424139225534ce61f95858073"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-30-garde-manger-m8-add-scan.md": {
-    "mtime": 1780103959.828131,
-    "ast_hash": "cad64d3bc621ed1d0d92566862147d2d",
-    "semantic_hash": "cad64d3bc621ed1d0d92566862147d2d"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-30-garde-manger-m10-cuisiner.md": {
-    "mtime": 1780109317.9070654,
-    "ast_hash": "cd6e9eafe57700770bb5b3e8744007a3",
-    "semantic_hash": "cd6e9eafe57700770bb5b3e8744007a3"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m2-inventory.md": {
-    "mtime": 1780023661.9997745,
-    "ast_hash": "d52b8fb588a7fad66087ca0de3f604d6",
-    "semantic_hash": "d52b8fb588a7fad66087ca0de3f604d6"
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-30-garde-manger-m9-bilan.md": {
-    "mtime": 1780107844.134074,
-    "ast_hash": "70cf0d03606913054dc26f58567f0a63",
-    "semantic_hash": "70cf0d03606913054dc26f58567f0a63"
-  },
-  "/root/garde-manger/docs/superpowers/specs/2026-05-29-garde-manger-uiux-redesign-design.md": {
-    "mtime": 1780096998.6863601,
-    "ast_hash": "f903f3f2582653833686b359aba02820",
-    "semantic_hash": "f903f3f2582653833686b359aba02820"
-  },
-  "/root/garde-manger/docs/superpowers/specs/2026-05-30-household-admin-crud-design.md": {
-    "mtime": 1780136748.2477584,
-    "ast_hash": "ed4974a6ba4a2a26cd0d482929e990d6",
-    "semantic_hash": "ed4974a6ba4a2a26cd0d482929e990d6"
-  },
-  "/root/garde-manger/docs/superpowers/specs/2026-05-28-garde-manger-design.md": {
-    "mtime": 1780014272.1899729,
-    "ast_hash": "a83987bfcd64c5e48ec7abe32a78e5ab",
-    "semantic_hash": "a83987bfcd64c5e48ec7abe32a78e5ab"
-  },
-  "/root/garde-manger/static/icons/icon-192.png": {
-    "mtime": 1780174881.5647914,
-    "ast_hash": "9e339a86c36f3f0c8f5f119d0a2f163a",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/static/icons/icon-maskable-512.png": {
-    "mtime": 1780174881.5647914,
-    "ast_hash": "f8b333fb41ed896f7a77d92feb840bde",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/static/icons/badge-72.png": {
-    "mtime": 1780174881.5647914,
-    "ast_hash": "1ce105809e12f3b2d63b0e8ae7d49d8d",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/static/icons/icon-512.png": {
-    "mtime": 1780174881.5647914,
-    "ast_hash": "1cf9b491cda80ac629b8d0b2f57fb025",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/static/icons/icon-maskable-192.png": {
-    "mtime": 1780174881.5647914,
-    "ast_hash": "70053ac41a9d62dacce3d3a5f37166e6",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/assets/favicon.svg": {
-    "mtime": 1780014272.2039728,
-    "ast_hash": "a0d1b540c1b9a2a920d5f6cae983118a",
-    "semantic_hash": "a0d1b540c1b9a2a920d5f6cae983118a"
-  },
-  "/root/garde-manger/src/routes/+page.server.ts": {
-    "mtime": 1780162837.8108537,
-    "ast_hash": "2ec735b7b7aac1df25ecc1bfbd351569",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/+page.svelte": {
-    "mtime": 1780164165.9365838,
-    "ast_hash": "25bb12e716f26095a95128b9cfe4dc22",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/landing.server.test.ts": {
-    "mtime": 1780162837.8108537,
-    "ast_hash": "9f0257dfffb1ada8899919d183a613ae",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/garde-manger/+page.server.ts": {
-    "mtime": 1780335078.6546986,
-    "ast_hash": "15f9210e0b986dcbe40092835497bb9f",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/garde-manger/+page.svelte": {
-    "mtime": 1780248258.2073367,
-    "ast_hash": "f588c066c08d3561195e28a0d3295878",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-30-public-landing-page.md": {
-    "mtime": 1780162837.8015227,
-    "ast_hash": "435a4191338c99a031d6c28d52dbd546",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/docs/superpowers/specs/2026-05-30-public-landing-page-design.md": {
-    "mtime": 1780162837.8015227,
-    "ast_hash": "58073c82996d67dada43499c164b28c7",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/scripts/ui-audit-capture.mjs": {
-    "mtime": 1780234990.1319277,
-    "ast_hash": "7a3e84d2beb0a9e4c22c3277aa588ce9",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-31-apple-hig-foundations.md": {
-    "mtime": 1780245949.4023013,
-    "ast_hash": "f3af12325ddf452f2ce2b9535dfb1628",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-30-pwa-app-icon.md": {
-    "mtime": 1780171406.0838013,
-    "ast_hash": "4b428e732dd6993c2f683529d0c5ba1a",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/docs/superpowers/specs/2026-05-31-apple-hig-implementation-design.md": {
-    "mtime": 1780245949.4033012,
-    "ast_hash": "3bd998e8047c4f3d939ae565618be971",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/docs/superpowers/specs/2026-05-30-pwa-app-icon-design.md": {
-    "mtime": 1780171199.2301931,
-    "ast_hash": "a96791f5fb2ea63013748cb6e12a57c5",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/static/favicon-32.png": {
-    "mtime": 1780174881.5647914,
-    "ast_hash": "16ef0f3043d512f4b4ab7e409c5475d1",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/static/favicon.svg": {
-    "mtime": 1780174881.5647914,
-    "ast_hash": "525170f96f321bfe6f6a986fe0f39361",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/static/icons/apple-touch-icon-180.png": {
-    "mtime": 1780174881.5647914,
-    "ast_hash": "7f8f00c117b8f4e2ad2a74eaf6f623fd",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/SegmentedControl.svelte": {
-    "mtime": 1780248257.4993415,
-    "ast_hash": "89a3b2f9ce0eb4ba6b66951f4fc741d7",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/NavigationBar.svelte": {
-    "mtime": 1780278807.5429995,
-    "ast_hash": "4171b77e86e6b43354318e4bfce99e69",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/ActionSheet.svelte": {
-    "mtime": 1780245949.41701,
-    "ast_hash": "94b8026c9f8795afe463196e6c3e8cf3",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/Sheet.svelte": {
-    "mtime": 1780245949.4173012,
-    "ast_hash": "dc799214ba225fce437662861507addd",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/Toggle.svelte": {
-    "mtime": 1780245949.4173012,
-    "ast_hash": "f8eddfcd85bacf025797f981c06c3e92",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/List.svelte": {
-    "mtime": 1780245949.4173012,
-    "ast_hash": "1e155508e6932e12c6850cdb12bf8a53",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/HouseholdMenu.svelte": {
-    "mtime": 1780277926.1883757,
-    "ast_hash": "fcadd2340260f020dea0eccca8fcb21f",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/ListRow.svelte": {
-    "mtime": 1780245949.4173012,
-    "ast_hash": "1fc684438d1ca557ed58c4be6530d152",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/docs/superpowers/plans/2026-05-31-apple-hig-m2-chrome-wiring.md": {
-    "mtime": 1780245949.4023013,
-    "ast_hash": "da9e48658e61216656bfb8c936212bcf",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/lib/components/ui/SwipeActions.svelte": {
-    "mtime": 1780245949.4173012,
-    "ast_hash": "f33988520d6f54ad5b628b27eece3b5b",
-    "semantic_hash": ""
-  },
-  "/root/garde-manger/src/routes/(app)/cuisiner/page.server.test.ts": {
-    "mtime": 1780316233.568305,
-    "ast_hash": "db26b1f992c1da92541616a83bdab7ca",
-    "semantic_hash": ""
+  "/home/sbrn/Projects/garde-manger/drizzle.config.ts": {
+    "mtime": 1780381261.4945228,
+    "hash": "c658031ed559880ca2eec07ab2180e7b"
+  },
+  "/home/sbrn/Projects/garde-manger/eslint.config.js": {
+    "mtime": 1780381261.4949415,
+    "hash": "bb1d4391b4490dc9563f001a6b29d3ab"
+  },
+  "/home/sbrn/Projects/garde-manger/svelte.config.js": {
+    "mtime": 1780381261.5102656,
+    "hash": "f8b4c27c91862babb58d20664761bd3f"
+  },
+  "/home/sbrn/Projects/garde-manger/vite.config.ts": {
+    "mtime": 1780381261.5102656,
+    "hash": "c0b083df13ec8b53b799b7ca69dc4721"
+  },
+  "/home/sbrn/Projects/garde-manger/playwright.config.ts": {
+    "mtime": 1780406633.943697,
+    "hash": "84178121aca7ea58ddd045b126aad4c1"
+  },
+  "/home/sbrn/Projects/garde-manger/drizzle/0000_clean_wilson_fisk.sql": {
+    "mtime": 1780381261.4945228,
+    "hash": "e9c0204212033c1fd3d002310a5c38c9"
+  },
+  "/home/sbrn/Projects/garde-manger/drizzle/0001_furry_preak.sql": {
+    "mtime": 1780381261.494794,
+    "hash": "19595cce44f6c138158f0c61b73d5d91"
+  },
+  "/home/sbrn/Projects/garde-manger/drizzle/0002_living_payback.sql": {
+    "mtime": 1780381261.494794,
+    "hash": "7a2d28e98c98c3d26c77958f8c67b2ae"
+  },
+  "/home/sbrn/Projects/garde-manger/drizzle/0003_wonderful_reptil.sql": {
+    "mtime": 1780381261.494794,
+    "hash": "403958aa04733764cb186d0adada5dcc"
+  },
+  "/home/sbrn/Projects/garde-manger/drizzle/0004_free_stone_men.sql": {
+    "mtime": 1780381261.494794,
+    "hash": "40b903b07bcea201b499fba21487857c"
+  },
+  "/home/sbrn/Projects/garde-manger/drizzle/0005_eager_shinko_yamashiro.sql": {
+    "mtime": 1780396687.638424,
+    "hash": "c362cfbb9470cdae1202a1ea22633b9c"
+  },
+  "/home/sbrn/Projects/garde-manger/drizzle/0006_bent_johnny_blaze.sql": {
+    "mtime": 1780396687.638424,
+    "hash": "f6f003aa556d1c4eca9a31e6a3776b04"
+  },
+  "/home/sbrn/Projects/garde-manger/scripts/backup.ts": {
+    "mtime": 1780381261.5031335,
+    "hash": "59d41cd25b296f1fae4d84c165274b90"
+  },
+  "/home/sbrn/Projects/garde-manger/scripts/gen-icons.py": {
+    "mtime": 1780381261.5048814,
+    "hash": "c98f2faffca5a060105322689c11a1a0"
+  },
+  "/home/sbrn/Projects/garde-manger/scripts/ui-audit-capture.mjs": {
+    "mtime": 1780396567.0158353,
+    "hash": "4b4d1a1fef4aba4e81ea9bfec2f921df"
+  },
+  "/home/sbrn/Projects/garde-manger/src/app.d.ts": {
+    "mtime": 1780381261.5050147,
+    "hash": "387fc7dc1629934311d4ffe4db32726a"
+  },
+  "/home/sbrn/Projects/garde-manger/src/hooks.server.ts": {
+    "mtime": 1780381261.5050147,
+    "hash": "82c7b4c5e900d5dd94781a2fd8ef3114"
+  },
+  "/home/sbrn/Projects/garde-manger/src/service-worker.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "38f56cf1a3450d62e632705ac478e8ac"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/barcode.test.ts": {
+    "mtime": 1780381261.5050893,
+    "hash": "6927b893f004df2f1c085a1864f1fdd8"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/dates.test.ts": {
+    "mtime": 1780381261.505359,
+    "hash": "64fccc46213268ea3e0c41eb5c06d2cf"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/dates.ts": {
+    "mtime": 1780381261.505359,
+    "hash": "42c53dab3cefefe12b59933cca5bd7fa"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/icons.test.ts": {
+    "mtime": 1780381261.5059743,
+    "hash": "980941fca2264d52853876f0499904e5"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/icons.ts": {
+    "mtime": 1780381261.5059743,
+    "hash": "d8836b558c811fbc466923802fe51cd7"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/index.ts": {
+    "mtime": 1780381261.5059743,
+    "hash": "ffcb0e97b69eb555d5739e9efe961ca0"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/theme.test.ts": {
+    "mtime": 1780381261.5074856,
+    "hash": "c516487f539d2aa7bd2a60b9f64b9176"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/theme.ts": {
+    "mtime": 1780381261.5074856,
+    "hash": "1ed4640a95d9f9874ff810214606ab2f"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/barcode.ts": {
+    "mtime": 1780396687.638424,
+    "hash": "087a1524d3d38380b8349cfd9176eeb0"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/passkeyError.test.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "aeb9262efb1b4dabe1230261c25bcc52"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/passkeyError.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "606fc0b397a3f2edea89c83cf0253658"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/validation.test.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "9f213d069262bcdcc6d0256115a15d95"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/validation.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "be2aec3ebc37d901d7e17a584715d551"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/BarcodeScanner.svelte": {
+    "mtime": 1780381261.5050893,
+    "hash": "d3a9e967252aa87861cf54bc1716e405"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/OfflineBanner.svelte": {
+    "mtime": 1780381261.505217,
+    "hash": "0575c8ee8d42ea1249a1838b0f9e2fae"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/PushSettings.svelte": {
+    "mtime": 1780381261.505217,
+    "hash": "4e39835b38cb01fbe678dc95ae3b7fa3"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/PasskeyEnroll.svelte": {
+    "mtime": 1780396687.638424,
+    "hash": "ad526c84cbf3f2419d6f307faed7ed48"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/PasskeyLogin.svelte": {
+    "mtime": 1780396687.638424,
+    "hash": "3be84091e2cc7ff1cfb3b26fd5f479fb"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/ActionSheet.svelte": {
+    "mtime": 1780381261.505217,
+    "hash": "94b8026c9f8795afe463196e6c3e8cf3"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/BottomNav.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "effb2de42baceae09d458e00ee7416c2"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/Button.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "6251a3f6291c81c47c2223fade7161cb"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/Card.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "fdf5e914b9332cbe1484f850508bc76f"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/DayBadge.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "96a9af9d767179427de0eacf7f4e6e8f"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/EmptyState.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "89315d3d8cfe383e5a0ff06666c0cb57"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/HouseholdMenu.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "fcadd2340260f020dea0eccca8fcb21f"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/Icon.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "2f4f28d0a411c48eec2fee565ef526ba"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/List.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "1e155508e6932e12c6850cdb12bf8a53"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/ListRow.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "1fc684438d1ca557ed58c4be6530d152"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/NavigationBar.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "4171b77e86e6b43354318e4bfce99e69"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/SegmentedControl.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "89a3b2f9ce0eb4ba6b66951f4fc741d7"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/Sheet.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "dc799214ba225fce437662861507addd"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/StatTile.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "6e595363b08406957a139e36beadc207"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/SwipeActions.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "f33988520d6f54ad5b628b27eece3b5b"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/ThemeToggle.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "b69ad98b596aa7c9b7768c802374b009"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/Thumb.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "5a07d4775952ef7abbd5be3040bb210f"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/Toggle.svelte": {
+    "mtime": 1780381261.505359,
+    "hash": "f8eddfcd85bacf025797f981c06c3e92"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/ItemRow.svelte": {
+    "mtime": 1780403420.6692228,
+    "hash": "a719b03c886d1e3a8c62042985f118fe"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/i18n/i18n.test.ts": {
+    "mtime": 1780381261.505359,
+    "hash": "1d85f314022f2dd223482ffaf06e0c2a"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/i18n/index.ts": {
+    "mtime": 1780381261.5058734,
+    "hash": "d2af77397c73840d00855d196bde7eb6"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/i18n/messages/en.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "9c1088c5222cc49312aedd12a4015712"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/i18n/messages/fr.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "807556591f854f45a4e7f573c84751fe"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/backup.test.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "09c174a4c4d6cee68899213e46c617f8"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/backup.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "80abe44135306b81c068292fe92d08d6"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/catalogue.test.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "85d6b6bdc80030b689a5e349036d7fca"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/catalogue.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "78673e82a626a1718b77aa00ebf18c88"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/cook.test.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "418fea2004f6a420f616310c2fdc7a4e"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/cook.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "224a8b404a61218c982d1905587ddfff"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/cron.test.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "2a607a82be75a1cb53ac2ba444e43cfb"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/health.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "e6a58087ed72107f239eb8d2dd10f5a3"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/health.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "220dcb2240bc6b09881ad42abc0888af"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/households.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "1efb5b90ad0b149f4885511f45a2ff58"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/inventory.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "cba08339e37cb726c0e879833a9bb83a"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/inventory.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "b9140bcbbd33a8162144294b945c3ed6"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/invitations.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "ed213b738d766fd9d826a00cdc56f973"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/off.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "6edf45a0e9857acfe78d089d42ee3ee9"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/offRateLimit.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "037194a7e111b5c7be0e76bc471c9327"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/productConfig.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "af3a1af48d437e87f475ad3d36716eb5"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/reminders.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "2fc86c7e2e0f01f8f1cc2095d8a2ec79"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/stats.test.ts": {
+    "mtime": 1780381261.5074856,
+    "hash": "ad006e2b786e26ad93b5c496bab22cf7"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/stats.ts": {
+    "mtime": 1780381261.5074856,
+    "hash": "9ce94948b4fcd22e4b9530e15ab219e0"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/cron.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "45b7cf0060df1c87a2696573c7678705"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/households.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "984c16431a1a0e9511b94e745c75f01d"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/invitations.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "343eb113738aa83fdcc9e0a891a73e93"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/off.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "86bd96625edc142cf096b5d58569e8bd"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/offRateLimit.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "9b97523db750d453298c8d1967fc2ca4"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/push.test.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "28c7edfeb6691f44bb0bae36727ea5cc"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/push.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "dac02a26ea07016e81a6f7e38a353a35"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/pushConfig.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "2b4519f5b15e2c094a32f057aebbdbd5"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/reminders.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "e9151ec022c7872bcf3317b89c609567"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/webPushSender.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "30a1fe1d1c5d3d9950092a94ccbcec50"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/auth/cookies.ts": {
+    "mtime": 1780381261.506119,
+    "hash": "c69ddf872a941c666e236fb3854c6be8"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/auth/session.test.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "92075cad068d69023849b23591674380"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/auth/session.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "845a5b909d90ee734a5595416208eb94"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/auth/webauthn.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "5d66484778056c86c7bb27b2377c6f73"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/cook/ideas.data.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "4513b6e62df70494f388e0f5d559195c"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/db/client.test.ts": {
+    "mtime": 1780381261.5061517,
+    "hash": "5afd9d53737a883fe6fea9237cc42c62"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/db/client.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "fb4297418c8573c8a6588bf05a163d6d"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/db/index.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "70790bfd701614d6326e5e873e0cd747"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/db/schema-inventory.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "09f6885d55c1e0f5d6c806189f606e87"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/db/schema-products.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "0c0e57fb22f7fefec249e9eda4b3dc00"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/db/schema-push.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "6019ffada53d9ffda743dbb168876600"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/db/schema.test.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "385a9be4e108438eb9349567edc82867"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/db/schema.ts": {
+    "mtime": 1780396687.6394238,
+    "hash": "10b8a38b5946b6b8ba3ca5283595a33b"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/seed/foods.data.ts": {
+    "mtime": 1780381261.5065262,
+    "hash": "d1e442c04168c4020eed90c731ce28ba"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/seed/seed.test.ts": {
+    "mtime": 1780381261.5074856,
+    "hash": "782186d351884b0cb1e0f5a6e709fb0b"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/seed/seed.ts": {
+    "mtime": 1780381261.5074856,
+    "hash": "6b69f106bb48513d27308a9d808db662"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/+layout.svelte": {
+    "mtime": 1780381261.5093243,
+    "hash": "c4e4af1e68cae9d2492985c117efd7e0"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/+page.server.ts": {
+    "mtime": 1780381261.5093243,
+    "hash": "2ec735b7b7aac1df25ecc1bfbd351569"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/+page.svelte": {
+    "mtime": 1780381261.5093243,
+    "hash": "25bb12e716f26095a95128b9cfe4dc22"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/landing.server.test.ts": {
+    "mtime": 1780381261.5100026,
+    "hash": "9f0257dfffb1ada8899919d183a613ae"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/+layout.server.ts": {
+    "mtime": 1780381261.5077248,
+    "hash": "a97c12054ddab6829dca55864ee4a8f9"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/+layout.svelte": {
+    "mtime": 1780381261.5077808,
+    "hash": "356ff5b1c9375f8f2dd1107bd5a76fe2"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/+layout.ts": {
+    "mtime": 1780381261.5077808,
+    "hash": "15ef38642b744a1b7e8740a79e319510"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/account/+page.server.ts": {
+    "mtime": 1780381261.5077808,
+    "hash": "2f73b773e8334c3d761a83cb5531a26a"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/account/+page.svelte": {
+    "mtime": 1780381261.5078835,
+    "hash": "be9da855804811b4112580a77b42010d"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/account/+page.ts": {
+    "mtime": 1780381261.5078835,
+    "hash": "519d0253bcbc5f426992f7ecf6f7235d"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/add/+page.svelte": {
+    "mtime": 1780381261.508022,
+    "hash": "bb854f31608a376cb44599c244b890d5"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/add/+page.ts": {
+    "mtime": 1780381261.508022,
+    "hash": "dc2d05352ed1c1d9718bf4e23e9389e9"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/add/+page.server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "83e32eccc0577730b72dbca4e28195a9"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/bilan/+page.server.ts": {
+    "mtime": 1780381261.508022,
+    "hash": "05d168478d49803ad85e522c35902560"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/bilan/+page.svelte": {
+    "mtime": 1780381261.508143,
+    "hash": "dbb1db14753d6d51169029705181add7"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/cuisiner/+page.server.ts": {
+    "mtime": 1780381261.508143,
+    "hash": "4b7ec40423e70af2c3d265973345fa23"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/cuisiner/+page.svelte": {
+    "mtime": 1780381261.5082188,
+    "hash": "49e52894df65b9227c40436ce9f6a999"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/cuisiner/page.server.test.ts": {
+    "mtime": 1780396567.0158353,
+    "hash": "d8fec00615972768f418ae57a98b81e0"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/garde-manger/+page.server.ts": {
+    "mtime": 1780381261.5082188,
+    "hash": "15f9210e0b986dcbe40092835497bb9f"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/garde-manger/+page.svelte": {
+    "mtime": 1780381261.5083358,
+    "hash": "f588c066c08d3561195e28a0d3295878"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/households/+page.server.ts": {
+    "mtime": 1780381261.5083358,
+    "hash": "176e33d486babc5c09359845d79ba57c"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/households/+page.svelte": {
+    "mtime": 1780381261.5084157,
+    "hash": "bcfc6a9a271cf63db42c73cc6a68d6d9"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/households/[id]/+page.svelte": {
+    "mtime": 1780381261.5084977,
+    "hash": "2ba9b591f621852ae4d53a2e1b9a9d89"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/households/[id]/+page.server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "7b9cd7b5e0cba10782185159476940c9"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/households/[id]/invite/+page.server.ts": {
+    "mtime": 1780381261.5084977,
+    "hash": "4b09d49e73bb11c18e3e343ad18cfc92"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/households/[id]/invite/+page.svelte": {
+    "mtime": 1780381261.508585,
+    "hash": "c37de984d724c1c86264750d971163f4"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/item/[id]/+page.svelte": {
+    "mtime": 1780381261.5086844,
+    "hash": "a98fb63f3c0d224b219a016e7501924e"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/item/[id]/+page.server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "571d400b4c60b1fdea0e8ef689adab90"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/products/[barcode]/image/+server.ts": {
+    "mtime": 1780381261.508764,
+    "hash": "b91afa7c2f176de50e52acebbc776cbd"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/scan/+page.server.ts": {
+    "mtime": 1780381261.508764,
+    "hash": "f818851856506e039810810795dfa87a"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/scan/+page.svelte": {
+    "mtime": 1780381261.5089025,
+    "hash": "acec5f7c2db1e76dfc59319d41fb3b2f"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/scan/+page.ts": {
+    "mtime": 1780381261.5089025,
+    "hash": "519d0253bcbc5f426992f7ecf6f7235d"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/scan/[barcode]/+page.svelte": {
+    "mtime": 1780381261.5090244,
+    "hash": "6341bab41e0c57aea54ddae3f8110389"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/scan/[barcode]/+page.ts": {
+    "mtime": 1780381261.5090244,
+    "hash": "dc2d05352ed1c1d9718bf4e23e9389e9"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/scan/[barcode]/+page.server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "3a5ce09277420ff2f7a73a5a5ea757e1"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(auth)/+layout.server.ts": {
+    "mtime": 1780381261.5090244,
+    "hash": "ffea3ca0fdcb378debaa22ae09310144"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(auth)/+layout.ts": {
+    "mtime": 1780381261.5091574,
+    "hash": "dc2d05352ed1c1d9718bf4e23e9389e9"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(auth)/login/+page.server.ts": {
+    "mtime": 1780381261.5091574,
+    "hash": "0248949bb91c9e0c373e1c0af5166027"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(auth)/login/+page.svelte": {
+    "mtime": 1780381261.5092285,
+    "hash": "b5335988b583a2951bca4956b68d9912"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(auth)/login/+page.ts": {
+    "mtime": 1780381261.5092285,
+    "hash": "162f1f1f69f3d076403831a3b9fda3e5"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(auth)/signup/+page.server.ts": {
+    "mtime": 1780381261.5092285,
+    "hash": "f043f8ea6f846e864087944cb59dd558"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(auth)/signup/+page.svelte": {
+    "mtime": 1780381261.5093243,
+    "hash": "94978b1f011f0714fbc215a7a4585d74"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/api/push/subscribe/+server.ts": {
+    "mtime": 1780381261.5094738,
+    "hash": "d8d76f7ae2f947e09f352a2f5fb0787b"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/api/push/unsubscribe/+server.ts": {
+    "mtime": 1780381261.5094738,
+    "hash": "5d1511b38392b0cf66a7b0327d8f8467"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/api/webauthn/authenticate/options/+server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "5bff33f9a65c01817cff2e85a4d8ea14"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/api/webauthn/authenticate/verify/+server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "b78da270ffe986a9d382b3abac8d8a10"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/api/webauthn/register/options/+server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "44fa488f46e029b0bca83a7b5bd9cd9f"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/api/webauthn/register/verify/+server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "e4364271f3d19598827170fabd405b7a"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/healthz/+server.ts": {
+    "mtime": 1780381261.5097253,
+    "hash": "b8cfc5eb2b53e4dd1fc948b3c1dd47be"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/internal/cron/check-expiry/+server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "592edff25cfeb0081dc43b9725896572"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/join/[token]/+page.server.ts": {
+    "mtime": 1780396687.6404238,
+    "hash": "f760ba97a66ad42d7a764cb8b26c0b37"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/join/[token]/+page.svelte": {
+    "mtime": 1780396687.6404238,
+    "hash": "2e820226dd3677ca6c88270af98ca791"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/logout/+server.ts": {
+    "mtime": 1780381261.5100026,
+    "hash": "ce2a24c859f254942beecebae518cb92"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/smoke.spec.ts": {
+    "mtime": 1780398962.686958,
+    "hash": "109183df7024cd80f4e0de2f3a2b5dc3"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/auth.setup.ts": {
+    "mtime": 1780399237.1210186,
+    "hash": "ed0f4cd39195def240c0f1b933f71076"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/auth.spec.ts": {
+    "mtime": 1780399646.234634,
+    "hash": "06e90a936561ec4dcf2f0593f38d3637"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/invitations.spec.ts": {
+    "mtime": 1780399654.433546,
+    "hash": "45472f6a955b7993d189d8358e03bbca"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/scan.spec.ts": {
+    "mtime": 1780399668.5583947,
+    "hash": "a05c0f1b45e6e3c4760f76d04e27d09b"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/inventory.spec.ts": {
+    "mtime": 1780399718.793856,
+    "hash": "3936cc26d54da3453fd552e44f7e6067"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/households.spec.ts": {
+    "mtime": 1780399751.173509,
+    "hash": "ce86855a2ecabf4fdf3a6d36a5c2abb1"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/add.spec.ts": {
+    "mtime": 1780404343.6562686,
+    "hash": "c2690224b5090085f5fad21787f77d0a"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/bilan.spec.ts": {
+    "mtime": 1780404347.7872238,
+    "hash": "c94b37e4c9c42c279142437bb6273b7a"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/item.spec.ts": {
+    "mtime": 1780404726.3361204,
+    "hash": "b0583b5b9ea608bb05905de4e20ad5c9"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/passkey.spec.ts": {
+    "mtime": 1780406559.492485,
+    "hash": "410612a84ca0569e928786a80999256e"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/account.spec.ts": {
+    "mtime": 1780406587.6801867,
+    "hash": "ad7e41f3b9b5c861d9fac21b0aa90373"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/fixtures/dates.ts": {
+    "mtime": 1780399089.4136012,
+    "hash": "7f16c632dfee1ac874b0cab20409769a"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/fixtures/constants.ts": {
+    "mtime": 1780406336.1688385,
+    "hash": "2e0b1a5f58f25e415d1ec09b8c6aeff0"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/fixtures/db.ts": {
+    "mtime": 1780406375.6894233,
+    "hash": "e5d51e5c0cf3b933886a425596965e9e"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/fixtures/test.ts": {
+    "mtime": 1780406605.6039972,
+    "hash": "e6d400d6459042e740b7a5098680b1e9"
+  },
+  "/home/sbrn/Projects/garde-manger/DEPLOY.md": {
+    "mtime": 1780381261.4923267,
+    "hash": "54c144daa0f9ff5e35ad62ac0d2ed3c5"
+  },
+  "/home/sbrn/Projects/garde-manger/README.md": {
+    "mtime": 1780381261.4923267,
+    "hash": "010aea2f0a2c17de3ed5a95444b0d6c3"
+  },
+  "/home/sbrn/Projects/garde-manger/CLAUDE.md": {
+    "mtime": 1780396567.0158353,
+    "hash": "de6d3b2c4d5d7fa22b39bf875da87ffa"
+  },
+  "/home/sbrn/Projects/garde-manger/AUDIT.md": {
+    "mtime": 1780396687.638424,
+    "hash": "2e42336f1d1510a09f4bcb8138a0aabd"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-28-garde-manger-m0-foundation.md": {
+    "mtime": 1780381261.49344,
+    "hash": "866f1478dd0bb6ad3fb395e945587102"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m1-auth.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "2ffe3fa55505ea8c352b02551af913e8"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m2-inventory.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "d52b8fb588a7fad66087ca0de3f604d6"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m3-scan.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "c06accf424139225534ce61f95858073"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m4-pwa.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "dd717b4d45b7e93ace19ab227d2ee6f0"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m5-deploy.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "704ebf387182a9e4efda600f1bcb08bc"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m6-foundation.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "08e5d068b57f600f706031502b4fc29d"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-29-garde-manger-m7-home-detail.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "9717b0182aeea90498a014060e18a205"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-30-garde-manger-m10-cuisiner.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "cd6e9eafe57700770bb5b3e8744007a3"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-30-garde-manger-m8-add-scan.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "cad64d3bc621ed1d0d92566862147d2d"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-30-garde-manger-m9-bilan.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "70cf0d03606913054dc26f58567f0a63"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-30-household-admin-crud.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "6e89f829b321f7504aa0f9530064974e"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-30-public-landing-page.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "435a4191338c99a031d6c28d52dbd546"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-30-pwa-app-icon.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "4b428e732dd6993c2f683529d0c5ba1a"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-31-apple-hig-foundations.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "f3af12325ddf452f2ce2b9535dfb1628"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-05-31-apple-hig-m2-chrome-wiring.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "da9e48658e61216656bfb8c936212bcf"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/plans/2026-06-02-e2e-testing-suite.md": {
+    "mtime": 1780398640.3694062,
+    "hash": "bdeeb6fa871954f8850fbb8c4bba77b4"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/specs/2026-05-28-garde-manger-design.md": {
+    "mtime": 1780381261.4935427,
+    "hash": "a83987bfcd64c5e48ec7abe32a78e5ab"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/specs/2026-05-29-garde-manger-uiux-redesign-design.md": {
+    "mtime": 1780381261.4945228,
+    "hash": "f903f3f2582653833686b359aba02820"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/specs/2026-05-30-household-admin-crud-design.md": {
+    "mtime": 1780381261.4945228,
+    "hash": "ed4974a6ba4a2a26cd0d482929e990d6"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/specs/2026-05-30-public-landing-page-design.md": {
+    "mtime": 1780381261.4945228,
+    "hash": "58073c82996d67dada43499c164b28c7"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/specs/2026-05-30-pwa-app-icon-design.md": {
+    "mtime": 1780381261.4945228,
+    "hash": "a96791f5fb2ea63013748cb6e12a57c5"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/specs/2026-05-31-apple-hig-implementation-design.md": {
+    "mtime": 1780381261.4945228,
+    "hash": "3bd998e8047c4f3d939ae565618be971"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/specs/2026-06-02-e2e-testing-design.md": {
+    "mtime": 1780398140.0297403,
+    "hash": "8fa8c23c9de7ff5cfcf54deb2c0a0dd4"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/reports/2026-06-02-e2e-bug-hunt-report.md": {
+    "mtime": 1780403969.9833243,
+    "hash": "d8dc39ce65c0b2264bf3b0536ebaaef5"
+  },
+  "/home/sbrn/Projects/garde-manger/src/app.html": {
+    "mtime": 1780381261.5050147,
+    "hash": "6ef1a58ebb5d59a2e2bbd95b58a837dc"
+  },
+  "/home/sbrn/Projects/garde-manger/static/robots.txt": {
+    "mtime": 1780381261.5102656,
+    "hash": "d2ab914a1820906bd49451cb0a108119"
+  },
+  "/home/sbrn/Projects/garde-manger/playwright-report/index.html": {
+    "mtime": 1780406737.3356006,
+    "hash": "cb5c3f9c4de49c9e73bd82fd389c4e13"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/assets/favicon.svg": {
+    "mtime": 1780381261.5050893,
+    "hash": "a0d1b540c1b9a2a920d5f6cae983118a"
+  },
+  "/home/sbrn/Projects/garde-manger/static/favicon-32.png": {
+    "mtime": 1780381261.5100026,
+    "hash": "16ef0f3043d512f4b4ab7e409c5475d1"
+  },
+  "/home/sbrn/Projects/garde-manger/static/favicon.svg": {
+    "mtime": 1780381261.5102043,
+    "hash": "525170f96f321bfe6f6a986fe0f39361"
+  },
+  "/home/sbrn/Projects/garde-manger/static/icons/apple-touch-icon-180.png": {
+    "mtime": 1780381261.5102043,
+    "hash": "7f8f00c117b8f4e2ad2a74eaf6f623fd"
+  },
+  "/home/sbrn/Projects/garde-manger/static/icons/badge-72.png": {
+    "mtime": 1780381261.5102656,
+    "hash": "1ce105809e12f3b2d63b0e8ae7d49d8d"
+  },
+  "/home/sbrn/Projects/garde-manger/static/icons/icon-192.png": {
+    "mtime": 1780381261.5102656,
+    "hash": "9e339a86c36f3f0c8f5f119d0a2f163a"
+  },
+  "/home/sbrn/Projects/garde-manger/static/icons/icon-512.png": {
+    "mtime": 1780381261.5102656,
+    "hash": "1cf9b491cda80ac629b8d0b2f57fb025"
+  },
+  "/home/sbrn/Projects/garde-manger/static/icons/icon-maskable-192.png": {
+    "mtime": 1780381261.5102656,
+    "hash": "70053ac41a9d62dacce3d3a5f37166e6"
+  },
+  "/home/sbrn/Projects/garde-manger/static/icons/icon-maskable-512.png": {
+    "mtime": 1780381261.5102656,
+    "hash": "f8b333fb41ed896f7a77d92feb840bde"
   }
 }

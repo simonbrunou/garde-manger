@@ -1,0 +1,124 @@
+import { test, expect } from './fixtures/test';
+import * as db from './fixtures/db';
+
+// auth.spec.ts — anon project (NO storageState, every test starts logged out).
+// seedUser has no password, so password-login tests use a UI-created user.
+// Assertions encode INTENDED behaviour from the oracle + the EN i18n catalogue.
+
+const PASSWORD = 'Secret-passw0rd!';
+
+/** Create a fresh unique-email user via the signup UI and return its email.
+ *  Forces the stored locale to 'en' (signup defaults new users to 'fr', and
+ *  hooks prioritise user.locale) so authenticated-page selectors match EN. */
+async function signUpFreshUser(page: import('@playwright/test').Page): Promise<string> {
+	const email = `auth-${crypto.randomUUID()}@example.com`;
+	await page.goto('/signup');
+	await page.getByLabel('Email address').fill(email);
+	await page.getByLabel('Display name').fill('Auth Spec User');
+	await page.getByLabel('Password').fill(PASSWORD);
+	await page.getByRole('button', { name: 'Create my account' }).click();
+	// Oracle 2: a successful signup redirects into the app at /garde-manger.
+	await page.waitForURL('**/garde-manger');
+	const userId = db.getUserIdByEmail(email);
+	if (userId) db.setUserLocale(userId, 'en');
+	return email;
+}
+
+test.describe('auth', () => {
+	test('visiting an app route while logged out redirects to /login?redirectTo=<path>', async ({
+		page
+	}) => {
+		// Oracle 1.
+		await page.goto('/bilan');
+		await expect(page).toHaveURL(/\/login\?redirectTo=%2Fbilan$/);
+		await expect(page.getByRole('heading', { name: 'Log in' })).toBeVisible();
+	});
+
+	test('signup with a fresh email lands in the app and authenticates the user', async ({
+		page
+	}) => {
+		// Oracle 2.
+		await signUpFreshUser(page);
+		await expect(page).toHaveURL(/\/garde-manger$/);
+		// Authenticated: an app route loads without bouncing to /login.
+		await page.goto('/account');
+		await expect(page).toHaveURL(/\/account$/);
+		const cookies = await page.context().cookies();
+		expect(cookies.some((c) => c.name === 'gm_session')).toBeTruthy();
+	});
+
+	test('logout lands on /login and re-protects app routes', async ({ page }) => {
+		// Oracle 3.
+		await signUpFreshUser(page);
+
+		await page.goto('/account');
+		await page.getByRole('button', { name: 'Log out' }).click();
+		await expect(page).toHaveURL(/\/login$/);
+
+		// Revisiting an app route now redirects to login again.
+		await page.goto('/bilan');
+		await expect(page).toHaveURL(/\/login\?redirectTo=%2Fbilan$/);
+	});
+
+	test('login with a wrong password shows generic "Invalid credentials" and stays on /login', async ({
+		page
+	}) => {
+		// Oracle 4 — no user enumeration: the message must be the generic one even
+		// though the email exists, and the page must remain /login.
+		const email = await signUpFreshUser(page);
+
+		// Log out first so we exercise a clean login attempt.
+		await page.goto('/account');
+		await page.getByRole('button', { name: 'Log out' }).click();
+		await expect(page).toHaveURL(/\/login$/);
+
+		await page.goto('/login');
+		await page.getByLabel('Email address').fill(email);
+		await page.getByLabel('Password').fill('totally-wrong-password');
+		await page.getByRole('button', { name: 'Log in' }).click();
+
+		await expect(page.getByRole('alert')).toHaveText('Invalid credentials');
+		await expect(page).toHaveURL(/\/login$/);
+		const cookies = await page.context().cookies();
+		expect(cookies.some((c) => c.name === 'gm_session')).toBeFalsy();
+	});
+
+	test('login with correct credentials reaches /garde-manger with a session cookie', async ({
+		page
+	}) => {
+		// Oracle 5.
+		const email = await signUpFreshUser(page);
+
+		await page.goto('/account');
+		await page.getByRole('button', { name: 'Log out' }).click();
+		await expect(page).toHaveURL(/\/login$/);
+
+		await page.goto('/login');
+		await page.getByLabel('Email address').fill(email);
+		await page.getByLabel('Password').fill(PASSWORD);
+		await page.getByRole('button', { name: 'Log in' }).click();
+
+		await page.waitForURL('**/garde-manger');
+		const cookies = await page.context().cookies();
+		expect(cookies.some((c) => c.name === 'gm_session')).toBeTruthy();
+	});
+
+	test('signup with an already-used email shows the "account already exists" error', async ({
+		page
+	}) => {
+		// Oracle 6.
+		const email = await signUpFreshUser(page);
+
+		await page.goto('/account');
+		await page.getByRole('button', { name: 'Log out' }).click();
+		await expect(page).toHaveURL(/\/login$/);
+
+		await page.goto('/signup');
+		await page.getByLabel('Email address').fill(email);
+		await page.getByLabel('Display name').fill('Duplicate User');
+		await page.getByLabel('Password').fill(PASSWORD);
+		await page.getByRole('button', { name: 'Create my account' }).click();
+
+		await expect(page.getByRole('alert')).toHaveText('An account already exists with this email');
+	});
+});
