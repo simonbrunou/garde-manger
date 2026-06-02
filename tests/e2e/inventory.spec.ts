@@ -129,6 +129,8 @@ test('day badge: overdue / today / N days', async ({ page }) => {
 
 	// Past item -> accessible "Overdue" badge.
 	await expect(rowFor(overdue).getByLabel(BADGE.overdue)).toBeVisible();
+	// Overdue now shows the signed day count (was a bare "!"). Item is 1 day past.
+	await expect(rowFor(overdue).getByText('-1', { exact: true })).toBeVisible();
 	// Item due today -> "Today".
 	await expect(rowFor(today).getByLabel(BADGE.today)).toBeVisible();
 	// Item due in two days -> "2 d".
