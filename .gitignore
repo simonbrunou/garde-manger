@@ -35,6 +35,12 @@ audit-shots-before/
 # Data directory
 data/
 
+# Playwright e2e
+.e2e/
+test-results/
+playwright-report/
+tests/e2e/.auth/
+
 # graphify: commit the graph artifacts, but not machine-specific paths or caches
 graphify-out/.graphify_python
 graphify-out/.graphify_root
