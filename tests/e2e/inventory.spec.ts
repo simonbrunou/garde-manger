@@ -187,11 +187,14 @@ test('consume from the list removes the item from the active list', async ({ pag
 
 	const row = page.locator('section.band .row').filter({ has: page.getByText(name) });
 	// Submit the real consume form via its inline button (the no-JS/form path, not a
-	// swipe gesture). The action POSTs and 303-redirects back to the list — wait for
-	// that navigation explicitly (clicking then awaiting waitForURL is the reliable
-	// pattern; a concurrent waitForLoadState race can resolve on the wrong event).
+	// swipe gesture). It POSTs and 303-redirects back to /garde-manger. Register the
+	// response wait BEFORE the click (a post-click waitForURL is a no-op here — the URL
+	// already matches /garde-manger — and could resolve before the round-trip).
+	const consumed = page.waitForResponse(
+		(r) => r.request().method() === 'POST' && r.url().includes('/garde-manger')
+	);
 	await row.getByRole('button', { name: 'Eaten' }).click();
-	await page.waitForURL('**/garde-manger**');
+	await consumed;
 
 	// The redirect lands on a fresh list; the consumed item is gone from it.
 	await expect(page.getByText(name)).toHaveCount(0);

@@ -1,5 +1,6 @@
 import { test as setup, expect } from '@playwright/test';
 import { getUserIdByEmail, setUserLocale } from './fixtures/db';
+import { en } from '../../src/lib/i18n/messages/en';
 
 const STORAGE = 'tests/e2e/.auth/user.json';
 
@@ -27,8 +28,9 @@ setup('authenticate primary user', async ({ page }) => {
 		// server). Any other failure (validation, server error) must surface, not be
 		// masked by a login attempt that would fail with a misleading "Invalid credentials".
 		const emailTaken = await page
-			.getByText('An account already exists with this email')
-			.isVisible()
+			.getByText(en.auth_email_already_used)
+			.waitFor({ state: 'visible', timeout: 2000 })
+			.then(() => true)
 			.catch(() => false);
 		if (!emailTaken) {
 			const err = await page

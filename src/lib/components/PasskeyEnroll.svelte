@@ -22,7 +22,7 @@
 				headers: { 'content-type': 'application/json' },
 				body: '{}'
 			});
-			if (!optRes.ok) throw new Error("Impossible d'obtenir les options");
+			if (!optRes.ok) throw new Error('Could not fetch WebAuthn options');
 			const optionsJSON = await optRes.json();
 
 			const regResponse = await startRegistration({ optionsJSON });
