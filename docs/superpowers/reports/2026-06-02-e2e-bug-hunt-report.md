@@ -3,7 +3,7 @@
 **Date:** 2026-06-02
 **Branch:** `test/e2e-suite`
 **Suite:** Playwright (Chromium) against a production adapter-node build on an isolated SQLite DB.
-**Result:** **47 passed, 1 failed** — the single failure pinpoints one real, reproducible bug.
+**Result:** **47 passed, 1 failed** on the blind sweep — the single failure pinpointed one real, reproducible bug (fixed below; suite is now **48/48 green**).
 
 ## The bug — pantry-list "Eaten" / "Tossed" actions do nothing
 
@@ -40,10 +40,12 @@ src/lib/components/ui/ItemRow.svelte:59  <form ... method="POST" action="/?/disc
 ### Impact
 Both the inline buttons and the swipe gesture submit these same forms, so the **entire one-tap lifecycle from the pantry list is dead** — a core user story. The item **detail** page (`/item/[id]`) uses correctly-routed forms and works, which is why the bug is easy to miss and why unit tests didn't catch it.
 
-### Proposed fix (one line each, not yet applied)
-Change the two `action` attributes in `ItemRow.svelte` to the relative form:
-`action="?/consume"` and `action="?/discard"` (equivalently `"/garde-manger?/consume"`).
-After fixing, `tests/e2e/inventory.spec.ts:173` ("consume from the list…") should pass.
+### Fix (applied)
+Changed the two `action` attributes in `ItemRow.svelte:56,59` from the absolute
+`/?/consume` · `/?/discard` to the relative `?/consume` · `?/discard`, so the POST
+targets the current `garde-manger` route's actions instead of the actionless root.
+`tests/e2e/inventory.spec.ts:173` ("consume from the list…") now passes; the full
+suite is **48 passed / 0 failed**.
 
 ## What else the suite covered (all green)
 auth + route guards · add fresh/custom (incl. quantity ≥ 1) · scan manual entry + packaged add (offline cache) · inventory bands/boundary/sort/NULLs-last/day-badge/location filter · item detail update/lifecycle/remove · households create/switch/settings/roles/last-admin/remove/delete-cascade/cross-household-scoping · invitations create/preview-no-consume/accept/single-use · account profile/theme/passkey-remove/push · bilan month counts + waste streak · passkey enroll + login (virtual authenticator).
