@@ -172,6 +172,30 @@ test('Remove: two-step disclosure delete removes the row', async ({ page }) => {
 	expect(db.getItem(itemId)).toBeUndefined();
 });
 
+test('Consume on a multi-unit item decrements quantity and stays on item page', async ({
+	page
+}) => {
+	const { householdId, ownerId } = freshHousehold();
+	const itemId = db.seedItem({
+		householdId,
+		addedBy: ownerId,
+		customName: 'Multi-unit eat me',
+		quantity: 2,
+		useByDate: utcMidnight(7)
+	});
+	await setActiveHousehold(page.context(), householdId);
+
+	await page.goto(`/item/${itemId}`);
+	await page.getByRole('button', { name: 'Eaten' }).click();
+
+	// A multi-unit decrement leaves the row active — must stay on the item page.
+	await page.waitForURL(`**/item/${itemId}`);
+	expect(page.url()).toContain(`/item/${itemId}`);
+
+	// Quantity should now be 1 (decremented from 2).
+	await expect(page.locator('input[name="quantity"]')).toHaveValue('1');
+});
+
 test('Quantity floored at 1: setting 0 must not persist 0', async ({ page }) => {
 	const { householdId, ownerId } = freshHousehold();
 	const itemId = db.seedItem({

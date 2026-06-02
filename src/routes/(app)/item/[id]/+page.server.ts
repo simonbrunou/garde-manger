@@ -126,10 +126,11 @@ export const actions: Actions = {
 			if (e instanceof MembershipError) error(403, 'Forbidden');
 			throw e;
 		}
-		if (!recordUse(db, { id: params.id, householdId: hh, outcome: 'consumed' })) {
-			error(404, 'Not found');
-		}
-		redirect(303, '/garde-manger');
+		const updated = recordUse(db, { id: params.id, householdId: hh, outcome: 'consumed' });
+		if (!updated) error(404, 'Not found');
+		// A multi-unit decrement leaves the row active — stay on the item page so the
+		// user can keep drawing it down; a fully-closed row returns to the list.
+		redirect(303, updated.status === 'active' ? `/item/${params.id}` : '/garde-manger');
 	},
 
 	discard: async ({ params, locals, cookies }) => {
@@ -141,10 +142,11 @@ export const actions: Actions = {
 			if (e instanceof MembershipError) error(403, 'Forbidden');
 			throw e;
 		}
-		if (!recordUse(db, { id: params.id, householdId: hh, outcome: 'discarded' })) {
-			error(404, 'Not found');
-		}
-		redirect(303, '/garde-manger');
+		const updated = recordUse(db, { id: params.id, householdId: hh, outcome: 'discarded' });
+		if (!updated) error(404, 'Not found');
+		// A multi-unit decrement leaves the row active — stay on the item page so the
+		// user can keep drawing it down; a fully-closed row returns to the list.
+		redirect(303, updated.status === 'active' ? `/item/${params.id}` : '/garde-manger');
 	},
 
 	remove: async ({ params, locals, cookies }) => {
