@@ -19,7 +19,9 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
 		"db:seed": "bun run src/lib/server/seed/seed.ts",
-		"db:backup": "bun run scripts/backup.ts"
+		"db:backup": "bun run scripts/backup.ts",
+		"test": "bun test",
+		"test:watch": "bun test --watch"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.4",
