@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { startAuthentication } from '@simplewebauthn/browser';
+	import { isPasskeyCancellation } from '$lib/passkeyError';
 
 	interface Props {
 		redirectTo?: string;
@@ -40,11 +41,8 @@
 				errorMessage = 'Authentification échouée. Veuillez réessayer.';
 			}
 		} catch (err: unknown) {
-			// User cancellation is normal — show nothing or a gentle message
-			const msg = err instanceof Error ? err.message : String(err);
-			if (msg.includes('NotAllowedError') || msg.includes('cancelled') || msg.includes('aborted')) {
-				// User cancelled — stay silent
-			} else {
+			// User cancellation/abort is normal — stay silent; only real failures show a message.
+			if (!isPasskeyCancellation(err)) {
 				errorMessage = 'Passkey non reconnue ou annulée.';
 			}
 		} finally {

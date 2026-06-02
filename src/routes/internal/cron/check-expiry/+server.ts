@@ -4,6 +4,7 @@ import { db } from '$lib/server/db';
 import { runDailyReminders, secretMatches } from '$lib/server/cron';
 import { getVapid } from '$lib/server/pushConfig';
 import { webPushSender } from '$lib/server/webPushSender';
+import { resolveHostIps } from '$lib/server/push';
 import type { RequestHandler } from './$types';
 
 /**
@@ -36,7 +37,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	const summary = await runDailyReminders(db, {
 		vapid: getVapid(),
 		sender: webPushSender,
-		origin
+		origin,
+		resolve: resolveHostIps // re-validate each endpoint's resolved IP at send time (SSRF guard)
 	});
 
 	return json(summary);

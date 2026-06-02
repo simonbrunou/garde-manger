@@ -8,7 +8,8 @@ import {
 	listSubscriptionsForUser,
 	sendToSubscription,
 	type PushSender,
-	type Vapid
+	type Vapid,
+	type HostResolver
 } from './push';
 
 /**
@@ -36,7 +37,7 @@ export interface DailyReminderSummary {
  */
 export async function runDailyReminders(
 	db: DB,
-	opts: { vapid: Vapid; sender: PushSender; origin: string; now?: Date }
+	opts: { vapid: Vapid; sender: PushSender; origin: string; now?: Date; resolve?: HostResolver }
 ): Promise<DailyReminderSummary> {
 	const now = opts.now ?? new Date();
 	const today = now.toISOString().slice(0, 10);
@@ -80,7 +81,8 @@ export async function runDailyReminders(
 			const outcome = await sendToSubscription(db, sub, payload, opts.vapid, {
 				sender: opts.sender,
 				now,
-				today
+				today,
+				resolve: opts.resolve
 			});
 			if (outcome === 'ok') {
 				summary.devicesSent++;

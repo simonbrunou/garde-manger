@@ -53,15 +53,14 @@ export function createInvitation(
 	return { token, invitation };
 }
 
-/** Look up an invitation by its raw token (compares the sha256 hashes). */
+/** Look up an invitation by its raw token via the indexed token_hash column. */
 function findByToken(db: DB, token: string) {
-	const hash = sha256(token);
-	const allInvites = db.select().from(invitations).all();
 	return (
-		allInvites.find((inv) => {
-			const stored = inv.tokenHash as Buffer;
-			return stored.length === hash.length && stored.equals(hash);
-		}) ?? null
+		db
+			.select()
+			.from(invitations)
+			.where(eq(invitations.tokenHash, sha256(token)))
+			.get() ?? null
 	);
 }
 
