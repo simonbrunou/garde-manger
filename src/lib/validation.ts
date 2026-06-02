@@ -2,10 +2,18 @@ import * as v from 'valibot';
 
 /**
  * Guard against open-redirect attacks.
- * Returns `p` only if it is a local path (starts with '/' but not '//').
+ * Returns `p` only if it is a root-relative local path. Rejects:
+ *  - protocol-relative URLs (`//evil.com`)
+ *  - backslash variants (`/\evil.com`) — browsers normalise `\` to `/`
+ *  - paths with control characters, which browsers strip and can re-expose the above
  */
 export function safeLocalPath(p: string | null | undefined, fallback = '/'): string {
-	const isLocal = (s: string) => s.startsWith('/') && !s.startsWith('//');
+	const isLocal = (s: string) =>
+		s.startsWith('/') && // must be root-relative
+		s[1] !== '/' && // not protocol-relative //evil.com
+		s[1] !== '\\' && // not backslash trick /\evil.com
+		// eslint-disable-next-line no-control-regex
+		!/[\u0000-\u001f]/.test(s); // no control chars (\t \n \r … get stripped by browsers)
 	if (typeof p === 'string' && isLocal(p)) return p;
 	return isLocal(fallback) ? fallback : '/';
 }

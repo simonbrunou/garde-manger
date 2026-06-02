@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { eq, and } from 'drizzle-orm';
 import type { DB } from './db/client';
-import { invitations, memberships } from './db/schema';
+import { invitations, memberships, households } from './db/schema';
 
 const INVITE_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
 
@@ -53,27 +53,48 @@ export function createInvitation(
 	return { token, invitation };
 }
 
-export function acceptInvitation(db: DB, { token, userId }: { token: string; userId: string }) {
+/** Look up an invitation by its raw token (compares the sha256 hashes). */
+function findByToken(db: DB, token: string) {
 	const hash = sha256(token);
-
-	// Look up by tokenHash. We compare as hex strings since Buffer comparison needs care.
 	const allInvites = db.select().from(invitations).all();
-	const invite = allInvites.find((inv) => {
-		const stored = inv.tokenHash as Buffer;
-		return stored.length === hash.length && stored.equals(hash);
-	});
+	return (
+		allInvites.find((inv) => {
+			const stored = inv.tokenHash as Buffer;
+			return stored.length === hash.length && stored.equals(hash);
+		}) ?? null
+	);
+}
 
-	if (!invite) {
-		throw new InvitationError('not_found');
-	}
+/** Validate an invitation without consuming it. Throws InvitationError if unusable. */
+function requireUsableInvitation(db: DB, token: string) {
+	const invite = findByToken(db, token);
+	if (!invite) throw new InvitationError('not_found');
+	if (invite.usedAt !== null) throw new InvitationError('already_used');
+	if (invite.expiresAt.getTime() < Date.now()) throw new InvitationError('expired');
+	return invite;
+}
 
-	if (invite.usedAt !== null) {
-		throw new InvitationError('already_used');
-	}
+/**
+ * Read-only preview of a pending invitation for the confirmation screen.
+ * Does NOT consume the token — acceptance happens via {@link acceptInvitation}
+ * from a POST action so the single-use token cannot be burned by a GET/prefetch.
+ */
+export function previewInvitation(db: DB, token: string) {
+	const invite = requireUsableInvitation(db, token);
+	const household = db
+		.select({ name: households.name })
+		.from(households)
+		.where(eq(households.id, invite.householdId))
+		.get();
+	return {
+		householdId: invite.householdId,
+		householdName: household?.name ?? '',
+		role: invite.role
+	};
+}
 
-	if (invite.expiresAt.getTime() < Date.now()) {
-		throw new InvitationError('expired');
-	}
+export function acceptInvitation(db: DB, { token, userId }: { token: string; userId: string }) {
+	const invite = requireUsableInvitation(db, token);
 
 	return db.transaction((tx) => {
 		const now = new Date();
