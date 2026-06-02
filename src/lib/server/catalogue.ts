@@ -112,7 +112,7 @@ export function tipForItem(
 	const withTip = (r: ShelfLife) => (locale === 'fr' ? r.tipsFr : r.tipsEn);
 	const preferred =
 		rows.find((r) => r.basis === 'purchase' && withTip(r)) ?? rows.find((r) => withTip(r));
-	return preferred ? (withTip(preferred) ?? null) : null;
+	return preferred ? withTip(preferred) || null : null;
 }
 
 // ── computeBestBy ──────────────────────────────────────────────────────────────

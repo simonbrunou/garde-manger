@@ -314,4 +314,11 @@ describe('tipForItem', () => {
 		expect(tipForItem(db, FID, 'fridge', 'en')).toBeNull();
 		expect(tipForItem(db, FID, 'pantry', 'en')).toBeNull();
 	});
+
+	it('falls back to another basis when the purchase row has no tip', () => {
+		addShelfLife({ location: 'fridge', basis: 'purchase', tipsFr: null, tipsEn: null });
+		addShelfLife({ location: 'fridge', basis: 'opened', tipsFr: 'Entamé', tipsEn: 'Opened tip' });
+		expect(tipForItem(db, FID, 'fridge', 'en')).toBe('Opened tip');
+		expect(tipForItem(db, FID, 'fridge', 'fr')).toBe('Entamé');
+	});
 });
