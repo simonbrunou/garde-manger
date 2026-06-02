@@ -43,7 +43,7 @@
 
 		<div class="auth-divider" aria-hidden="true"></div>
 
-		<PasskeyLogin redirectTo={data.redirectTo} />
+		<PasskeyLogin redirectTo={data.redirectTo} {t} />
 
 		<p class="auth-alt"><a href="/signup">{t.auth_login_no_account}</a></p>
 	</div>

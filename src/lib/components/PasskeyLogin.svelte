@@ -2,12 +2,14 @@
 	import { browser } from '$app/environment';
 	import { startAuthentication } from '@simplewebauthn/browser';
 	import { isPasskeyCancellation } from '$lib/passkeyError';
+	import type { Messages } from '$lib/i18n';
 
 	interface Props {
 		redirectTo?: string;
+		t: Messages;
 	}
 
-	let { redirectTo = '/garde-manger' }: Props = $props();
+	let { redirectTo = '/garde-manger', t }: Props = $props();
 
 	let errorMessage = $state('');
 	let loading = $state(false);
@@ -38,12 +40,12 @@
 			if (verData.verified) {
 				window.location.href = redirectTo;
 			} else {
-				errorMessage = 'Authentification échouée. Veuillez réessayer.';
+				errorMessage = t.auth_passkey_login_failed;
 			}
 		} catch (err: unknown) {
 			// User cancellation/abort is normal — stay silent; only real failures show a message.
 			if (!isPasskeyCancellation(err)) {
-				errorMessage = 'Passkey non reconnue ou annulée.';
+				errorMessage = t.auth_passkey_login_cancelled;
 			}
 		} finally {
 			loading = false;
@@ -54,7 +56,7 @@
 {#if supportsPasskeys}
 	<div class="passkey-login">
 		<button type="button" class="btn btn-secondary" onclick={handleLogin} disabled={loading}>
-			🔑 Se connecter avec une passkey
+			🔑 {t.auth_passkey_login}
 		</button>
 		{#if errorMessage}
 			<p class="error" role="alert">{errorMessage}</p>

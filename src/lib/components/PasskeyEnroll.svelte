@@ -2,6 +2,9 @@
 	import { browser } from '$app/environment';
 	import { startRegistration } from '@simplewebauthn/browser';
 	import { isPasskeyCancellation } from '$lib/passkeyError';
+	import type { Messages } from '$lib/i18n';
+
+	let { t }: { t: Messages } = $props();
 
 	let successMessage = $state('');
 	let errorMessage = $state('');
@@ -32,16 +35,16 @@
 			const verData = await verRes.json();
 
 			if (verData.verified) {
-				successMessage = '✓ Passkey ajoutée';
+				successMessage = '✓ ' + t.account_passkey_add_success;
 				// Refresh the page to update the credential list
 				location.reload();
 			} else {
-				errorMessage = 'Enregistrement échoué. Veuillez réessayer.';
+				errorMessage = t.account_passkey_add_failed;
 			}
 		} catch (err: unknown) {
 			// User cancellation/abort is normal — stay silent; only real failures show a message.
 			if (!isPasskeyCancellation(err)) {
-				errorMessage = 'Enregistrement annulé ou non supporté.';
+				errorMessage = t.account_passkey_add_cancelled;
 			}
 		} finally {
 			loading = false;
@@ -51,7 +54,7 @@
 
 {#if supportsPasskeys}
 	<div class="passkey-enroll">
-		<button type="button" onclick={handleEnroll} disabled={loading}> Ajouter une passkey </button>
+		<button type="button" onclick={handleEnroll} disabled={loading}>{t.account_passkey_add}</button>
 		{#if successMessage}
 			<p class="success" role="status">{successMessage}</p>
 		{/if}
