@@ -1,5 +1,6 @@
 import { test as setup, expect } from '@playwright/test';
 import { getUserIdByEmail, setUserLocale } from './fixtures/db';
+import { en } from '../../src/lib/i18n/messages/en';
 
 const STORAGE = 'tests/e2e/.auth/user.json';
 
@@ -23,6 +24,24 @@ setup('authenticate primary user', async ({ page }) => {
 		.then(() => true)
 		.catch(() => false);
 	if (!signedUp) {
+		// The ONLY expected non-signup outcome is an already-registered email (reused
+		// server). Any other failure (validation, server error) must surface, not be
+		// masked by a login attempt that would fail with a misleading "Invalid credentials".
+		const emailTaken = await page
+			.getByText(en.auth_email_already_used)
+			.waitFor({ state: 'visible', timeout: 2000 })
+			.then(() => true)
+			.catch(() => false);
+		if (!emailTaken) {
+			const err = await page
+				.locator('p.error')
+				.first()
+				.innerText()
+				.catch(() => '(no error shown)');
+			throw new Error(
+				`auth.setup: signup did not complete and email is not taken (url=${page.url()}): ${err}`
+			);
+		}
 		await page.goto('/login');
 		await page.getByLabel('Email address').fill(PRIMARY.email);
 		await page.getByLabel('Password').fill(PRIMARY.password);

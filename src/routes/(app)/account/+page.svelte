@@ -92,7 +92,7 @@
 			</ul>
 		{/if}
 
-		<PasskeyEnroll />
+		<PasskeyEnroll {t} />
 	</section>
 
 	<PushSettings locale={data.locale} vapidPublicKey={data.vapidPublicKey} />

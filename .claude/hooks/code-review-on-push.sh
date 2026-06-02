@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # PostToolUse hook — wired in .claude/settings.json on the Bash matcher with
-# `"if": "Bash(git push*)"`, so it only runs after a `git push`.
+# `"if": "Bash(git push*)"` AND `"if": "Bash(gh pr create*)"`, so it runs after a
+# push OR after opening a PR (the latter covers the push-then-open-PR case, where
+# the push happened before the PR existed).
 #
-# If the just-pushed branch has an OPEN pull request, it injects an instruction
-# back to Claude to run the agent-based /code-review on that PR. (A local Claude
-# Code hook can't run the agent review itself — it nudges the session to do it,
-# so this only fires for pushes made from within a Claude Code session.)
+# If the current branch has an OPEN pull request, it injects an instruction back
+# to Claude to run the agent-based /code-review on that PR. (A local Claude Code
+# hook can't run the agent review itself — it nudges the session to do it, so this
+# only fires for pushes / PR opens made from within a Claude Code session.)
 set -euo pipefail
 
 # Current branch's PR as "<number> <url>", only when OPEN. `gh pr view` exits

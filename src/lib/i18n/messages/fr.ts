@@ -19,6 +19,8 @@ export const fr: Messages = {
 	auth_email_label: 'Adresse e-mail',
 	auth_password_label: 'Mot de passe',
 	auth_invalid_credentials: 'Identifiants invalides',
+	auth_passkey_login: 'Se connecter avec une passkey',
+	auth_passkey_login_failed: 'Authentification échouée. Veuillez réessayer.',
 
 	// --- Auth: Signup ---
 	auth_signup_title: 'Créer un compte',
@@ -44,6 +46,9 @@ export const fr: Messages = {
 	account_passkey_delete: 'Supprimer',
 	account_display_name_required: 'Nom requis',
 	account_passkey_id_missing: 'Identifiant manquant',
+	account_passkey_add: 'Ajouter une passkey',
+	account_passkey_add_success: 'Passkey ajoutée',
+	account_passkey_add_failed: 'Enregistrement échoué. Veuillez réessayer.',
 
 	// --- Theme ---
 	account_theme_section: 'Thème',
@@ -296,6 +301,8 @@ export interface Messages {
 	auth_email_label: string;
 	auth_password_label: string;
 	auth_invalid_credentials: string;
+	auth_passkey_login: string;
+	auth_passkey_login_failed: string;
 	// --- Auth: Signup ---
 	auth_signup_title: string;
 	auth_signup_submit: string;
@@ -319,6 +326,9 @@ export interface Messages {
 	account_passkey_delete: string;
 	account_display_name_required: string;
 	account_passkey_id_missing: string;
+	account_passkey_add: string;
+	account_passkey_add_success: string;
+	account_passkey_add_failed: string;
 	// --- Theme ---
 	account_theme_section: string;
 	theme_auto: string;

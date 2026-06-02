@@ -40,7 +40,7 @@ test('a user can enroll a passkey and then log in with it', async ({ page, conte
 	// No passkeys yet for this brand-new user.
 	await expect(page.getByText('No passkeys registered.')).toBeVisible();
 
-	await page.getByRole('button', { name: 'Ajouter une passkey' }).click();
+	await page.getByRole('button', { name: 'Add a passkey' }).click();
 
 	// Enrolling must add the passkey to the list (the component reloads the page on
 	// success). Intended behavior: exactly one credential row now exists.
@@ -58,8 +58,8 @@ test('a user can enroll a passkey and then log in with it', async ({ page, conte
 	await page.waitForURL('**/login');
 
 	// --- Log in with the passkey (usernameless) -------------------------------
-	await expect(page.getByRole('button', { name: 'Se connecter avec une passkey' })).toBeVisible();
-	await page.getByRole('button', { name: 'Se connecter avec une passkey' }).click();
+	await expect(page.getByRole('button', { name: 'Sign in with a passkey' })).toBeVisible();
+	await page.getByRole('button', { name: 'Sign in with a passkey' }).click();
 
 	// Verifying with the virtual authenticator must land the user on /garde-manger.
 	await page.waitForURL('**/garde-manger');

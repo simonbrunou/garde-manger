@@ -38,6 +38,12 @@
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/code-review-on-push.sh\"",
             "if": "Bash(git push*)",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/code-review-on-push.sh\"",
+            "if": "Bash(gh pr create*)",
+            "timeout": 15
           }
         ]
       }
