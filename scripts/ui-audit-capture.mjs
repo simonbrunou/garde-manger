@@ -52,7 +52,9 @@ async function setTheme(page, theme) {
 		document.documentElement.setAttribute('data-theme', t);
 		try {
 			localStorage.setItem('theme', t);
-		} catch {}
+		} catch {
+			/* localStorage may be unavailable; theme attribute is enough for the capture */
+		}
 	}, theme);
 }
 
@@ -60,7 +62,6 @@ async function runAxe(page) {
 	try {
 		await page.addScriptTag({ url: AXE_CDN });
 		return await page.evaluate(async () => {
-			// eslint-disable-next-line no-undef
 			const r = await axe.run(document, {
 				runOnly: ['wcag2a', 'wcag2aa', 'wcag21aa']
 			});
@@ -111,22 +112,22 @@ async function main() {
 	try {
 		await page.goto(BASE + '/signup', { waitUntil: 'networkidle' });
 		await page.locator('input[type="email"], input[name="email"]').first().fill(EMAIL);
-		await page
-			.locator('input[type="password"], input[name="password"]')
-			.first()
-			.fill(PASSWORD);
+		await page.locator('input[type="password"], input[name="password"]').first().fill(PASSWORD);
 		// Fill any remaining visible text inputs (e.g. display name), name-agnostic.
 		const texts = page.locator(
 			'input:not([type="email"]):not([type="password"]):not([type="hidden"]):not([type="checkbox"])'
 		);
 		const tn = await texts.count();
-		for (let i = 0; i < tn; i++) await texts.nth(i).fill('Audit User').catch(() => {});
-		await Promise.all([
-			page.waitForLoadState('networkidle'),
-			page.click('button[type="submit"]')
-		]);
+		for (let i = 0; i < tn; i++)
+			await texts
+				.nth(i)
+				.fill('Audit User')
+				.catch(() => {});
+		await Promise.all([page.waitForLoadState('networkidle'), page.click('button[type="submit"]')]);
 		authed = !page.url().includes('/signup') && !page.url().includes('/login');
-	} catch {}
+	} catch {
+		/* signup is best-effort; fall through to the login path below */
+	}
 	if (!authed) {
 		console.log('  signup failed; set AUDIT_EMAIL / AUDIT_PASSWORD and retry login.');
 		if (process.env.AUDIT_EMAIL) {
@@ -155,7 +156,9 @@ async function main() {
 				await page.goto(BASE + href, { waitUntil: 'networkidle' });
 				await capture(page, 'item-detail', results);
 			}
-		} catch {}
+		} catch {
+			/* no item row to follow; skip the item-detail capture */
+		}
 	} else {
 		console.log('  Could not authenticate; captured public surfaces only.');
 	}
