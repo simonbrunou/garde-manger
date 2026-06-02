@@ -136,20 +136,16 @@
     "hash": "4e39835b38cb01fbe678dc95ae3b7fa3"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/components/PasskeyEnroll.svelte": {
-    "mtime": 1780418796.6090474,
+    "mtime": 1780419458.6671429,
     "hash": "6892186cfe1898aaee50b88107bc10eb"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/components/PasskeyLogin.svelte": {
-    "mtime": 1780418801.3469985,
+    "mtime": 1780419458.6671429,
     "hash": "a2a27338c393ed35481228e42a834cee"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/components/ui/ActionSheet.svelte": {
     "mtime": 1780381261.505217,
     "hash": "94b8026c9f8795afe463196e6c3e8cf3"
-  },
-  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/BottomNav.svelte": {
-    "mtime": 1780381261.505359,
-    "hash": "effb2de42baceae09d458e00ee7416c2"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/components/ui/Button.svelte": {
     "mtime": 1780381261.505359,
@@ -170,10 +166,6 @@
   "/home/sbrn/Projects/garde-manger/src/lib/components/ui/HouseholdMenu.svelte": {
     "mtime": 1780381261.505359,
     "hash": "fcadd2340260f020dea0eccca8fcb21f"
-  },
-  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/Icon.svelte": {
-    "mtime": 1780381261.505359,
-    "hash": "2f4f28d0a411c48eec2fee565ef526ba"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/components/ui/List.svelte": {
     "mtime": 1780381261.505359,
@@ -219,6 +211,14 @@
     "mtime": 1780407927.4998932,
     "hash": "a719b03c886d1e3a8c62042985f118fe"
   },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/BottomNav.svelte": {
+    "mtime": 1780421927.654869,
+    "hash": "c4c7e749208970367d7d77b97cfe7526"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/components/ui/Icon.svelte": {
+    "mtime": 1780422019.85589,
+    "hash": "17977c1949006211073adb7ce1c40305"
+  },
   "/home/sbrn/Projects/garde-manger/src/lib/i18n/i18n.test.ts": {
     "mtime": 1780381261.505359,
     "hash": "1d85f314022f2dd223482ffaf06e0c2a"
@@ -228,12 +228,12 @@
     "hash": "d2af77397c73840d00855d196bde7eb6"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/i18n/messages/en.ts": {
-    "mtime": 1780418250.54871,
-    "hash": "3c9224c1f50428970306098802c82319"
+    "mtime": 1780421962.1325028,
+    "hash": "8bf9941672b36a325a6e77bb80ce7a9e"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/i18n/messages/fr.ts": {
-    "mtime": 1780418275.5354438,
-    "hash": "b9512f25dd1bd68424912b0276105807"
+    "mtime": 1780421986.6592424,
+    "hash": "34cad3d09a1139b9adc56b0fb8704e0b"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/server/backup.test.ts": {
     "mtime": 1780381261.5061517,
@@ -250,14 +250,6 @@
   "/home/sbrn/Projects/garde-manger/src/lib/server/catalogue.ts": {
     "mtime": 1780381261.5061517,
     "hash": "78673e82a626a1718b77aa00ebf18c88"
-  },
-  "/home/sbrn/Projects/garde-manger/src/lib/server/cook.test.ts": {
-    "mtime": 1780381261.5061517,
-    "hash": "418fea2004f6a420f616310c2fdc7a4e"
-  },
-  "/home/sbrn/Projects/garde-manger/src/lib/server/cook.ts": {
-    "mtime": 1780381261.5061517,
-    "hash": "224a8b404a61218c982d1905587ddfff"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/server/cron.test.ts": {
     "mtime": 1780381261.5061517,
@@ -367,10 +359,6 @@
     "mtime": 1780396687.6394238,
     "hash": "5d66484778056c86c7bb27b2377c6f73"
   },
-  "/home/sbrn/Projects/garde-manger/src/lib/server/cook/ideas.data.ts": {
-    "mtime": 1780381261.5061517,
-    "hash": "4513b6e62df70494f388e0f5d559195c"
-  },
   "/home/sbrn/Projects/garde-manger/src/lib/server/db/client.test.ts": {
     "mtime": 1780381261.5061517,
     "hash": "5afd9d53737a883fe6fea9237cc42c62"
@@ -415,33 +403,33 @@
     "mtime": 1780381261.5074856,
     "hash": "6b69f106bb48513d27308a9d808db662"
   },
-  "/home/sbrn/Projects/garde-manger/src/routes/+layout.svelte": {
-    "mtime": 1780381261.5093243,
-    "hash": "c4e4af1e68cae9d2492985c117efd7e0"
-  },
   "/home/sbrn/Projects/garde-manger/src/routes/+page.server.ts": {
     "mtime": 1780381261.5093243,
     "hash": "2ec735b7b7aac1df25ecc1bfbd351569"
-  },
-  "/home/sbrn/Projects/garde-manger/src/routes/+page.svelte": {
-    "mtime": 1780381261.5093243,
-    "hash": "25bb12e716f26095a95128b9cfe4dc22"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/landing.server.test.ts": {
     "mtime": 1780381261.5100026,
     "hash": "9f0257dfffb1ada8899919d183a613ae"
   },
+  "/home/sbrn/Projects/garde-manger/src/routes/+page.svelte": {
+    "mtime": 1780421945.653678,
+    "hash": "ce6db14e542f5306711cd9148cec9cd6"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/+layout.svelte": {
+    "mtime": 1780422015.2809386,
+    "hash": "232cf5397a27340a150589f2d40e997d"
+  },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/+layout.server.ts": {
     "mtime": 1780381261.5077248,
     "hash": "a97c12054ddab6829dca55864ee4a8f9"
   },
-  "/home/sbrn/Projects/garde-manger/src/routes/(app)/+layout.svelte": {
-    "mtime": 1780381261.5077808,
-    "hash": "356ff5b1c9375f8f2dd1107bd5a76fe2"
-  },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/+layout.ts": {
     "mtime": 1780381261.5077808,
     "hash": "15ef38642b744a1b7e8740a79e319510"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/+layout.svelte": {
+    "mtime": 1780421939.9807382,
+    "hash": "b73dcacbcfa6590d9f5de765a3c060e5"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/account/+page.server.ts": {
     "mtime": 1780381261.5077808,
@@ -452,7 +440,7 @@
     "hash": "519d0253bcbc5f426992f7ecf6f7235d"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/account/+page.svelte": {
-    "mtime": 1780417526.7584398,
+    "mtime": 1780419458.6671429,
     "hash": "b2b1a84f756d6f10da88631d6db45c47"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/add/+page.svelte": {
@@ -474,18 +462,6 @@
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/bilan/+page.svelte": {
     "mtime": 1780381261.508143,
     "hash": "dbb1db14753d6d51169029705181add7"
-  },
-  "/home/sbrn/Projects/garde-manger/src/routes/(app)/cuisiner/+page.server.ts": {
-    "mtime": 1780381261.508143,
-    "hash": "4b7ec40423e70af2c3d265973345fa23"
-  },
-  "/home/sbrn/Projects/garde-manger/src/routes/(app)/cuisiner/+page.svelte": {
-    "mtime": 1780381261.5082188,
-    "hash": "49e52894df65b9227c40436ce9f6a999"
-  },
-  "/home/sbrn/Projects/garde-manger/src/routes/(app)/cuisiner/page.server.test.ts": {
-    "mtime": 1780396567.0158353,
-    "hash": "d8fec00615972768f418ae57a98b81e0"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/garde-manger/+page.server.ts": {
     "mtime": 1780381261.5082188,
@@ -572,7 +548,7 @@
     "hash": "162f1f1f69f3d076403831a3b9fda3e5"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(auth)/login/+page.svelte": {
-    "mtime": 1780417531.4493895,
+    "mtime": 1780419458.6671429,
     "hash": "14b71c874f7c8c6cbc3a9614d64e0878"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(auth)/signup/+page.server.ts": {
@@ -663,17 +639,17 @@
     "mtime": 1780407927.5012777,
     "hash": "109183df7024cd80f4e0de2f3a2b5dc3"
   },
-  "/home/sbrn/Projects/garde-manger/tests/e2e/passkey.spec.ts": {
-    "mtime": 1780417554.71214,
-    "hash": "146a082efbed78b8eec4a731e5b3c3b7"
-  },
   "/home/sbrn/Projects/garde-manger/tests/e2e/auth.setup.ts": {
-    "mtime": 1780418765.5913677,
+    "mtime": 1780419458.6671429,
     "hash": "f9da94874068a80c64203111d86fc1a3"
   },
   "/home/sbrn/Projects/garde-manger/tests/e2e/inventory.spec.ts": {
-    "mtime": 1780418787.2841437,
+    "mtime": 1780419458.6671429,
     "hash": "b1fdfa3c205b16a7e98dfc0d4e5c7450"
+  },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/passkey.spec.ts": {
+    "mtime": 1780419458.6671429,
+    "hash": "146a082efbed78b8eec4a731e5b3c3b7"
   },
   "/home/sbrn/Projects/garde-manger/tests/e2e/fixtures/constants.ts": {
     "mtime": 1780407927.4998932,

@@ -16,10 +16,9 @@
 	const isHome = $derived(path === '/garde-manger');
 	const isAccount = $derived(path.startsWith('/account'));
 	// Top-level tab roots get no back button; deeper "pushed" views do.
-	const tabRoots = ['/garde-manger', '/cuisiner', '/bilan', '/account'];
+	const tabRoots = ['/garde-manger', '/bilan', '/account'];
 	const isDeep = $derived(!isHome && !tabRoots.includes(path));
 	const routeTitle = $derived.by(() => {
-		if (path.startsWith('/cuisiner')) return t.nav_cuisiner;
 		if (path.startsWith('/bilan')) return t.nav_bilan;
 		if (path.startsWith('/account')) return t.account_title;
 		if (path.startsWith('/scan')) return t.nav_add;
