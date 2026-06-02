@@ -13,11 +13,25 @@ function makeDb(): DB {
 	const db = createDb(join(tmpdir(), `cuisiner-test-${crypto.randomUUID()}.db`)).db;
 	runMigrations(db);
 	db.insert(schema.users)
-		.values({ id: USER_ID, email: 'c@e.test', displayName: 'C', locale: 'fr', createdAt: new Date() })
+		.values({
+			id: USER_ID,
+			email: 'c@e.test',
+			displayName: 'C',
+			locale: 'fr',
+			createdAt: new Date()
+		})
 		.run();
-	db.insert(schema.households).values({ id: HOUSEHOLD_ID, name: 'Maison', createdAt: new Date() }).run();
+	db.insert(schema.households)
+		.values({ id: HOUSEHOLD_ID, name: 'Maison', createdAt: new Date() })
+		.run();
 	db.insert(schema.memberships)
-		.values({ id: 'm1', householdId: HOUSEHOLD_ID, userId: USER_ID, role: 'admin', joinedAt: new Date() })
+		.values({
+			id: 'm1',
+			householdId: HOUSEHOLD_ID,
+			userId: USER_ID,
+			role: 'admin',
+			joinedAt: new Date()
+		})
 		.run();
 	return db;
 }
@@ -31,7 +45,9 @@ const { load } = await import('./+page.server');
 
 function callLoad(locale: 'fr' | 'en' = 'fr') {
 	return (
-		load as unknown as (event: unknown) => Promise<{ items: { name: string; band: string; ideas: string[] }[] }>
+		load as unknown as (
+			event: unknown
+		) => Promise<{ items: { name: string; band: string; ideas: string[] }[] }>
 	)({
 		locals: { user: { id: USER_ID } },
 		parent: async () => ({
