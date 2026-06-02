@@ -45,7 +45,7 @@
 		} catch (err: unknown) {
 			// User cancellation/abort is normal — stay silent; only real failures show a message.
 			if (!isPasskeyCancellation(err)) {
-				errorMessage = t.auth_passkey_login_cancelled;
+				errorMessage = t.auth_passkey_login_failed;
 			}
 		} finally {
 			loading = false;

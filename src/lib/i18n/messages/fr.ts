@@ -21,7 +21,6 @@ export const fr: Messages = {
 	auth_invalid_credentials: 'Identifiants invalides',
 	auth_passkey_login: 'Se connecter avec une passkey',
 	auth_passkey_login_failed: 'Authentification échouée. Veuillez réessayer.',
-	auth_passkey_login_cancelled: 'Passkey non reconnue ou annulée.',
 
 	// --- Auth: Signup ---
 	auth_signup_title: 'Créer un compte',
@@ -50,7 +49,6 @@ export const fr: Messages = {
 	account_passkey_add: 'Ajouter une passkey',
 	account_passkey_add_success: 'Passkey ajoutée',
 	account_passkey_add_failed: 'Enregistrement échoué. Veuillez réessayer.',
-	account_passkey_add_cancelled: 'Enregistrement annulé ou non supporté.',
 
 	// --- Theme ---
 	account_theme_section: 'Thème',
@@ -305,7 +303,6 @@ export interface Messages {
 	auth_invalid_credentials: string;
 	auth_passkey_login: string;
 	auth_passkey_login_failed: string;
-	auth_passkey_login_cancelled: string;
 	// --- Auth: Signup ---
 	auth_signup_title: string;
 	auth_signup_submit: string;
@@ -332,7 +329,6 @@ export interface Messages {
 	account_passkey_add: string;
 	account_passkey_add_success: string;
 	account_passkey_add_failed: string;
-	account_passkey_add_cancelled: string;
 	// --- Theme ---
 	account_theme_section: string;
 	theme_auto: string;

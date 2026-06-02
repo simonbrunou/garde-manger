@@ -23,7 +23,6 @@ export const en: Messages = {
 	auth_invalid_credentials: 'Invalid credentials',
 	auth_passkey_login: 'Sign in with a passkey',
 	auth_passkey_login_failed: 'Authentication failed. Please try again.',
-	auth_passkey_login_cancelled: 'Passkey not recognized or cancelled.',
 
 	// --- Auth: Signup ---
 	auth_signup_title: 'Create an account',
@@ -52,7 +51,6 @@ export const en: Messages = {
 	account_passkey_add: 'Add a passkey',
 	account_passkey_add_success: 'Passkey added',
 	account_passkey_add_failed: 'Registration failed. Please try again.',
-	account_passkey_add_cancelled: 'Registration cancelled or unsupported.',
 
 	// --- Theme ---
 	account_theme_section: 'Theme',

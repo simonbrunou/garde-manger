@@ -44,7 +44,7 @@
 		} catch (err: unknown) {
 			// User cancellation/abort is normal — stay silent; only real failures show a message.
 			if (!isPasskeyCancellation(err)) {
-				errorMessage = t.account_passkey_add_cancelled;
+				errorMessage = t.account_passkey_add_failed;
 			}
 		} finally {
 			loading = false;
