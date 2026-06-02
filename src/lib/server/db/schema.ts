@@ -54,7 +54,7 @@ export const invitations = sqliteTable('invitations', {
 	role: text('role', { enum: ['admin', 'member'] }).notNull(),
 	createdBy: text('created_by')
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: 'cascade' }),
 	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
 	usedAt: integer('used_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
@@ -109,9 +109,9 @@ export const inventoryItems = sqliteTable(
 		householdId: text('household_id')
 			.notNull()
 			.references(() => households.id, { onDelete: 'cascade' }),
-		addedBy: text('added_by')
-			.notNull()
-			.references(() => users.id),
+		// nullable + set-null on delete: keep household inventory if the member who
+		// added an item is later deleted (attribution is lost, the item is not).
+		addedBy: text('added_by').references(() => users.id, { onDelete: 'set null' }),
 		kind: text('kind', { enum: ['packaged', 'fresh'] }).notNull(),
 		barcode: text('barcode'), // no FK yet — products table is M3
 		foodId: text('food_id').references(() => foods.id),

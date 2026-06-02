@@ -103,8 +103,11 @@ export const actions: Actions = {
 			quantity,
 			notes
 		};
-		if (dateKind === 'DLC') patch.useByDate = date;
-		else if (dateKind === 'DDM') patch.bestByDate = date;
+		// Always set BOTH date fields from the chosen kind so the opposite one is
+		// cleared — otherwise switching kind (or a crafted POST) would leave a stale
+		// date that `effectiveDate = coalesce(use_by_date, best_by_date)` still reads.
+		patch.useByDate = dateKind === 'DLC' ? date : null;
+		patch.bestByDate = dateKind === 'DDM' ? date : null;
 
 		const updated = updateItem(db, patch);
 		if (!updated) return fail(404, { message: 'Not found' });
