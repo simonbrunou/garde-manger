@@ -275,8 +275,7 @@ export async function sendToSubscription(
 	// SSRF guard re-checked at SEND time (the endpoint is client-supplied and the
 	// server POSTs to it here). Don't send to an unsafe/internal endpoint.
 	if (!(await isEndpointSendable(sub.endpoint, deps.resolve))) {
-		incrementFailure(db, sub.id);
-		return 'failed';
+		return recordFailure(db, sub.id);
 	}
 
 	const target: WebPushTarget = {
@@ -289,8 +288,7 @@ export async function sendToSubscription(
 		status = await deps.sender.send(target, payload, { vapid });
 	} catch {
 		// Transport blew up unexpectedly — treat as a soft failure, keep the row.
-		incrementFailure(db, sub.id);
-		return 'failed';
+		return recordFailure(db, sub.id);
 	}
 
 	if (status >= 200 && status < 300) {
@@ -306,21 +304,35 @@ export async function sendToSubscription(
 		return 'pruned';
 	}
 
-	incrementFailure(db, sub.id);
-	return 'failed';
+	return recordFailure(db, sub.id);
 }
 
-function incrementFailure(db: DB, id: string): void {
+// Prune a subscription once it has failed this many times in a row: a row that
+// keeps failing (without ever returning 404/410) is effectively dead.
+const MAX_CONSECUTIVE_FAILURES = 10;
+
+/**
+ * Record a failed send: increment failureCount, and once it reaches the cap,
+ * delete the row (→ 'pruned') instead of letting dead subscriptions accumulate
+ * forever. Returns the outcome to report.
+ */
+function recordFailure(db: DB, id: string): SendOutcome {
 	const row = db
 		.select({ failureCount: pushSubscriptions.failureCount })
 		.from(pushSubscriptions)
 		.where(eq(pushSubscriptions.id, id))
 		.get();
-	if (!row) return;
+	if (!row) return 'failed';
+	const next = row.failureCount + 1;
+	if (next >= MAX_CONSECUTIVE_FAILURES) {
+		db.delete(pushSubscriptions).where(eq(pushSubscriptions.id, id)).run();
+		return 'pruned';
+	}
 	db.update(pushSubscriptions)
-		.set({ failureCount: row.failureCount + 1 })
+		.set({ failureCount: next })
 		.where(eq(pushSubscriptions.id, id))
 		.run();
+	return 'failed';
 }
 
 /** Format a Date as a UTC 'YYYY-MM-DD' string. */

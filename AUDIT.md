@@ -4,6 +4,13 @@
 
 **Coverage:** 12 subsystems · 37 raw findings → **24 confirmed**, 10 disputed (verifier split).
 
+## Resolution status (all addressed)
+
+- **3 high** — fixed (open redirect, service-worker data leak, invitation GET/CSRF).
+- **4 medium** — fixed (send-time SSRF re-validation, indexed invitation lookup, FK/lookup indexes, passkey-cancel detection).
+- **2 disputed-high** — fixed (item date-field clearing; user-delete FK onDelete).
+- **17 low** — fixed, with one deliberate exception: the EAN-8/UPC-E 8-digit ambiguity (`barcode.ts`) is genuinely unresolvable without context; we keep the existing UPC-E precedence and **document** the residual ambiguity (the audit explicitly permits documenting either way) rather than flip behavior and break real UPC-E scans.
+
 ## Executive summary
 
 The codebase is, on the whole, thoughtfully built: the auth layer uses WebAuthn correctly in its core flow, household scoping is enforced at call sites, the service worker explicitly avoids caching /api and session-boundary routes, and there is a real SSRF allowlist for push endpoints. Most findings (16 of 24) are genuinely low-severity quality/correctness nits. However, the audit surfaces three legitimately serious defects that cluster around the boundary between "server-enforced security" and "client/edge behavior that bypasses it": an open redirect in safeLocalPath (the one function whose entire job is to prevent that), authenticated household pages cached in a user-agnostic service-worker cache (defeating its own stated guarantee on a shared device), and a single-use invitation accepted via a GET load() with no CSRF protection (burnable by prefetch, forceable cross-site). A second tier of medium issues is real but bounded: blind SSRF because the push guard is never re-checked at send time, a full-table scan on every invitation accept, and missing FK indexes on hot auth/push paths. Risk posture is "solid core, leaky edges" — the dangerous bugs are not in the cryptographic auth primitives but in the supporting validation, caching, and invitation-acceptance plumbing. None are deep architectural rot; all three high items are small, surgical fixes.

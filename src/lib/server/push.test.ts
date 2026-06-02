@@ -323,6 +323,23 @@ describe('sendToSubscription', () => {
 		expect(outcome).toBe('failed');
 		expect(getById(db, sub.id)?.failureCount).toBe(1);
 	});
+
+	it('prunes a subscription once it crosses the consecutive-failure cap', async () => {
+		const sub = seedSub();
+		// One short of the cap; the next failure should delete the row.
+		db.update(pushSubscriptions)
+			.set({ failureCount: 9 })
+			.where(eq(pushSubscriptions.id, sub.id))
+			.run();
+		const sender = makeSender({ status: 500 });
+		const outcome = await sendToSubscription(db, sub, PAYLOAD, VAPID, {
+			sender,
+			now: FIXED_NOW,
+			today: TODAY
+		});
+		expect(outcome).toBe('pruned');
+		expect(getById(db, sub.id)).toBeUndefined();
+	});
 });
 
 // ── isSafePushEndpoint (SSRF guard) ─────────────────────────────────────────

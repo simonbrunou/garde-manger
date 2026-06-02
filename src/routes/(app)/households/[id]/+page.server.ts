@@ -80,7 +80,7 @@ export const actions: Actions = {
 		const name = (data.get('name') as string | null) ?? '';
 		const warnDays = Number((data.get('warnDays') as string | null) ?? '');
 		try {
-			updateHousehold(db, params.id, { name, warnDays });
+			updateHousehold(db, params.id, { name, warnDays }, locals.user!.id);
 		} catch (e) {
 			if (e instanceof HouseholdError) return fail(400, { message: t.manage_settings_invalid });
 			throw e;
@@ -96,7 +96,7 @@ export const actions: Actions = {
 		const userId = (data.get('userId') as string | null) ?? '';
 		const role: 'admin' | 'member' = data.get('role') === 'admin' ? 'admin' : 'member';
 		try {
-			setMemberRole(db, params.id, userId, role);
+			setMemberRole(db, params.id, userId, role, locals.user!.id);
 		} catch (e) {
 			if (e instanceof HouseholdError) {
 				return fail(400, {
@@ -115,7 +115,7 @@ export const actions: Actions = {
 		const data = await request.formData();
 		const userId = (data.get('userId') as string | null) ?? '';
 		try {
-			removeMember(db, params.id, userId);
+			removeMember(db, params.id, userId, locals.user!.id);
 		} catch (e) {
 			if (e instanceof HouseholdError) {
 				return fail(400, {
@@ -158,7 +158,7 @@ export const actions: Actions = {
 		if (confirmName !== household.name) {
 			return fail(400, { message: t.manage_delete_name_mismatch });
 		}
-		deleteHousehold(db, params.id);
+		deleteHousehold(db, params.id, locals.user!.id);
 		if (cookies.get(HOUSEHOLD_COOKIE) === params.id) fixActiveHousehold(cookies, locals.user!.id);
 		redirect(303, '/households');
 	}

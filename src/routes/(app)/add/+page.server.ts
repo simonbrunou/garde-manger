@@ -110,7 +110,7 @@ const addFreshSchema = v.object({
 	foodId: v.pipe(v.string(), v.minLength(1, 'foodId requis')),
 	location: locationSchema,
 	bestByDate: v.optional(v.pipe(v.string(), v.regex(/^\d{4}-\d{2}-\d{2}$/, 'Date invalide'))),
-	quantity: v.optional(v.pipe(v.string(), v.regex(/^\d+$/, 'Quantité invalide')))
+	quantity: v.optional(v.pipe(v.string(), v.regex(/^[1-9]\d*$/, 'Quantité invalide')))
 });
 
 const addCustomSchema = v.object({
@@ -118,7 +118,7 @@ const addCustomSchema = v.object({
 	location: locationSchema,
 	bestByDate: v.optional(v.pipe(v.string(), v.regex(/^\d{4}-\d{2}-\d{2}$/, 'Date invalide'))),
 	useByDate: v.optional(v.pipe(v.string(), v.regex(/^\d{4}-\d{2}-\d{2}$/, 'Date invalide'))),
-	quantity: v.optional(v.pipe(v.string(), v.regex(/^\d+$/, 'Quantité invalide')))
+	quantity: v.optional(v.pipe(v.string(), v.regex(/^[1-9]\d*$/, 'Quantité invalide')))
 });
 
 // ── Actions ───────────────────────────────────────────────────────────────────

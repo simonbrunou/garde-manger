@@ -17,7 +17,7 @@ export interface UserNotify {
  * belong to — that are approaching or past their effective date, honouring each
  * household's own `warn_days` window. Mirrors `bandFor`'s urgent+soon bands:
  * an item qualifies when `startOfDay(effectiveDate) <= startOfDay(today) +
- * warn_days·day`, which on the raw ms-epoch column is equivalent to
+ * warn_days·day`, which on the seconds-epoch column is equivalent to
  * `effective_date < todayStart + (warn_days + 1)·day` (includes everything
  * past-due, since there is no lower bound). Items with no date are excluded.
  *

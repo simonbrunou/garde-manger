@@ -10,7 +10,7 @@ import {
 import { addPackaged } from '$lib/server/inventory';
 import { lookupProduct, OffUnavailable } from '$lib/server/off';
 import { getOffConfig, diskImageStore } from '$lib/server/productConfig';
-import { offRateLimitGuard } from '$lib/server/offRateLimit';
+import { offRateLimitGuard, perUserOffRateLimitGuard } from '$lib/server/offRateLimit';
 import { normalizeBarcode } from '$lib/barcode';
 import { m } from '$lib/i18n';
 import type { PageServerLoad, Actions } from './$types';
@@ -45,7 +45,11 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 	try {
 		product = await lookupProduct(db, norm, getOffConfig(), {
 			imageStore: diskImageStore,
-			beforeOffCall: offRateLimitGuard
+			// Per-user budget first (anti-starvation), then the global OFF ceiling.
+			beforeOffCall: (now) => {
+				perUserOffRateLimitGuard(locals.user!.id, now);
+				offRateLimitGuard(now);
+			}
 		});
 	} catch (e) {
 		if (e instanceof OffUnavailable) {
@@ -80,7 +84,7 @@ const addPackagedSchema = v.object({
 	barcode: v.pipe(v.string(), v.minLength(1)),
 	name: v.optional(v.pipe(v.string(), v.trim(), v.maxLength(200))),
 	useByDate: v.pipe(v.string(), v.regex(/^\d{4}-\d{2}-\d{2}$/, 'Date invalide')),
-	quantity: v.optional(v.pipe(v.string(), v.regex(/^\d+$/, 'Quantité invalide'))),
+	quantity: v.optional(v.pipe(v.string(), v.regex(/^[1-9]\d*$/, 'Quantité invalide'))),
 	location: locationSchema
 });
 

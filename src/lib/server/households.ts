@@ -28,8 +28,12 @@ export class HouseholdError extends Error {
 export function updateHousehold(
 	db: DB,
 	householdId: string,
-	patch: { name?: string; warnDays?: number }
+	patch: { name?: string; warnDays?: number },
+	actingUserId?: string
 ) {
+	// Defence in depth: when the acting user is supplied, the model layer itself
+	// enforces admin so a caller cannot forget to gate the mutation.
+	if (actingUserId) requireMembership(db, householdId, actingUserId, 'admin');
 	const existing = db.select().from(households).where(eq(households.id, householdId)).get();
 	if (!existing) throw new HouseholdError('not_found');
 
@@ -51,7 +55,8 @@ export function updateHousehold(
 	return { ...existing, ...set };
 }
 
-export function deleteHousehold(db: DB, householdId: string) {
+export function deleteHousehold(db: DB, householdId: string, actingUserId?: string) {
+	if (actingUserId) requireMembership(db, householdId, actingUserId, 'admin');
 	const existing = db.select().from(households).where(eq(households.id, householdId)).get();
 	if (!existing) throw new HouseholdError('not_found');
 	db.delete(households).where(eq(households.id, householdId)).run();
@@ -69,8 +74,10 @@ export function setMemberRole(
 	db: DB,
 	householdId: string,
 	targetUserId: string,
-	role: 'admin' | 'member'
+	role: 'admin' | 'member',
+	actingUserId?: string
 ) {
+	if (actingUserId) requireMembership(db, householdId, actingUserId, 'admin');
 	const membership = db
 		.select()
 		.from(memberships)
@@ -91,7 +98,13 @@ export function setMemberRole(
 		.run();
 }
 
-export function removeMember(db: DB, householdId: string, targetUserId: string) {
+export function removeMember(
+	db: DB,
+	householdId: string,
+	targetUserId: string,
+	actingUserId?: string
+) {
+	if (actingUserId) requireMembership(db, householdId, actingUserId, 'admin');
 	const membership = db
 		.select()
 		.from(memberships)

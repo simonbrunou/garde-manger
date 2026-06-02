@@ -19,7 +19,10 @@ export const webPushSender: PushSender = {
 						privateKey: vapid.privateKey
 					},
 					TTL: ttl ?? 86400,
-					contentEncoding: 'aes128gcm'
+					contentEncoding: 'aes128gcm',
+					// Bound each request so one slow push service can't stall the daily
+					// cron fan-out; a timeout surfaces as a thrown error → soft 'failed'.
+					timeout: 10_000
 				}
 			);
 			return res.statusCode;
