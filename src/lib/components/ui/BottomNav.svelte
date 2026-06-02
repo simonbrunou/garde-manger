@@ -47,7 +47,7 @@
 		border-top: 1px solid var(--separator);
 	}
 	.tab {
-		/* Grow to share the bar, but cap width so four tabs stay grouped near
+		/* Grow to share the bar, but cap width so three tabs stay grouped near
 		   the center on wide screens instead of stretching too sparse. */
 		flex: 1 1 0;
 		max-width: 6.5rem;
