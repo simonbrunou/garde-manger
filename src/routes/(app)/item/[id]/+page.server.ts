@@ -9,6 +9,7 @@ import {
 	resolveActiveHouseholdId
 } from '$lib/server/households';
 import { getItemScoped, updateItem, deleteItem, recordUse, bandFor } from '$lib/server/inventory';
+import { tipForItem } from '$lib/server/catalogue';
 import type { PageServerLoad, Actions } from './$types';
 
 // Resolve the active household for an action: validate the cookie against the user's
@@ -49,6 +50,8 @@ export const load: PageServerLoad = async ({ params, locals, parent }) => {
 		name = item.customName;
 	}
 
+	const tip = item.foodId ? tipForItem(db, item.foodId, item.location, locale) : null;
+
 	const dateKind: 'DLC' | 'DDM' | null = item.useByDate ? 'DLC' : item.bestByDate ? 'DDM' : null;
 	const effectiveDate = item.effectiveDate ? item.effectiveDate.toISOString() : null;
 	const dateValue = effectiveDate ? effectiveDate.slice(0, 10) : '';
@@ -59,6 +62,7 @@ export const load: PageServerLoad = async ({ params, locals, parent }) => {
 
 	return {
 		locale,
+		tip,
 		item: {
 			id: item.id,
 			name,
