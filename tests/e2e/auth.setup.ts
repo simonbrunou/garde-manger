@@ -32,8 +32,11 @@ setup('authenticate primary user', async ({ page }) => {
 
 	// Force English so authenticated-page selectors match the EN i18n catalogue
 	// (signup defaults new users to 'fr'; user.locale wins over cookies in hooks).
+	// Fail loudly if the user is missing: silently skipping would leave the locale
+	// as 'fr' and break every EN-selector spec downstream with a confusing mismatch.
 	const userId = getUserIdByEmail(PRIMARY.email);
-	if (userId) setUserLocale(userId, 'en');
+	if (!userId) throw new Error(`auth.setup: user ${PRIMARY.email} not found after authenticating`);
+	setUserLocale(userId, 'en');
 
 	// Ensure the user has an active household (create one if none exists yet).
 	await page.goto('/households');
