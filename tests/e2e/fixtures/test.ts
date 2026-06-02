@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
 import type { BrowserContext } from '@playwright/test';
 import { mintSessionToken } from './db';
-
-const BASE_URL = 'http://localhost:4173';
+import { BASE_URL } from './constants';
 
 /** Authenticate an arbitrary seeded user on a context by minting a session cookie
  *  directly (no UI). The cookie is non-secure so it is sent over http://localhost. */

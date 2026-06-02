@@ -1,6 +1,5 @@
 import { test, expect, loginAs, setActiveHousehold } from './fixtures/test';
 import * as db from './fixtures/db';
-import { DatabaseSync } from 'node:sqlite';
 
 // Passkey enroll -> usernameless login round-trip via a Chromium CDP virtual
 // authenticator. No storageState: this project authenticates a freshly seeded
@@ -50,13 +49,8 @@ test('a user can enroll a passkey and then log in with it', async ({ page, conte
 	// And the empty-state message must be gone.
 	await expect(page.getByText('No passkeys registered.')).toHaveCount(0);
 
-	// The credential must actually be persisted for this user.
-	await expect
-		.poll(() => {
-			// Direct DB read: a resident credential row should exist for the user.
-			return countCredentialsForUser(user.id);
-		})
-		.toBe(1);
+	// The credential must actually be persisted for this user (shared fixture reader).
+	await expect.poll(() => db.getCredentialCount(user.id)).toBe(1);
 
 	// --- Log out --------------------------------------------------------------
 	await page.getByRole('button', { name: 'Log out' }).click();
@@ -71,20 +65,3 @@ test('a user can enroll a passkey and then log in with it', async ({ page, conte
 	await page.waitForURL('**/garde-manger');
 	await expect(page).toHaveURL(/\/garde-manger$/);
 });
-
-/** Count persisted credentials for a user by reading the same SQLite file the
- *  server uses. Mirrors the test-side db helper's connection approach. */
-function countCredentialsForUser(userId: string): number {
-	// Use the same node:sqlite path the fixtures use.
-	const DB_PATH = process.env.DATABASE_PATH ?? '.e2e/run.db';
-	const d = new DatabaseSync(DB_PATH);
-	try {
-		d.exec('PRAGMA busy_timeout = 5000;');
-		const row = d
-			.prepare('SELECT COUNT(*) AS n FROM credentials WHERE user_id = ?')
-			.get(userId) as { n: number };
-		return row.n;
-	} finally {
-		d.close();
-	}
-}

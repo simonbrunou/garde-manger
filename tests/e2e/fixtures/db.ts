@@ -7,12 +7,8 @@
 // minted by replicating src/lib/server/auth/session.ts exactly so the cookie validates.
 import { DatabaseSync } from 'node:sqlite';
 import { randomBytes, createHash } from 'node:crypto';
+import { DB_PATH } from './constants';
 
-// Pinned to the same path playwright.config.ts gives the server via webServer.env.
-// Do NOT honor an ambient DATABASE_PATH: the runner process may have one exported
-// (a dev's real DB) while the app is always on .e2e/run.db — that mismatch would seed
-// the wrong database and could mutate non-test data.
-const DB_PATH = '.e2e/run.db';
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30; // 30 days (matches session.ts)
 
 function withDb<T>(fn: (d: DatabaseSync) => T): T {
@@ -236,5 +232,35 @@ export function getInvitationsForHousehold(householdId: string): Row[] {
 export function getMemberships(householdId: string): Row[] {
 	return withDb(
 		(d) => d.prepare('SELECT * FROM memberships WHERE household_id = ?').all(householdId) as Row[]
+	);
+}
+
+/** Count push_subscriptions rows for a user (optionally scoped to one endpoint). */
+export function getPushSubscriptionCount(userId: string, endpoint?: string): number {
+	return withDb((d) => {
+		const row = endpoint
+			? (d
+					.prepare(
+						'SELECT COUNT(*) AS n FROM push_subscriptions WHERE user_id = ? AND endpoint = ?'
+					)
+					.get(userId, endpoint) as { n: number })
+			: (d
+					.prepare('SELECT COUNT(*) AS n FROM push_subscriptions WHERE user_id = ?')
+					.get(userId) as {
+					n: number;
+				});
+		return row.n;
+	});
+}
+
+/** Count credential (passkey) rows for a user. */
+export function getCredentialCount(userId: string): number {
+	return withDb(
+		(d) =>
+			(
+				d.prepare('SELECT COUNT(*) AS n FROM credentials WHERE user_id = ?').get(userId) as {
+					n: number;
+				}
+			).n
 	);
 }

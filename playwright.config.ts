@@ -1,7 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-
-const PORT = 4173;
-const BASE_URL = `http://localhost:${PORT}`;
+import { PORT, BASE_URL, DB_PATH } from './tests/e2e/fixtures/constants';
 
 // Valid-format throwaway VAPID keypair (reused from src/lib/server/pushConfig.ts
 // DEV_* constants). Test-only; never used against a real push service.
@@ -14,7 +12,7 @@ const VAPID_PRIVATE = 'jKQSbVbgB0Nl-fcSHFT24MBUHoqlH3_Qg1xyH03Z0A4';
 // every var the production guards require must be set here.
 const serverEnv: Record<string, string> = {
 	PORT: String(PORT),
-	DATABASE_PATH: '.e2e/run.db',
+	DATABASE_PATH: DB_PATH,
 	ORIGIN: BASE_URL,
 	RP_ID: 'localhost',
 	RP_NAME: 'Garde-Manger',

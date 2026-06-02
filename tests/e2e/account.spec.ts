@@ -1,6 +1,5 @@
 import { test, expect, loginAs } from './fixtures/test';
 import * as db from './fixtures/db';
-import { DatabaseSync } from 'node:sqlite';
 import { randomUUID } from 'node:crypto';
 
 // The `app` project ships a shared storageState (the primary user). The account
@@ -8,46 +7,6 @@ import { randomUUID } from 'node:crypto';
 // so it MUST NOT run on that shared identity. Drop the storageState here and
 // create a fresh, isolated context + freshly-seeded user per test instead.
 test.use({ storageState: { cookies: [], origins: [] } });
-
-const DB_PATH = process.env.DATABASE_PATH ?? '.e2e/run.db';
-
-/** Count push_subscriptions rows for a user/endpoint (test-side raw read). */
-function countSubscriptions(userId: string, endpoint?: string): number {
-	const d = new DatabaseSync(DB_PATH);
-	try {
-		d.exec('PRAGMA busy_timeout = 5000;');
-		if (endpoint) {
-			return (
-				d
-					.prepare(
-						'SELECT COUNT(*) AS n FROM push_subscriptions WHERE user_id = ? AND endpoint = ?'
-					)
-					.get(userId, endpoint) as { n: number }
-			).n;
-		}
-		return (
-			d.prepare('SELECT COUNT(*) AS n FROM push_subscriptions WHERE user_id = ?').get(userId) as {
-				n: number;
-			}
-		).n;
-	} finally {
-		d.close();
-	}
-}
-
-function countCredentials(userId: string): number {
-	const d = new DatabaseSync(DB_PATH);
-	try {
-		d.exec('PRAGMA busy_timeout = 5000;');
-		return (
-			d.prepare('SELECT COUNT(*) AS n FROM credentials WHERE user_id = ?').get(userId) as {
-				n: number;
-			}
-		).n;
-	} finally {
-		d.close();
-	}
-}
 
 test('profile: update display name persists and language switch changes UI strings', async ({
 	browser
@@ -150,7 +109,7 @@ test('passkey: a seeded credential appears and Delete removes it', async ({ brow
 	await page.goto('/account');
 	await expect(page.getByText('No passkeys registered.')).toBeVisible();
 
-	expect(countCredentials(user.id)).toBe(0);
+	expect(db.getCredentialCount(user.id)).toBe(0);
 
 	await context.close();
 });
@@ -178,13 +137,13 @@ test('push: subscribe stores a subscription, unsubscribe is idempotent', async (
 	const subRes = await page.request.post('/api/push/subscribe', { data: subscription });
 	expect(subRes.ok()).toBeTruthy();
 	expect(subRes.status()).toBe(200);
-	expect(countSubscriptions(user.id, endpoint)).toBe(1);
+	expect(db.getPushSubscriptionCount(user.id, endpoint)).toBe(1);
 
 	// Intended: unsubscribing the same endpoint succeeds and removes the row.
 	const unsub1 = await page.request.post('/api/push/unsubscribe', { data: { endpoint } });
 	expect(unsub1.ok()).toBeTruthy();
 	expect(unsub1.status()).toBe(200);
-	expect(countSubscriptions(user.id, endpoint)).toBe(0);
+	expect(db.getPushSubscriptionCount(user.id, endpoint)).toBe(0);
 
 	// Intended: a second unsubscribe of the same endpoint is idempotent (still ok).
 	const unsub2 = await page.request.post('/api/push/unsubscribe', { data: { endpoint } });
