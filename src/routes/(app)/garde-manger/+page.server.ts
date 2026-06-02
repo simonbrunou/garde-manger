@@ -27,6 +27,7 @@ export interface ItemRow {
 	barcode: string | null;
 	imagePath: string | null; // relative path; null when none
 	category: string | null;
+	isEstimate: boolean;
 }
 
 interface Groups {
@@ -126,7 +127,8 @@ export const load: PageServerLoad = async ({ parent, locals, url }) => {
 			quantity: item.quantity,
 			barcode: item.barcode,
 			imagePath,
-			category
+			category,
+			isEstimate: item.isEstimate
 		};
 
 		groups[band].push(row);

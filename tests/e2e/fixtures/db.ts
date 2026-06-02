@@ -105,6 +105,7 @@ export function seedItem(opts: {
 	useByDate?: Date | null;
 	bestByDate?: Date | null;
 	quantity?: number;
+	isEstimate?: boolean;
 	status?: 'active' | 'consumed' | 'discarded';
 	closedAt?: Date | null;
 }): string {
@@ -114,7 +115,7 @@ export function seedItem(opts: {
 			`INSERT INTO inventory_items
 				(id, household_id, added_by, kind, custom_name, quantity, location, added_at,
 				 use_by_date, best_by_date, is_estimate, status, closed_at)
-			 VALUES (?, ?, ?, 'fresh', ?, ?, ?, ?, ?, ?, 0, ?, ?)`
+			 VALUES (?, ?, ?, 'fresh', ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		).run(
 			id,
 			opts.householdId,
@@ -125,6 +126,7 @@ export function seedItem(opts: {
 			toSec(new Date())!,
 			toSec(opts.useByDate),
 			toSec(opts.bestByDate),
+			opts.isEstimate ? 1 : 0,
 			opts.status ?? 'active',
 			toSec(opts.closedAt)
 		);

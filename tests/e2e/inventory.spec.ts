@@ -206,6 +206,34 @@ test('consume from the list removes the item from the active list', async ({ pag
 	expect(active).not.toContain(id);
 });
 
+test('estimated dates are marked with ~, user-entered dates are not', async ({ page }) => {
+	const hid = await dedicatedHousehold(page);
+	const oid = ownerId();
+	const est = `est-${randomUUID()}`;
+	const exact = `exact-${randomUUID()}`;
+	db.seedItem({
+		householdId: hid,
+		addedBy: oid,
+		customName: est,
+		bestByDate: utcMidnight(2),
+		isEstimate: true
+	});
+	db.seedItem({
+		householdId: hid,
+		addedBy: oid,
+		customName: exact,
+		useByDate: utcMidnight(2),
+		isEstimate: false
+	});
+
+	await page.goto('/garde-manger');
+	const rowFor = (name: string) =>
+		page.locator('section.band .row').filter({ has: page.getByText(name) });
+
+	await expect(rowFor(est).locator('.meta')).toContainText('~');
+	await expect(rowFor(exact).locator('.meta')).not.toContainText('~');
+});
+
 test('eaten on a multi-unit item decrements before closing the row', async ({ page }) => {
 	const hid = await dedicatedHousehold(page);
 	const oid = ownerId();

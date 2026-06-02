@@ -45,6 +45,7 @@
 				>{it.dateKind === 'DLC' ? t.dlc_label : t.ddm_label}
 				<input type="date" name="date" value={it.dateValue} />
 			</label>
+			{#if it.isEstimate}<small class="est-note">~ {t.est_label}</small>{/if}
 		{/if}
 		<label
 			>{t.add_quantity_label}
@@ -127,5 +128,9 @@
 		color: var(--text-muted);
 		font-size: 0.85rem;
 		margin: 0 0 1rem;
+	}
+	.est-note {
+		color: var(--text-muted);
+		font-size: 0.8rem;
 	}
 </style>

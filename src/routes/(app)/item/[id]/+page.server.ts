@@ -72,7 +72,8 @@ export const load: PageServerLoad = async ({ params, locals, parent }) => {
 			effectiveDate,
 			dateValue,
 			band,
-			addedAt: item.addedAt ? item.addedAt.toISOString() : null
+			addedAt: item.addedAt ? item.addedAt.toISOString() : null,
+			isEstimate: item.isEstimate
 		}
 	};
 };
