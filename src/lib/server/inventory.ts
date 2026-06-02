@@ -284,6 +284,29 @@ export function deleteItem(
 	return rows.length > 0;
 }
 
+// ── recordUse ─────────────────────────────────────────────────────────────────
+
+/**
+ * Record one unit consumed or discarded. Multi-unit rows decrement by one and
+ * stay active; the last unit closes the row via setStatus. Household-scoped:
+ * returns undefined if the item does not belong to the household.
+ */
+export function recordUse(
+	db: DB,
+	{
+		id,
+		householdId,
+		outcome
+	}: { id: string; householdId: string; outcome: 'consumed' | 'discarded' }
+): InventoryItem | undefined {
+	const item = getItemScoped(db, { id, householdId });
+	if (!item) return undefined;
+	if (item.quantity > 1) {
+		return updateItem(db, { id, householdId, quantity: item.quantity - 1 });
+	}
+	return setStatus(db, { id, householdId, status: outcome });
+}
+
 // ── bandFor ───────────────────────────────────────────────────────────────────
 
 const MS_PER_DAY = 86_400_000;
