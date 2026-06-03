@@ -31,6 +31,6 @@ describe('formatDayBadge', () => {
 		expect(formatDayBadge(3, T)).toEqual({ text: '3 d', aria: '3 d' });
 	});
 	it('negative days → overdue count text + spelled-out aria', () => {
-		expect(formatDayBadge(-2, T)).toEqual({ text: '-2', aria: '2 d · Overdue' });
+		expect(formatDayBadge(-2, T)).toEqual({ text: '-2', aria: '2 d, Overdue' });
 	});
 });

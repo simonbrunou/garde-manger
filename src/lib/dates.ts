@@ -23,7 +23,7 @@ export function formatDayBadge(
 ): { text: string; aria: string } {
 	if (days === null) return { text: '∞', aria: '∞' };
 	if (days < 0) {
-		return { text: String(days), aria: `${Math.abs(days)} ${t.day_unit} · ${t.day_overdue}` };
+		return { text: String(days), aria: `${Math.abs(days)} ${t.day_unit}, ${t.day_overdue}` };
 	}
 	if (days === 0) return { text: t.day_today, aria: t.day_today };
 	const label = `${days} ${t.day_unit}`;
