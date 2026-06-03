@@ -228,12 +228,12 @@
     "hash": "552f63a50c31729ce99c887c8c257b82"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/i18n/messages/en.ts": {
-    "mtime": 1780456623.499829,
-    "hash": "b7eb886675991faa8864aff049d7ad95"
+    "mtime": 1780457106.3426378,
+    "hash": "a7bd2700d25d793e9ad50bd6aeab4088"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/i18n/messages/fr.ts": {
-    "mtime": 1780456624.6608167,
-    "hash": "9ce061f88c5e421b3e5cb698f0c4f80d"
+    "mtime": 1780457131.833364,
+    "hash": "ba9eb6a1c384eaf6ba84d0dc4d06d207"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/server/backup.test.ts": {
     "mtime": 1780381261.5061517,
@@ -319,29 +319,29 @@
     "mtime": 1780396687.6394238,
     "hash": "30a1fe1d1c5d3d9950092a94ccbcec50"
   },
-  "/home/sbrn/Projects/garde-manger/src/lib/server/stats.test.ts": {
-    "mtime": 1780455349.08165,
-    "hash": "ea19a4f7b5dc326cdbeebfcfc20afea0"
-  },
-  "/home/sbrn/Projects/garde-manger/src/lib/server/stats.ts": {
-    "mtime": 1780455369.6484232,
-    "hash": "4711f51ce7fb4ec09433293864e29ed5"
-  },
   "/home/sbrn/Projects/garde-manger/src/lib/server/catalogue.test.ts": {
-    "mtime": 1780455654.5173028,
+    "mtime": 1780456895.499904,
     "hash": "285543ab0b9762ce849acafc861119b2"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/server/catalogue.ts": {
-    "mtime": 1780455661.9942212,
+    "mtime": 1780456895.499904,
     "hash": "7cb568165adf31f44257a33b7ce738ea"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/server/inventory.test.ts": {
-    "mtime": 1780455673.2260988,
+    "mtime": 1780456895.499904,
     "hash": "0077e4c13f1239be6646d096f5a2a225"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/server/inventory.ts": {
-    "mtime": 1780455681.643007,
+    "mtime": 1780456895.499904,
     "hash": "0224216af67bcc190200746b6e0c2d10"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/stats.test.ts": {
+    "mtime": 1780456895.499904,
+    "hash": "ea19a4f7b5dc326cdbeebfcfc20afea0"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/stats.ts": {
+    "mtime": 1780456895.499904,
+    "hash": "4711f51ce7fb4ec09433293864e29ed5"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/server/auth/cookies.ts": {
     "mtime": 1780381261.506119,
@@ -358,6 +358,14 @@
   "/home/sbrn/Projects/garde-manger/src/lib/server/auth/webauthn.ts": {
     "mtime": 1780396687.6394238,
     "hash": "5d66484778056c86c7bb27b2377c6f73"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/auth/rateLimit.ts": {
+    "mtime": 1780457191.7107205,
+    "hash": "8ed9feec50b407a3aef8dc749acf4be3"
+  },
+  "/home/sbrn/Projects/garde-manger/src/lib/server/auth/rateLimit.test.ts": {
+    "mtime": 1780457206.5865607,
+    "hash": "bf319455e4ea11d21dda32441609e7a6"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/server/db/client.test.ts": {
     "mtime": 1780381261.5061517,
@@ -443,10 +451,6 @@
     "mtime": 1780419458.6671429,
     "hash": "b2b1a84f756d6f10da88631d6db45c47"
   },
-  "/home/sbrn/Projects/garde-manger/src/routes/(app)/add/+page.svelte": {
-    "mtime": 1780381261.508022,
-    "hash": "bb854f31608a376cb44599c244b890d5"
-  },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/add/+page.ts": {
     "mtime": 1780381261.508022,
     "hash": "dc2d05352ed1c1d9718bf4e23e9389e9"
@@ -455,12 +459,16 @@
     "mtime": 1780396687.6404238,
     "hash": "83e32eccc0577730b72dbca4e28195a9"
   },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/add/+page.svelte": {
+    "mtime": 1780457161.6940432,
+    "hash": "03a30cceecbad4f2bff4b0151ee02711"
+  },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/bilan/+page.server.ts": {
     "mtime": 1780381261.508022,
     "hash": "05d168478d49803ad85e522c35902560"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/bilan/+page.svelte": {
-    "mtime": 1780455419.263877,
+    "mtime": 1780456895.499904,
     "hash": "3b118ed770b2dad93911ca5f04f73535"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/garde-manger/+page.svelte": {
@@ -495,13 +503,13 @@
     "mtime": 1780381261.508585,
     "hash": "c37de984d724c1c86264750d971163f4"
   },
-  "/home/sbrn/Projects/garde-manger/src/routes/(app)/item/[id]/+page.svelte": {
-    "mtime": 1780455763.380118,
-    "hash": "1ef37a3dd606aac50718cd48af3e03b1"
-  },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/item/[id]/+page.server.ts": {
-    "mtime": 1780456602.312057,
+    "mtime": 1780456895.499904,
     "hash": "128b901fb8d994ea4b6aa214e07473ed"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/item/[id]/+page.svelte": {
+    "mtime": 1780457151.4491532,
+    "hash": "0f7c129066311bc1bc510ce7f160b38e"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/products/[barcode]/image/+server.ts": {
     "mtime": 1780381261.508764,
@@ -539,10 +547,6 @@
     "mtime": 1780381261.5091574,
     "hash": "dc2d05352ed1c1d9718bf4e23e9389e9"
   },
-  "/home/sbrn/Projects/garde-manger/src/routes/(auth)/login/+page.server.ts": {
-    "mtime": 1780381261.5091574,
-    "hash": "0248949bb91c9e0c373e1c0af5166027"
-  },
   "/home/sbrn/Projects/garde-manger/src/routes/(auth)/login/+page.ts": {
     "mtime": 1780381261.5092285,
     "hash": "162f1f1f69f3d076403831a3b9fda3e5"
@@ -550,6 +554,10 @@
   "/home/sbrn/Projects/garde-manger/src/routes/(auth)/login/+page.svelte": {
     "mtime": 1780455097.3323605,
     "hash": "0a9faae11bf73fd216622dab51fece8c"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(auth)/login/+page.server.ts": {
+    "mtime": 1780457237.3092308,
+    "hash": "43b973e820a57e385ce69820ff091927"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(auth)/signup/+page.server.ts": {
     "mtime": 1780381261.5092285,
@@ -619,10 +627,6 @@
     "mtime": 1780407927.4998932,
     "hash": "c2690224b5090085f5fad21787f77d0a"
   },
-  "/home/sbrn/Projects/garde-manger/tests/e2e/auth.spec.ts": {
-    "mtime": 1780407927.4998932,
-    "hash": "06e90a936561ec4dcf2f0593f38d3637"
-  },
   "/home/sbrn/Projects/garde-manger/tests/e2e/households.spec.ts": {
     "mtime": 1780407927.5012777,
     "hash": "ce86855a2ecabf4fdf3a6d36a5c2abb1"
@@ -652,12 +656,16 @@
     "hash": "7b261cdd637aa1e609d11d02abd69a66"
   },
   "/home/sbrn/Projects/garde-manger/tests/e2e/bilan.spec.ts": {
-    "mtime": 1780455463.252394,
+    "mtime": 1780456895.499904,
     "hash": "7a3b27d77db30f6d914e581cc01bbd0f"
   },
+  "/home/sbrn/Projects/garde-manger/tests/e2e/auth.spec.ts": {
+    "mtime": 1780457268.6838937,
+    "hash": "a997164033a9335749c1869c2c47cab3"
+  },
   "/home/sbrn/Projects/garde-manger/tests/e2e/item.spec.ts": {
-    "mtime": 1780456653.1305103,
-    "hash": "a7617c359f3fdd85ba2c09888b74d528"
+    "mtime": 1780457276.9058053,
+    "hash": "3a32d40ff3abb9ce98f26adac08951d5"
   },
   "/home/sbrn/Projects/garde-manger/tests/e2e/fixtures/constants.ts": {
     "mtime": 1780407927.4998932,
@@ -672,7 +680,7 @@
     "hash": "e6d400d6459042e740b7a5098680b1e9"
   },
   "/home/sbrn/Projects/garde-manger/tests/e2e/fixtures/db.ts": {
-    "mtime": 1780455799.8537216,
+    "mtime": 1780456895.499904,
     "hash": "61d149ffccfedbc7785c08ae97d154a2"
   },
   "/home/sbrn/Projects/garde-manger/DEPLOY.md": {
@@ -796,8 +804,12 @@
     "hash": "7daf8e19ab8a78c3955ea924f48415ba"
   },
   "/home/sbrn/Projects/garde-manger/docs/superpowers/specs/2026-06-03-tier2-bilan-opened-design.md": {
-    "mtime": 1780455265.5435615,
+    "mtime": 1780456895.4949038,
     "hash": "48fad44fabcfa7ec60be0d9e8898bece"
+  },
+  "/home/sbrn/Projects/garde-manger/docs/superpowers/specs/2026-06-03-tier3-disclaimer-ratelimit-design.md": {
+    "mtime": 1780457027.2084882,
+    "hash": "bb2cfa63556526876ece32a7b7f0f84b"
   },
   "/home/sbrn/Projects/garde-manger/docs/superpowers/reports/2026-06-02-e2e-bug-hunt-report.md": {
     "mtime": 1780407927.4948933,
@@ -808,8 +820,8 @@
     "hash": "f77fc7cf10dd368e35073a1b21091c77"
   },
   "/home/sbrn/Projects/garde-manger/playwright-report/index.html": {
-    "mtime": 1780456751.053457,
-    "hash": "4f55901bafb7b40bfae6c46c45694fe2"
+    "mtime": 1780457499.1943245,
+    "hash": "f1e78bf52342fe75995d141e4fbb6e4b"
   },
   "/home/sbrn/Projects/garde-manger/scripts/og-image.svg": {
     "mtime": 1780455097.3313603,
