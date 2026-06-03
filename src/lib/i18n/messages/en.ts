@@ -223,6 +223,8 @@ export const en: Messages = {
 	item_added_on: 'Added on',
 	item_notes_label: 'Notes',
 	item_notes_placeholder: 'Opened, finish soon…',
+	item_mark_opened: 'Mark as opened',
+	item_open_no_data: 'No opened-storage guidance for this item.',
 	item_save: 'Save',
 	item_delete: 'Delete item',
 	item_delete_confirm: 'Confirm deletion',

@@ -222,6 +222,8 @@ export const fr: Messages = {
 	item_added_on: 'Ajouté le',
 	item_notes_label: 'Notes',
 	item_notes_placeholder: 'Entamé, à finir…',
+	item_mark_opened: "Je l'ai entamé",
+	item_open_no_data: 'Pas de conseil de conservation après ouverture pour cet article.',
 	item_save: 'Enregistrer',
 	item_delete: "Supprimer l'aliment",
 	item_delete_confirm: 'Confirmer la suppression',
@@ -483,6 +485,8 @@ export interface Messages {
 	item_added_on: string;
 	item_notes_label: string;
 	item_notes_placeholder: string;
+	item_mark_opened: string;
+	item_open_no_data: string;
 	item_save: string;
 	item_delete: string;
 	item_delete_confirm: string;

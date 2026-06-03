@@ -8,6 +8,7 @@
 	const t = $derived(m(data.locale));
 	const it = $derived(data.item);
 	const tip = $derived(data.tip);
+	const canOpen = $derived(data.canOpen);
 </script>
 
 <svelte:head><title>{t.item_detail_title}</title></svelte:head>
@@ -69,6 +70,11 @@
 		<Button type="submit" variant="secondary" icon="trash" full>{t.lifecycle_tossed}</Button>
 	</form>
 </div>
+{#if canOpen}
+	<form method="POST" action="?/open" class="opened">
+		<Button type="submit" variant="secondary" full>{t.item_mark_opened}</Button>
+	</form>
+{/if}
 
 <!-- Destructive delete as a native <details> disclosure: works with no JS, and
      the two-step expand-then-confirm guards against accidental deletion. -->
@@ -113,6 +119,9 @@
 	.lifecycle form {
 		flex: 1;
 		display: flex;
+	}
+	.opened {
+		margin-bottom: 0.5rem;
 	}
 	.danger {
 		margin-top: 0.5rem;

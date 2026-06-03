@@ -9,7 +9,8 @@ import {
 	resolveActiveHouseholdId
 } from '$lib/server/households';
 import { getItemScoped, updateItem, deleteItem, recordUse, bandFor } from '$lib/server/inventory';
-import { tipForItem } from '$lib/server/catalogue';
+import { tipForItem, openedEstimate } from '$lib/server/catalogue';
+import { m } from '$lib/i18n';
 import type { PageServerLoad, Actions } from './$types';
 
 // Resolve the active household for an action: validate the cookie against the user's
@@ -51,6 +52,8 @@ export const load: PageServerLoad = async ({ params, locals, parent }) => {
 	}
 
 	const tip = item.foodId ? tipForItem(db, item.foodId, item.location, locale) : null;
+	const canOpen =
+		item.foodId !== null && openedEstimate(db, item.foodId, item.location, new Date()) !== null;
 
 	const dateKind: 'DLC' | 'DDM' | null = item.useByDate ? 'DLC' : item.bestByDate ? 'DDM' : null;
 	const effectiveDate = item.effectiveDate ? item.effectiveDate.toISOString() : null;
@@ -63,6 +66,7 @@ export const load: PageServerLoad = async ({ params, locals, parent }) => {
 	return {
 		locale,
 		tip,
+		canOpen,
 		item: {
 			id: item.id,
 			name,
@@ -152,6 +156,30 @@ export const actions: Actions = {
 		// A multi-unit decrement leaves the row active — stay on the item page so the
 		// user can keep drawing it down; a fully-closed row returns to the list.
 		redirect(303, updated.status === 'active' ? `/item/${params.id}` : '/garde-manger');
+	},
+
+	open: async ({ params, locals, cookies }) => {
+		const hh = actionHousehold(cookies, locals.user!.id);
+		if (!hh) error(400, 'No active household');
+		try {
+			requireMembership(db, hh, locals.user!.id);
+		} catch (e) {
+			if (e instanceof MembershipError) error(403, 'Forbidden');
+			throw e;
+		}
+		const t = m(locals.locale);
+		const item = getItemScoped(db, { id: params.id, householdId: hh });
+		if (!item || item.status !== 'active' || !item.foodId) error(404, 'Not found');
+		const date = openedEstimate(db, item.foodId, item.location, new Date());
+		if (!date) return fail(400, { message: t.item_open_no_data });
+		updateItem(db, {
+			id: params.id,
+			householdId: hh,
+			bestByDate: date,
+			useByDate: null,
+			isEstimate: true
+		});
+		redirect(303, `/item/${params.id}`);
 	},
 
 	remove: async ({ params, locals, cookies }) => {

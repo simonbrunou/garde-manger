@@ -247,6 +247,7 @@ export function updateItem(
 		bestByDate?: Date | null;
 		quantity?: number;
 		notes?: string | null;
+		isEstimate?: boolean;
 	}
 ): InventoryItem | undefined {
 	const set: Partial<typeof inventoryItems.$inferInsert> = {};
@@ -255,6 +256,7 @@ export function updateItem(
 	if (params.bestByDate !== undefined) set.bestByDate = params.bestByDate;
 	if (params.quantity !== undefined) set.quantity = params.quantity;
 	if (params.notes !== undefined) set.notes = params.notes;
+	if (params.isEstimate !== undefined) set.isEstimate = params.isEstimate;
 	if (Object.keys(set).length === 0) return getItemScoped(db, params);
 
 	return (

@@ -95,12 +95,60 @@ export function seedMembership(
 	});
 }
 
+/** Insert a food catalogue entry. */
+export function seedFood(opts: {
+	id: string;
+	nameFr: string;
+	nameEn: string;
+	category: string;
+	defaultLocation: 'pantry' | 'fridge' | 'freezer';
+}): void {
+	withDb((d) => {
+		d.prepare(
+			`INSERT OR IGNORE INTO foods (id, name_fr, name_en, keywords_fr, keywords_en, category, default_location)
+			 VALUES (?, ?, ?, '', '', ?, ?)`
+		).run(opts.id, opts.nameFr, opts.nameEn, opts.category, opts.defaultLocation);
+	});
+}
+
+/** Insert a shelf_life row for a food. */
+export function seedShelfLife(opts: {
+	foodId: string;
+	location: 'pantry' | 'fridge' | 'freezer';
+	basis: 'purchase' | 'opened' | 'unspecified';
+	min: number;
+	max: number;
+	unit: 'hours' | 'days' | 'weeks' | 'months' | 'years';
+	tipsFr?: string;
+	tipsEn?: string;
+}): string {
+	const id = rid('sl');
+	withDb((d) => {
+		d.prepare(
+			`INSERT INTO shelf_lives (id, food_id, location, basis, min, max, unit, not_recommended, tips_fr, tips_en)
+			 VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`
+		).run(
+			id,
+			opts.foodId,
+			opts.location,
+			opts.basis,
+			opts.min,
+			opts.max,
+			opts.unit,
+			opts.tipsFr ?? null,
+			opts.tipsEn ?? null
+		);
+	});
+	return id;
+}
+
 /** Direct insert so tests can set EXACT past/boundary dates and terminal states the UI
  *  cannot express. `effective_date` is a generated column and is never written. */
 export function seedItem(opts: {
 	householdId: string;
 	addedBy: string;
 	customName?: string;
+	foodId?: string | null;
 	location?: 'pantry' | 'fridge' | 'freezer';
 	useByDate?: Date | null;
 	bestByDate?: Date | null;
@@ -113,13 +161,14 @@ export function seedItem(opts: {
 	withDb((d) => {
 		d.prepare(
 			`INSERT INTO inventory_items
-				(id, household_id, added_by, kind, custom_name, quantity, location, added_at,
+				(id, household_id, added_by, kind, food_id, custom_name, quantity, location, added_at,
 				 use_by_date, best_by_date, is_estimate, status, closed_at)
-			 VALUES (?, ?, ?, 'fresh', ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+			 VALUES (?, ?, ?, 'fresh', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		).run(
 			id,
 			opts.householdId,
 			opts.addedBy,
+			opts.foodId ?? null,
 			opts.customName ?? 'Seeded item',
 			opts.quantity ?? 1,
 			opts.location ?? 'fridge',
