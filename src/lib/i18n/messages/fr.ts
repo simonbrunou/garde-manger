@@ -19,6 +19,7 @@ export const fr: Messages = {
 	auth_email_label: 'Adresse e-mail',
 	auth_password_label: 'Mot de passe',
 	auth_invalid_credentials: 'Identifiants invalides',
+	auth_rate_limited: 'Trop de tentatives. Veuillez patienter quelques minutes avant de réessayer.',
 	auth_passkey_login: 'Se connecter avec une passkey',
 	auth_passkey_login_failed: 'Authentification échouée. Veuillez réessayer.',
 
@@ -179,6 +180,8 @@ export const fr: Messages = {
 	dlc_label: 'DLC',
 	ddm_label: 'DDM',
 	est_label: 'estimée',
+	est_disclaimer:
+		'Date estimée — ne garantit pas la sécurité alimentaire. Au moindre doute, fiez-vous à vos sens.',
 
 	// --- M3 scan ---
 	scan_title: 'Scanner un produit',
@@ -303,6 +306,7 @@ export interface Messages {
 	auth_email_label: string;
 	auth_password_label: string;
 	auth_invalid_credentials: string;
+	auth_rate_limited: string;
 	auth_passkey_login: string;
 	auth_passkey_login_failed: string;
 	// --- Auth: Signup ---
@@ -447,6 +451,7 @@ export interface Messages {
 	dlc_label: string;
 	ddm_label: string;
 	est_label: string;
+	est_disclaimer: string;
 	// --- M3 scan ---
 	scan_title: string;
 	scan_instructions: string;

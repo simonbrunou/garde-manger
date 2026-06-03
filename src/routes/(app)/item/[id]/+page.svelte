@@ -48,7 +48,10 @@
 				>{it.dateKind === 'DLC' ? t.dlc_label : t.ddm_label}
 				<input type="date" name="date" value={it.dateValue} />
 			</label>
-			{#if it.isEstimate}<small class="est-note">~ {t.est_label}</small>{/if}
+			{#if it.isEstimate}
+				<small class="est-note">~ {t.est_label}</small>
+				<small class="est-disclaimer">{t.est_disclaimer}</small>
+			{/if}
 		{/if}
 		<label
 			>{t.add_quantity_label}
@@ -143,6 +146,12 @@
 	.est-note {
 		color: var(--text-muted);
 		font-size: 0.8rem;
+	}
+	.est-disclaimer {
+		display: block;
+		color: var(--text-muted);
+		font-size: 0.78rem;
+		margin-top: 0.2rem;
 	}
 	.tip {
 		background: var(--surface-2);

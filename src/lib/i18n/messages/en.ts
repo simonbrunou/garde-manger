@@ -21,6 +21,7 @@ export const en: Messages = {
 	auth_email_label: 'Email address',
 	auth_password_label: 'Password',
 	auth_invalid_credentials: 'Invalid credentials',
+	auth_rate_limited: 'Too many attempts. Please wait a few minutes and try again.',
 	auth_passkey_login: 'Sign in with a passkey',
 	auth_passkey_login_failed: 'Authentication failed. Please try again.',
 
@@ -181,6 +182,7 @@ export const en: Messages = {
 	dlc_label: 'Use by',
 	ddm_label: 'Best before',
 	est_label: 'estimated',
+	est_disclaimer: 'Estimated date — not a food-safety guarantee. When in doubt, trust your senses.',
 
 	// --- M3 scan ---
 	scan_title: 'Scan a product',
