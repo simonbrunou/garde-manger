@@ -13,7 +13,8 @@ import {
 	bandFor,
 	getItemScoped,
 	updateItem,
-	deleteItem
+	deleteItem,
+	recordUse
 } from './inventory';
 
 // ── Test DB setup ─────────────────────────────────────────────────────────────
@@ -682,5 +683,101 @@ describe('getItemScoped / updateItem / deleteItem', () => {
 		expect(deleteItem(db, { id: item.id, householdId: 'other' })).toBe(false);
 		expect(deleteItem(db, { id: item.id, householdId: HOUSEHOLD_ID })).toBe(true);
 		expect(getItem(db, item.id)).toBeUndefined();
+	});
+});
+
+// ── recordUse ─────────────────────────────────────────────────────────────────
+
+describe('recordUse', () => {
+	let db: DB;
+	beforeEach(() => {
+		db = makeDb();
+		seedFixtures(db);
+	});
+
+	it('quantity > 1 decrements by one and keeps the row active', () => {
+		const item = addFresh(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			foodId: FOOD_ID,
+			location: 'fridge',
+			quantity: 3
+		});
+		const updated = recordUse(db, { id: item.id, householdId: HOUSEHOLD_ID, outcome: 'consumed' });
+		expect(updated?.quantity).toBe(2);
+		expect(updated?.status).toBe('active');
+		expect(updated?.closedAt).toBeNull();
+	});
+
+	it('quantity === 1 with outcome consumed closes the row', () => {
+		const item = addFresh(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			foodId: FOOD_ID,
+			location: 'fridge',
+			quantity: 1
+		});
+		const updated = recordUse(db, { id: item.id, householdId: HOUSEHOLD_ID, outcome: 'consumed' });
+		expect(updated?.status).toBe('consumed');
+		expect(updated?.closedAt).not.toBeNull();
+	});
+
+	it('quantity === 1 with outcome discarded closes the row as discarded', () => {
+		const item = addFresh(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			foodId: FOOD_ID,
+			location: 'fridge',
+			quantity: 1
+		});
+		const updated = recordUse(db, { id: item.id, householdId: HOUSEHOLD_ID, outcome: 'discarded' });
+		expect(updated?.status).toBe('discarded');
+	});
+
+	it('returns undefined for an item in another household', () => {
+		const item = addFresh(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			foodId: FOOD_ID,
+			location: 'fridge',
+			quantity: 2
+		});
+		const updated = recordUse(db, {
+			id: item.id,
+			householdId: 'some-other-household',
+			outcome: 'consumed'
+		});
+		expect(updated).toBeUndefined();
+	});
+
+	it('returns undefined for a missing id', () => {
+		const updated = recordUse(db, {
+			id: 'does-not-exist',
+			householdId: HOUSEHOLD_ID,
+			outcome: 'consumed'
+		});
+		expect(updated).toBeUndefined();
+	});
+
+	it('is a no-op on an already-closed item (no status flip or closedAt re-stamp)', () => {
+		const item = addFresh(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			foodId: FOOD_ID,
+			location: 'fridge',
+			quantity: 1
+		});
+		const closed = recordUse(db, { id: item.id, householdId: HOUSEHOLD_ID, outcome: 'discarded' });
+		expect(closed?.status).toBe('discarded');
+		const closedAt = closed!.closedAt;
+
+		// A replayed consume (stale page / back button / double submit) must not
+		// flip discarded → consumed or re-stamp closedAt.
+		const replay = recordUse(db, { id: item.id, householdId: HOUSEHOLD_ID, outcome: 'consumed' });
+		expect(replay).toBeUndefined();
+
+		const after = getItem(db, item.id);
+		expect(after?.status).toBe('discarded');
+		expect(after?.closedAt).toEqual(closedAt);
 	});
 });

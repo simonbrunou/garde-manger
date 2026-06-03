@@ -7,6 +7,7 @@
 	let { data } = $props();
 	const t = $derived(m(data.locale));
 	const it = $derived(data.item);
+	const tip = $derived(data.tip);
 </script>
 
 <svelte:head><title>{t.item_detail_title}</title></svelte:head>
@@ -28,6 +29,7 @@
 		{t.item_added_on}
 		{new Intl.DateTimeFormat(data.locale, { dateStyle: 'long' }).format(new Date(it.addedAt))}
 	</p>{/if}
+{#if tip}<p class="tip">💡 {tip}</p>{/if}
 
 <Card>
 	<form method="POST" action="?/update" class="edit">
@@ -45,6 +47,7 @@
 				>{it.dateKind === 'DLC' ? t.dlc_label : t.ddm_label}
 				<input type="date" name="date" value={it.dateValue} />
 			</label>
+			{#if it.isEstimate}<small class="est-note">~ {t.est_label}</small>{/if}
 		{/if}
 		<label
 			>{t.add_quantity_label}
@@ -127,5 +130,17 @@
 		color: var(--text-muted);
 		font-size: 0.85rem;
 		margin: 0 0 1rem;
+	}
+	.est-note {
+		color: var(--text-muted);
+		font-size: 0.8rem;
+	}
+	.tip {
+		background: var(--surface-2);
+		border-radius: 11px;
+		padding: 0.6rem 0.8rem;
+		margin: 0 0 1rem;
+		font-size: 0.88rem;
+		color: var(--text);
 	}
 </style>

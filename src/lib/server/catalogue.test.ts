@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createDb, runMigrations, type DB } from './db/client';
 import { foods, shelfLives } from './db/schema';
-import { searchFoods, computeBestBy, UNIT_MS } from './catalogue';
+import { searchFoods, computeBestBy, UNIT_MS, tipForItem } from './catalogue';
 import { seedFoods } from './seed/seed';
 
 function makeDb(): DB {
@@ -250,5 +250,75 @@ describe('computeBestBy', () => {
 			date: new Date(fixedDate.getTime() + 5 * UNIT_MS.days),
 			isEstimate: true
 		});
+	});
+});
+
+// ── tipForItem ─────────────────────────────────────────────────────────────────
+
+describe('tipForItem', () => {
+	let db: DB;
+	const FID = 'food-tip-test';
+	beforeEach(() => {
+		db = makeDb();
+		db.insert(foods)
+			.values({
+				id: FID,
+				nameFr: 'Test',
+				nameEn: 'Test',
+				category: 'Test',
+				defaultLocation: 'fridge'
+			})
+			.run();
+	});
+
+	function addShelfLife(opts: {
+		location: 'pantry' | 'fridge' | 'freezer';
+		basis: 'purchase' | 'opened' | 'unspecified';
+		tipsFr: string | null;
+		tipsEn: string | null;
+	}) {
+		db.insert(shelfLives)
+			.values({
+				id: crypto.randomUUID(),
+				foodId: FID,
+				location: opts.location,
+				basis: opts.basis,
+				min: 1,
+				max: 2,
+				unit: 'days',
+				tipsFr: opts.tipsFr,
+				tipsEn: opts.tipsEn
+			})
+			.run();
+	}
+
+	it('returns the localized tip for the matching location', () => {
+		addShelfLife({
+			location: 'fridge',
+			basis: 'purchase',
+			tipsFr: 'Au frais',
+			tipsEn: 'Keep cold'
+		});
+		expect(tipForItem(db, FID, 'fridge', 'en')).toBe('Keep cold');
+		expect(tipForItem(db, FID, 'fridge', 'fr')).toBe('Au frais');
+	});
+
+	it('prefers the purchase-basis row over other bases', () => {
+		addShelfLife({ location: 'fridge', basis: 'opened', tipsFr: 'O', tipsEn: 'Opened tip' });
+		addShelfLife({ location: 'fridge', basis: 'purchase', tipsFr: 'A', tipsEn: 'Purchase tip' });
+		expect(tipForItem(db, FID, 'fridge', 'en')).toBe('Purchase tip');
+	});
+
+	it('returns null when the location has no tip', () => {
+		addShelfLife({ location: 'fridge', basis: 'purchase', tipsFr: null, tipsEn: null });
+		expect(tipForItem(db, FID, 'fridge', 'en')).toBeNull();
+		expect(tipForItem(db, FID, 'pantry', 'en')).toBeNull();
+	});
+
+	it('falls back to another basis when the purchase row has no tip', () => {
+		addShelfLife({ location: 'fridge', basis: 'purchase', tipsFr: null, tipsEn: null });
+		addShelfLife({ location: 'fridge', basis: 'opened', tipsFr: 'Entamé', tipsEn: 'Opened tip' });
+		expect(tipForItem(db, FID, 'fridge', 'en')).toBe('Opened tip');
+		expect(tipForItem(db, FID, 'fridge', 'fr')).toBe('Entamé');
 	});
 });

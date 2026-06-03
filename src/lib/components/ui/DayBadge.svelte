@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { dayBadge } from '$lib/dates';
+	import { dayBadge, formatDayBadge } from '$lib/dates';
 	import type { Messages } from '$lib/i18n';
 	import type { Band } from '$lib/server/inventory';
 	let {
@@ -8,25 +8,9 @@
 		now = new Date(),
 		t
 	}: { band: Band; effectiveDate: string | null; now?: Date; t: Messages } = $props();
-	const info = $derived(dayBadge(effectiveDate, now));
-	const text = $derived(
-		info.days === null
-			? '∞'
-			: info.days < 0
-				? '!'
-				: info.days === 0
-					? t.day_today
-					: `${info.days} ${t.day_unit}`
-	);
-	const aria = $derived(
-		info.days === null
-			? '∞'
-			: info.days < 0
-				? t.day_overdue
-				: info.days === 0
-					? t.day_today
-					: `${info.days} ${t.day_unit}`
-	);
+	const badge = $derived(formatDayBadge(dayBadge(effectiveDate, now).days, t));
+	const text = $derived(badge.text);
+	const aria = $derived(badge.aria);
 </script>
 
 <span class="badge badge-{band}" aria-label={aria}>{text}</span>

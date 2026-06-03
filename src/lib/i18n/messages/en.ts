@@ -180,6 +180,7 @@ export const en: Messages = {
 	// --- M2 date labels ---
 	dlc_label: 'Use by',
 	ddm_label: 'Best before',
+	est_label: 'estimated',
 
 	// --- M3 scan ---
 	scan_title: 'Scan a product',

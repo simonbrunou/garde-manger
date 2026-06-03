@@ -90,6 +90,31 @@ export function searchFoods(db: DB, query: string, locale: 'fr' | 'en'): FoodSea
 	});
 }
 
+// ── tipForItem ─────────────────────────────────────────────────────────────────
+
+/**
+ * The storage tip to show for an inventory item, by its food + location.
+ * Prefers the purchase-basis row (the basis estimates are computed from), then
+ * any row with a tip. Returns the localized text, or null when none exists.
+ */
+export function tipForItem(
+	db: DB,
+	foodId: string,
+	location: 'pantry' | 'fridge' | 'freezer',
+	locale: 'fr' | 'en'
+): string | null {
+	const rows = db
+		.select()
+		.from(shelfLives)
+		.where(and(eq(shelfLives.foodId, foodId), eq(shelfLives.location, location)))
+		.all();
+
+	const withTip = (r: ShelfLife) => (locale === 'fr' ? r.tipsFr : r.tipsEn);
+	const preferred =
+		rows.find((r) => r.basis === 'purchase' && withTip(r)) ?? rows.find((r) => withTip(r));
+	return preferred ? withTip(preferred) || null : null;
+}
+
 // ── computeBestBy ──────────────────────────────────────────────────────────────
 
 /**

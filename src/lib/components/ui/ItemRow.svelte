@@ -17,6 +17,7 @@
 		barcode: string | null;
 		imagePath: string | null;
 		category: string | null;
+		isEstimate: boolean;
 	}
 
 	let { item, locale, t }: { item: RowItem; locale: 'fr' | 'en'; t: Messages } = $props();
@@ -72,7 +73,11 @@
 			<span class="info">
 				<span class="name">{item.name}</span>
 				<span class="meta">
-					{locLabel}{#if item.quantity > 1}&nbsp;· ×{item.quantity}{/if}{#if dateLabel}&nbsp;· {dateLabel}{/if}
+					{locLabel}{#if item.quantity > 1}&nbsp;· ×{item.quantity}{/if}{#if dateLabel}&nbsp;· <span
+							title={item.isEstimate ? t.est_label : undefined}
+							>{#if item.isEstimate}~
+							{/if}{dateLabel}</span
+						>{/if}
 				</span>
 			</span>
 			<DayBadge band={item.band} effectiveDate={item.effectiveDate} {t} />

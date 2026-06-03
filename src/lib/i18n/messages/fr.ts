@@ -178,6 +178,7 @@ export const fr: Messages = {
 	// --- M2 date labels ---
 	dlc_label: 'DLC',
 	ddm_label: 'DDM',
+	est_label: 'estimée',
 
 	// --- M3 scan ---
 	scan_title: 'Scanner un produit',
@@ -438,6 +439,7 @@ export interface Messages {
 	// --- M2 date labels ---
 	dlc_label: string;
 	ddm_label: string;
+	est_label: string;
 	// --- M3 scan ---
 	scan_title: string;
 	scan_instructions: string;

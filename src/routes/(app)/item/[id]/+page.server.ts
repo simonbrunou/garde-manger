@@ -8,7 +8,8 @@ import {
 	listForUser,
 	resolveActiveHouseholdId
 } from '$lib/server/households';
-import { getItemScoped, updateItem, deleteItem, setStatus, bandFor } from '$lib/server/inventory';
+import { getItemScoped, updateItem, deleteItem, recordUse, bandFor } from '$lib/server/inventory';
+import { tipForItem } from '$lib/server/catalogue';
 import type { PageServerLoad, Actions } from './$types';
 
 // Resolve the active household for an action: validate the cookie against the user's
@@ -49,6 +50,8 @@ export const load: PageServerLoad = async ({ params, locals, parent }) => {
 		name = item.customName;
 	}
 
+	const tip = item.foodId ? tipForItem(db, item.foodId, item.location, locale) : null;
+
 	const dateKind: 'DLC' | 'DDM' | null = item.useByDate ? 'DLC' : item.bestByDate ? 'DDM' : null;
 	const effectiveDate = item.effectiveDate ? item.effectiveDate.toISOString() : null;
 	const dateValue = effectiveDate ? effectiveDate.slice(0, 10) : '';
@@ -59,6 +62,7 @@ export const load: PageServerLoad = async ({ params, locals, parent }) => {
 
 	return {
 		locale,
+		tip,
 		item: {
 			id: item.id,
 			name,
@@ -72,7 +76,8 @@ export const load: PageServerLoad = async ({ params, locals, parent }) => {
 			effectiveDate,
 			dateValue,
 			band,
-			addedAt: item.addedAt ? item.addedAt.toISOString() : null
+			addedAt: item.addedAt ? item.addedAt.toISOString() : null,
+			isEstimate: item.isEstimate
 		}
 	};
 };
@@ -126,10 +131,11 @@ export const actions: Actions = {
 			if (e instanceof MembershipError) error(403, 'Forbidden');
 			throw e;
 		}
-		if (!setStatus(db, { id: params.id, householdId: hh, status: 'consumed' })) {
-			error(404, 'Not found');
-		}
-		redirect(303, '/garde-manger');
+		const updated = recordUse(db, { id: params.id, householdId: hh, outcome: 'consumed' });
+		if (!updated) error(404, 'Not found');
+		// A multi-unit decrement leaves the row active — stay on the item page so the
+		// user can keep drawing it down; a fully-closed row returns to the list.
+		redirect(303, updated.status === 'active' ? `/item/${params.id}` : '/garde-manger');
 	},
 
 	discard: async ({ params, locals, cookies }) => {
@@ -141,10 +147,11 @@ export const actions: Actions = {
 			if (e instanceof MembershipError) error(403, 'Forbidden');
 			throw e;
 		}
-		if (!setStatus(db, { id: params.id, householdId: hh, status: 'discarded' })) {
-			error(404, 'Not found');
-		}
-		redirect(303, '/garde-manger');
+		const updated = recordUse(db, { id: params.id, householdId: hh, outcome: 'discarded' });
+		if (!updated) error(404, 'Not found');
+		// A multi-unit decrement leaves the row active — stay on the item page so the
+		// user can keep drawing it down; a fully-closed row returns to the list.
+		redirect(303, updated.status === 'active' ? `/item/${params.id}` : '/garde-manger');
 	},
 
 	remove: async ({ params, locals, cookies }) => {
