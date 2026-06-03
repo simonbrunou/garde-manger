@@ -21,6 +21,13 @@
 	<a href="/bilan" class="tab" aria-current={path.startsWith('/bilan') ? 'page' : undefined}>
 		<Icon name="stats" size={26} /><span>{t.nav_bilan}</span>
 	</a>
+	<a
+		href="/encore-bon"
+		class="tab"
+		aria-current={path.startsWith('/encore-bon') ? 'page' : undefined}
+	>
+		<Icon name="search" size={26} /><span>{t.nav_encore_bon}</span>
+	</a>
 </nav>
 
 <style>

@@ -249,6 +249,22 @@ export const fr: Messages = {
 	notif_error: 'Impossible de modifier les notifications. Réessayez.',
 	offline_banner: 'Hors-ligne — lecture seule',
 
+	// --- Encore bon? (Tier 4) ---
+	nav_encore_bon: 'Encore bon ?',
+	encore_title: 'Encore bon ?',
+	encore_intro:
+		"Combien de temps un aliment se conserve-t-il ? Cherchez-le, même s'il n'est pas dans votre inventaire.",
+	encore_basis_purchase: "À l'achat",
+	encore_basis_opened: 'Après ouverture',
+	encore_basis_unspecified: 'Conservation',
+	encore_not_recommended: 'Déconseillé à cet emplacement',
+	encore_keeps: (range: string) => `Se conserve ${range}`,
+	dur_hours: 'heures',
+	dur_days: 'jours',
+	dur_weeks: 'semaines',
+	dur_months: 'mois',
+	dur_years: 'ans',
+
 	// --- Bilan (M9) ---
 	nav_bilan: 'Bilan',
 	bilan_title: 'Bilan anti-gaspi',
@@ -510,6 +526,20 @@ export interface Messages {
 	notif_working: string;
 	notif_error: string;
 	offline_banner: string;
+	// --- Encore bon? (Tier 4) ---
+	nav_encore_bon: string;
+	encore_title: string;
+	encore_intro: string;
+	encore_basis_purchase: string;
+	encore_basis_opened: string;
+	encore_basis_unspecified: string;
+	encore_not_recommended: string;
+	encore_keeps: (range: string) => string;
+	dur_hours: string;
+	dur_days: string;
+	dur_weeks: string;
+	dur_months: string;
+	dur_years: string;
 	// --- Bilan (M9) ---
 	nav_bilan: string;
 	bilan_title: string;

@@ -248,6 +248,21 @@ export const en: Messages = {
 	notif_error: 'Could not change notifications. Please try again.',
 	offline_banner: 'Offline — view only',
 
+	// --- Encore bon? (Tier 4) ---
+	nav_encore_bon: 'Still good?',
+	encore_title: 'Still good?',
+	encore_intro: "How long does a food keep? Look it up — even if it's not in your inventory.",
+	encore_basis_purchase: 'From purchase',
+	encore_basis_opened: 'Once opened',
+	encore_basis_unspecified: 'Storage',
+	encore_not_recommended: 'Not recommended at this location',
+	encore_keeps: (range: string) => `Keeps ${range}`,
+	dur_hours: 'hours',
+	dur_days: 'days',
+	dur_weeks: 'weeks',
+	dur_months: 'months',
+	dur_years: 'years',
+
 	// --- Bilan (M9) ---
 	nav_bilan: 'Stats',
 	bilan_title: 'Waste report',

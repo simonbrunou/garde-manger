@@ -90,6 +90,44 @@ export function searchFoods(db: DB, query: string, locale: 'fr' | 'en'): FoodSea
 	});
 }
 
+// ── shelfLifeGuide ─────────────────────────────────────────────────────────────
+
+export interface ShelfLifeEntry {
+	location: 'pantry' | 'fridge' | 'freezer';
+	basis: 'purchase' | 'opened' | 'unspecified';
+	min: number;
+	max: number;
+	unit: 'hours' | 'days' | 'weeks' | 'months' | 'years';
+	notRecommended: boolean;
+	tips: string | null;
+}
+
+const LOCATION_ORDER = { pantry: 0, fridge: 1, freezer: 2 } as const;
+const BASIS_ORDER = { purchase: 0, opened: 1, unspecified: 2 } as const;
+
+/**
+ * Return all shelf-life entries for a food, sorted by location then basis,
+ * with tips localized to the given locale. Returns [] when foodId is unknown.
+ */
+export function shelfLifeGuide(db: DB, foodId: string, locale: 'fr' | 'en'): ShelfLifeEntry[] {
+	const rows = db.select().from(shelfLives).where(eq(shelfLives.foodId, foodId)).all();
+	return rows
+		.map((r) => ({
+			location: r.location,
+			basis: r.basis,
+			min: r.min,
+			max: r.max,
+			unit: r.unit,
+			notRecommended: r.notRecommended,
+			tips: locale === 'fr' ? r.tipsFr : r.tipsEn
+		}))
+		.sort(
+			(a, b) =>
+				LOCATION_ORDER[a.location] - LOCATION_ORDER[b.location] ||
+				BASIS_ORDER[a.basis] - BASIS_ORDER[b.basis]
+		);
+}
+
 // ── tipForItem ─────────────────────────────────────────────────────────────────
 
 /**

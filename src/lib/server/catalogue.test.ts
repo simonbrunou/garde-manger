@@ -3,7 +3,14 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createDb, runMigrations, type DB } from './db/client';
 import { foods, shelfLives } from './db/schema';
-import { searchFoods, computeBestBy, UNIT_MS, tipForItem, openedEstimate } from './catalogue';
+import {
+	searchFoods,
+	computeBestBy,
+	UNIT_MS,
+	tipForItem,
+	openedEstimate,
+	shelfLifeGuide
+} from './catalogue';
 import { seedFoods } from './seed/seed';
 
 function makeDb(): DB {
@@ -404,5 +411,151 @@ describe('openedEstimate', () => {
 			.run();
 
 		expect(openedEstimate(db, FID, 'fridge', openedAt)).toBeNull();
+	});
+});
+
+// ── shelfLifeGuide ─────────────────────────────────────────────────────────────
+
+describe('shelfLifeGuide', () => {
+	let db: DB;
+	const FID = 'food-guide-test';
+
+	beforeEach(() => {
+		db = makeDb();
+		db.insert(foods)
+			.values({
+				id: FID,
+				nameFr: 'Beurre',
+				nameEn: 'Butter',
+				category: 'Produits laitiers',
+				defaultLocation: 'fridge'
+			})
+			.run();
+	});
+
+	it('returns entries sorted pantry → fridge, purchase → opened', () => {
+		db.insert(shelfLives)
+			.values([
+				{
+					id: 'sl-guide-fridge-opened',
+					foodId: FID,
+					location: 'fridge',
+					basis: 'opened',
+					min: 2,
+					max: 4,
+					unit: 'weeks',
+					notRecommended: false,
+					tipsFr: 'Au frais après ouverture',
+					tipsEn: 'Keep cold once opened'
+				},
+				{
+					id: 'sl-guide-fridge-purchase',
+					foodId: FID,
+					location: 'fridge',
+					basis: 'purchase',
+					min: 1,
+					max: 3,
+					unit: 'months',
+					notRecommended: false,
+					tipsFr: null,
+					tipsEn: null
+				},
+				{
+					id: 'sl-guide-pantry-purchase',
+					foodId: FID,
+					location: 'pantry',
+					basis: 'purchase',
+					min: 1,
+					max: 7,
+					unit: 'days',
+					notRecommended: false,
+					tipsFr: 'Hors du réfrigérateur',
+					tipsEn: 'Out of the fridge'
+				}
+			])
+			.run();
+
+		const entries = shelfLifeGuide(db, FID, 'en');
+		expect(entries).toHaveLength(3);
+		// pantry before fridge
+		expect(entries[0].location).toBe('pantry');
+		expect(entries[1].location).toBe('fridge');
+		expect(entries[2].location).toBe('fridge');
+		// within fridge: purchase before opened
+		expect(entries[1].basis).toBe('purchase');
+		expect(entries[2].basis).toBe('opened');
+	});
+
+	it('returns localized tips — fr locale', () => {
+		db.insert(shelfLives)
+			.values({
+				id: 'sl-guide-fr-tip',
+				foodId: FID,
+				location: 'fridge',
+				basis: 'purchase',
+				min: 1,
+				max: 3,
+				unit: 'months',
+				notRecommended: false,
+				tipsFr: 'Conseil FR',
+				tipsEn: 'EN tip'
+			})
+			.run();
+
+		const [entry] = shelfLifeGuide(db, FID, 'fr');
+		expect(entry.tips).toBe('Conseil FR');
+	});
+
+	it('returns localized tips — en locale', () => {
+		db.insert(shelfLives)
+			.values({
+				id: 'sl-guide-en-tip',
+				foodId: FID,
+				location: 'fridge',
+				basis: 'purchase',
+				min: 1,
+				max: 3,
+				unit: 'months',
+				notRecommended: false,
+				tipsFr: 'Conseil FR',
+				tipsEn: 'EN tip'
+			})
+			.run();
+
+		const [entry] = shelfLifeGuide(db, FID, 'en');
+		expect(entry.tips).toBe('EN tip');
+	});
+
+	it('returns [] for an unknown foodId', () => {
+		const entries = shelfLifeGuide(db, 'no-such-food', 'en');
+		expect(entries).toHaveLength(0);
+	});
+
+	it('maps all ShelfLifeEntry fields correctly', () => {
+		db.insert(shelfLives)
+			.values({
+				id: 'sl-guide-fields',
+				foodId: FID,
+				location: 'freezer',
+				basis: 'unspecified',
+				min: 6,
+				max: 12,
+				unit: 'months',
+				notRecommended: true,
+				tipsFr: null,
+				tipsEn: null
+			})
+			.run();
+
+		const [entry] = shelfLifeGuide(db, FID, 'en');
+		expect(entry).toEqual({
+			location: 'freezer',
+			basis: 'unspecified',
+			min: 6,
+			max: 12,
+			unit: 'months',
+			notRecommended: true,
+			tips: null
+		});
 	});
 });
