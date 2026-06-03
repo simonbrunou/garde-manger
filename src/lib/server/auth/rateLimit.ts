@@ -5,21 +5,26 @@
  */
 export function createAttemptLimiter(opts: { maxAttempts: number; windowMs: number }) {
 	const byKey = new Map<string, number[]>();
-	const prune = (arr: number[], t: number) => {
+	// Return the key's in-window timestamps, dropping expired ones. Deletes the key
+	// entirely when none remain so a flood of distinct keys (e.g. email enumeration)
+	// can't grow the map without bound — only keys with a live failure are retained.
+	const live = (key: string, t: number): number[] => {
+		const arr = byKey.get(key);
+		if (!arr) return [];
 		while (arr.length > 0 && arr[0] <= t - opts.windowMs) arr.shift();
+		if (arr.length === 0) byKey.delete(key);
 		return arr;
 	};
 	return {
 		/** true when the key has reached the failed-attempt cap within the window. */
 		isLimited(key: string, now: Date): boolean {
-			const arr = prune(byKey.get(key) ?? [], now.getTime());
-			byKey.set(key, arr);
-			return arr.length >= opts.maxAttempts;
+			return live(key, now.getTime()).length >= opts.maxAttempts;
 		},
 		/** record one failed attempt for the key. */
 		record(key: string, now: Date): void {
-			const arr = prune(byKey.get(key) ?? [], now.getTime());
-			arr.push(now.getTime());
+			const t = now.getTime();
+			const arr = live(key, t);
+			arr.push(t);
 			byKey.set(key, arr);
 		},
 		/** clear the key's attempts (call on a successful login). */

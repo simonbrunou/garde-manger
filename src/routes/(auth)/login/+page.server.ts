@@ -27,20 +27,21 @@ export const actions: Actions = {
 
 		const { email: rawEmail, password } = result.output;
 		const email = rawEmail.toLowerCase();
+		const now = new Date();
 
-		if (loginAttemptLimiter.isLimited(email, new Date())) {
+		if (loginAttemptLimiter.isLimited(email, now)) {
 			return fail(429, { message: t.auth_rate_limited });
 		}
 
 		const user = db.select().from(users).where(eq(users.email, email)).get();
 		if (!user || !user.passwordHash) {
-			loginAttemptLimiter.record(email, new Date());
+			loginAttemptLimiter.record(email, now);
 			return fail(400, { message: t.auth_invalid_credentials });
 		}
 
 		const valid = await verifyPassword(password, user.passwordHash);
 		if (!valid) {
-			loginAttemptLimiter.record(email, new Date());
+			loginAttemptLimiter.record(email, now);
 			return fail(400, { message: t.auth_invalid_credentials });
 		}
 
