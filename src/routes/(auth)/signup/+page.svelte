@@ -8,6 +8,8 @@
 
 <svelte:head>
 	<title>{t.auth_signup_title} · Garde-Manger</title>
+	<meta name="description" content={t.meta_signup_description} />
+	<meta name="robots" content="noindex, follow" />
 </svelte:head>
 
 <main class="auth-page">

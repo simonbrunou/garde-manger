@@ -269,5 +269,7 @@ export const en: Messages = {
 	landing_feature_scan_title: 'Barcode scan',
 	landing_feature_scan_body: 'Add a product just by scanning it.',
 	landing_closing_prompt: 'Ready to stop wasting food?',
-	landing_meta_description: 'Garde-Manger — track your food stock, cut waste, and cook smart.'
+	landing_meta_description: 'Garde-Manger — track your food stock, cut waste, and cook smart.',
+	meta_login_description: 'Log in to Garde-Manger to manage your food stock.',
+	meta_signup_description: 'Create a Garde-Manger account to track your food and cut waste.'
 };

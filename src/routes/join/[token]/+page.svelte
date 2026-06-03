@@ -7,6 +7,11 @@
 	const errorMessage = $derived(data.error ?? form?.error);
 </script>
 
+<svelte:head>
+	<title>Garde-Manger</title>
+	<meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 <main class="join-page">
 	<div class="join-card card">
 		{#if errorMessage}

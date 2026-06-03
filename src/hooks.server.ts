@@ -33,6 +33,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	event.locals.locale = resolveLocale({
+		query: event.url.searchParams.get('lang'),
 		userLocale: event.locals.user?.locale,
 		cookie: event.cookies.get('gm_locale'),
 		acceptLanguage: event.request.headers.get('accept-language')

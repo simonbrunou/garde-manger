@@ -9,6 +9,8 @@
 
 <svelte:head>
 	<title>{t.auth_login_title} · Garde-Manger</title>
+	<meta name="description" content={t.meta_login_description} />
+	<meta name="robots" content="noindex, follow" />
 </svelte:head>
 
 <main class="auth-page">
