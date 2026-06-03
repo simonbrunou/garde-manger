@@ -257,6 +257,11 @@ export const fr: Messages = {
 
 	bilan_streak_zero: "Reparti·e à zéro — c'est reparti !",
 
+	bilan_trend_first: 'Votre premier mois — pas encore de comparaison',
+	bilan_trend_better: (prev: number) => `Moins de gaspillage que le mois dernier (${prev}) 🎉`,
+	bilan_trend_worse: (prev: number) => `Plus de gaspillage que le mois dernier (${prev})`,
+	bilan_trend_same: (prev: number) => `Comme le mois dernier (${prev})`,
+
 	// --- Landing (public) ---
 	landing_hero_title: 'Ne gaspillez plus. Cuisinez ce que vous avez.',
 	landing_hero_subtitle:
@@ -507,6 +512,10 @@ export interface Messages {
 	bilan_empty_title: string;
 	bilan_empty_body: string;
 	bilan_streak_zero: string;
+	bilan_trend_first: string;
+	bilan_trend_better: (prev: number) => string;
+	bilan_trend_worse: (prev: number) => string;
+	bilan_trend_same: (prev: number) => string;
 	// --- Landing (public) ---
 	landing_hero_title: string;
 	landing_hero_subtitle: string;

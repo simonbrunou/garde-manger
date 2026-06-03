@@ -102,3 +102,40 @@ test('streak shows the none message when nothing was ever discarded', async ({ p
 
 	await expect(page.getByText('No waste recorded yet')).toBeVisible();
 });
+
+test('trend line shows less waste than last month', async ({ page }) => {
+	const ownerId = db.getUserIdByEmail(PRIMARY_EMAIL)!;
+	const { id: hid } = db.seedHousehold(`bilan-trend-${crypto.randomUUID()}`, ownerId);
+
+	// 1 discarded this month
+	db.seedItem({
+		householdId: hid,
+		addedBy: ownerId,
+		status: 'discarded',
+		closedAt: utcMidnight(0)
+	});
+
+	// 2 discarded last month — offset past start-of-month by 5 days (mirrors existing pattern)
+	const today = utcMidnight(0);
+	const daysIntoMonth = today.getUTCDate();
+	const prevMonthOffset = -(daysIntoMonth + 5);
+	const prevMonthClose = utcMidnight(prevMonthOffset);
+	db.seedItem({
+		householdId: hid,
+		addedBy: ownerId,
+		status: 'discarded',
+		closedAt: prevMonthClose
+	});
+	db.seedItem({
+		householdId: hid,
+		addedBy: ownerId,
+		status: 'discarded',
+		closedAt: prevMonthClose
+	});
+
+	await setActiveHousehold(page.context(), hid);
+	await page.goto('/bilan');
+
+	// wasted (1) < prevWasted (2) → better message with prev count
+	await expect(page.getByText('Less waste than last month (2)')).toBeVisible();
+});

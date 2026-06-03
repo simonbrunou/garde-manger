@@ -71,6 +71,38 @@ describe('householdStats', () => {
 		addClosed(db, 'consumed', new Date('2026-05-10T10:00:00Z'), HH);
 		addClosed(db, 'discarded', new Date('2026-05-11T10:00:00Z'), HH);
 		const other = householdStats(db, HH2, NOW);
-		expect(other).toEqual({ eaten: 0, wasted: 0, streakDays: null });
+		expect(other).toEqual({ eaten: 0, wasted: 0, prevEaten: 0, prevWasted: 0, streakDays: null });
+	});
+
+	it('items closed in the previous calendar month count in prevWasted/prevEaten', () => {
+		// Previous month: April 2026
+		addClosed(db, 'consumed', new Date('2026-04-10T10:00:00Z'));
+		addClosed(db, 'consumed', new Date('2026-04-20T10:00:00Z'));
+		addClosed(db, 'discarded', new Date('2026-04-15T10:00:00Z'));
+		const s = householdStats(db, HH, NOW);
+		expect(s.prevEaten).toBe(2);
+		expect(s.prevWasted).toBe(1);
+		// Must not bleed into current month
+		expect(s.eaten).toBe(0);
+		expect(s.wasted).toBe(0);
+	});
+
+	it('items closed in the current month do NOT count in prev', () => {
+		addClosed(db, 'consumed', new Date('2026-05-05T10:00:00Z'));
+		addClosed(db, 'discarded', new Date('2026-05-12T10:00:00Z'));
+		const s = householdStats(db, HH, NOW);
+		expect(s.eaten).toBe(1);
+		expect(s.wasted).toBe(1);
+		expect(s.prevEaten).toBe(0);
+		expect(s.prevWasted).toBe(0);
+	});
+
+	it('boundary: item closed at exactly monthStart counts as current, not previous', () => {
+		// 2026-05-01T00:00:00Z is the exact monthStart for NOW
+		const monthStart = new Date('2026-05-01T00:00:00Z');
+		addClosed(db, 'discarded', monthStart);
+		const s = householdStats(db, HH, NOW);
+		expect(s.wasted).toBe(1);
+		expect(s.prevWasted).toBe(0);
 	});
 });
