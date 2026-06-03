@@ -758,4 +758,26 @@ describe('recordUse', () => {
 		});
 		expect(updated).toBeUndefined();
 	});
+
+	it('is a no-op on an already-closed item (no status flip or closedAt re-stamp)', () => {
+		const item = addFresh(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			foodId: FOOD_ID,
+			location: 'fridge',
+			quantity: 1
+		});
+		const closed = recordUse(db, { id: item.id, householdId: HOUSEHOLD_ID, outcome: 'discarded' });
+		expect(closed?.status).toBe('discarded');
+		const closedAt = closed!.closedAt;
+
+		// A replayed consume (stale page / back button / double submit) must not
+		// flip discarded → consumed or re-stamp closedAt.
+		const replay = recordUse(db, { id: item.id, householdId: HOUSEHOLD_ID, outcome: 'consumed' });
+		expect(replay).toBeUndefined();
+
+		const after = getItem(db, item.id);
+		expect(after?.status).toBe('discarded');
+		expect(after?.closedAt).toEqual(closedAt);
+	});
 });

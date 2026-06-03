@@ -289,7 +289,7 @@ export function deleteItem(
 /**
  * Record one unit consumed or discarded. Multi-unit rows decrement by one and
  * stay active; the last unit closes the row via setStatus. Household-scoped:
- * returns undefined if the item does not belong to the household.
+ * returns undefined if the item does not belong to the household or is not active.
  */
 export function recordUse(
 	db: DB,
@@ -300,7 +300,9 @@ export function recordUse(
 	}: { id: string; householdId: string; outcome: 'consumed' | 'discarded' }
 ): InventoryItem | undefined {
 	const item = getItemScoped(db, { id, householdId });
-	if (!item) return undefined;
+	// Active rows only: a stale or replayed action on an already-closed item must
+	// not flip its status or re-stamp closedAt — that would corrupt Bilan history.
+	if (!item || item.status !== 'active') return undefined;
 	if (item.quantity > 1) {
 		return updateItem(db, { id, householdId, quantity: item.quantity - 1 });
 	}
