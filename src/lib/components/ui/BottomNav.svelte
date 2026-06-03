@@ -6,7 +6,7 @@
 	const path = $derived(page.url.pathname);
 </script>
 
-<!-- HIG tab bar: three equal flat tabs, translucent material, brand tint on the
+<!-- HIG tab bar: four equal flat tabs, translucent material, brand tint on the
 	 active tab. The group is width-capped and centered so the tabs stay
 	 comfortably grouped on wide screens instead of stretching too sparse.
 	 Settings/account is reached via the top-bar gear, not a tab (HIG: tabs are
@@ -20,6 +20,13 @@
 	</a>
 	<a href="/bilan" class="tab" aria-current={path.startsWith('/bilan') ? 'page' : undefined}>
 		<Icon name="stats" size={26} /><span>{t.nav_bilan}</span>
+	</a>
+	<a
+		href="/encore-bon"
+		class="tab"
+		aria-current={path.startsWith('/encore-bon') ? 'page' : undefined}
+	>
+		<Icon name="search" size={26} /><span>{t.nav_encore_bon}</span>
 	</a>
 </nav>
 
