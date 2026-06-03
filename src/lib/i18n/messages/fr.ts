@@ -270,7 +270,10 @@ export const fr: Messages = {
 	landing_feature_scan_body: 'Ajoutez un produit en le scannant.',
 	landing_closing_prompt: 'Prêt à arrêter le gaspillage ?',
 	landing_meta_description:
-		'Garde-Manger — suivez votre stock alimentaire, évitez le gaspillage et cuisinez malin.'
+		'Garde-Manger — suivez votre stock alimentaire, évitez le gaspillage et cuisinez malin.',
+	meta_login_description: 'Connectez-vous à Garde-Manger pour gérer votre stock alimentaire.',
+	meta_signup_description:
+		'Créez un compte Garde-Manger pour suivre vos aliments et réduire le gaspillage.'
 };
 
 // Messages interface uses widened types so EN can satisfy it with different string values.
@@ -515,4 +518,6 @@ export interface Messages {
 	landing_feature_scan_body: string;
 	landing_closing_prompt: string;
 	landing_meta_description: string;
+	meta_login_description: string;
+	meta_signup_description: string;
 }

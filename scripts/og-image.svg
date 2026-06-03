@@ -1,0 +1,44 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="#fbf8f1" />
+			<stop offset="1" stop-color="#f3ead7" />
+		</linearGradient>
+	</defs>
+
+	<rect width="1200" height="630" fill="url(#bg)" />
+	<rect x="0" y="0" width="1200" height="12" fill="#2f9e44" />
+
+	<!-- Carrot badge -->
+	<g transform="translate(150 250)">
+		<circle cx="0" cy="0" r="130" fill="#2f9e44" fill-opacity="0.12" />
+		<g transform="translate(-66 -78) scale(5.5)" stroke-linecap="round" stroke-linejoin="round">
+			<!-- body -->
+			<path d="M12 9 L19 23 L5 23 Z" fill="#f08c00" />
+			<path d="M9 14 h6 M8.2 18 h7.6" stroke="#e8590c" stroke-width="0.9" fill="none" />
+			<!-- leaves -->
+			<path d="M12 9 C12 4 9 3 6.5 3 C7 6 9 8 12 9 Z" fill="#2f9e44" />
+			<path d="M12 9 C12 3.5 14.5 2 17.5 2.5 C17 6 14.5 8 12 9 Z" fill="#37b24d" />
+			<path d="M12 9 V3.2" stroke="#2b8a3e" stroke-width="0.9" fill="none" />
+		</g>
+	</g>
+
+	<!-- Wordmark + tagline -->
+	<g font-family="'DejaVu Sans', 'Segoe UI', system-ui, sans-serif" fill="#1d1811">
+		<text x="330" y="240" font-size="92" font-weight="700">Garde-Manger</text>
+		<text x="334" y="308" font-size="33" font-weight="400" fill="#5c5343">Ne gaspillez plus. Cuisinez ce que vous avez.</text>
+
+		<g transform="translate(334 380)" font-size="30" fill="#3d362b">
+			<circle cx="14" cy="-9" r="7" fill="#2f9e44" />
+			<text x="36" y="0">Suivi du stock</text>
+			<circle cx="324" cy="-9" r="7" fill="#f59f00" />
+			<text x="346" y="0">Alertes de péremption</text>
+		</g>
+		<g transform="translate(334 440)" font-size="30" fill="#3d362b">
+			<circle cx="14" cy="-9" r="7" fill="#2f9e44" />
+			<text x="36" y="0">Scan code-barres</text>
+		</g>
+	</g>
+
+	<text x="330" y="560" font-family="'DejaVu Sans', system-ui, sans-serif" font-size="26" fill="#8a7f6b">manger · suivez votre garde-manger, réduisez le gaspillage</text>
+</svg>

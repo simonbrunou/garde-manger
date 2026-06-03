@@ -6,6 +6,36 @@
 	let { data } = $props();
 	const t = $derived(m(data.locale));
 
+	// Absolute URLs for canonical/OG/hreflang (origin comes from the request so it
+	// honours the reverse-proxy ORIGIN/PROTOCOL_HEADER configuration).
+	const origin = $derived(data.origin);
+	const pageTitle = $derived(`Garde-Manger — ${t.landing_hero_title}`);
+	const canonical = $derived(`${origin}/${data.langParam ? `?lang=${data.langParam}` : ''}`);
+	const ogImage = $derived(`${origin}/og-image.png`);
+	const ogLocale = $derived(data.locale === 'fr' ? 'fr_FR' : 'en_US');
+	const ogLocaleAlt = $derived(data.locale === 'fr' ? 'en_US' : 'fr_FR');
+
+	// schema.org WebApplication for richer search results. Rendered as a data
+	// block (type="application/ld+json"); it is not executed, so CSP allows it.
+	const jsonLd = $derived(
+		JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'WebApplication',
+			name: 'Garde-Manger',
+			applicationCategory: 'LifestyleApplication',
+			operatingSystem: 'Web',
+			url: `${origin}/`,
+			description: t.landing_meta_description,
+			inLanguage: data.locale,
+			offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' }
+		})
+	);
+	// Build the angle brackets from char codes so no literal "<script" substring
+	// appears in this component (which would otherwise confuse the Svelte/Prettier
+	// parser into seeing a second top-level <script> element).
+	const lt = String.fromCharCode(60);
+	const jsonLdScript = $derived(`${lt}script type="application/ld+json">${jsonLd}${lt}/script>`);
+
 	type FeatureCard = { icon: IconName; title: string; body: string; tone: string };
 	const features = $derived([
 		{
@@ -30,15 +60,34 @@
 </script>
 
 <svelte:head>
-	<title>Garde-Manger — {t.landing_hero_title}</title>
+	<title>{pageTitle}</title>
 	<meta name="description" content={t.landing_meta_description} />
+	<link rel="canonical" href={canonical} />
+
+	<!-- Language alternates: each language has its own crawlable URL. -->
+	<link rel="alternate" hreflang="fr" href="{origin}/?lang=fr" />
+	<link rel="alternate" hreflang="en" href="{origin}/?lang=en" />
+	<link rel="alternate" hreflang="x-default" href="{origin}/" />
+
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="Garde-Manger" />
-	<meta property="og:title" content="Garde-Manger — {t.landing_hero_title}" />
+	<meta property="og:title" content={pageTitle} />
 	<meta property="og:description" content={t.landing_meta_description} />
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:title" content="Garde-Manger — {t.landing_hero_title}" />
+	<meta property="og:url" content={canonical} />
+	<meta property="og:image" content={ogImage} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="Garde-Manger" />
+	<meta property="og:locale" content={ogLocale} />
+	<meta property="og:locale:alternate" content={ogLocaleAlt} />
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={pageTitle} />
 	<meta name="twitter:description" content={t.landing_meta_description} />
+	<meta name="twitter:image" content={ogImage} />
+
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -- static, app-controlled JSON-LD -->
+	{@html jsonLdScript}
 </svelte:head>
 
 <main class="landing">
