@@ -228,12 +228,12 @@
     "hash": "552f63a50c31729ce99c887c8c257b82"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/i18n/messages/en.ts": {
-    "mtime": 1780455698.5068235,
-    "hash": "0979753b1152f97c68abbd5e8f966481"
+    "mtime": 1780456623.499829,
+    "hash": "b7eb886675991faa8864aff049d7ad95"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/i18n/messages/fr.ts": {
-    "mtime": 1780455711.8306785,
-    "hash": "d8901dbf6e3f9f51bbc2d7b43089a3a1"
+    "mtime": 1780456624.6608167,
+    "hash": "9ce061f88c5e421b3e5cb698f0c4f80d"
   },
   "/home/sbrn/Projects/garde-manger/src/lib/server/backup.test.ts": {
     "mtime": 1780381261.5061517,
@@ -495,13 +495,13 @@
     "mtime": 1780381261.508585,
     "hash": "c37de984d724c1c86264750d971163f4"
   },
-  "/home/sbrn/Projects/garde-manger/src/routes/(app)/item/[id]/+page.server.ts": {
-    "mtime": 1780455739.26738,
-    "hash": "be4e44a38331ce8a6d885ec69305ae16"
-  },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/item/[id]/+page.svelte": {
     "mtime": 1780455763.380118,
     "hash": "1ef37a3dd606aac50718cd48af3e03b1"
+  },
+  "/home/sbrn/Projects/garde-manger/src/routes/(app)/item/[id]/+page.server.ts": {
+    "mtime": 1780456602.312057,
+    "hash": "128b901fb8d994ea4b6aa214e07473ed"
   },
   "/home/sbrn/Projects/garde-manger/src/routes/(app)/products/[barcode]/image/+server.ts": {
     "mtime": 1780381261.508764,
@@ -656,8 +656,8 @@
     "hash": "7a3b27d77db30f6d914e581cc01bbd0f"
   },
   "/home/sbrn/Projects/garde-manger/tests/e2e/item.spec.ts": {
-    "mtime": 1780455821.563486,
-    "hash": "d21835417f18fc00cfe433adc50a1945"
+    "mtime": 1780456653.1305103,
+    "hash": "a7617c359f3fdd85ba2c09888b74d528"
   },
   "/home/sbrn/Projects/garde-manger/tests/e2e/fixtures/constants.ts": {
     "mtime": 1780407927.4998932,
@@ -808,8 +808,8 @@
     "hash": "f77fc7cf10dd368e35073a1b21091c77"
   },
   "/home/sbrn/Projects/garde-manger/playwright-report/index.html": {
-    "mtime": 1780456370.338555,
-    "hash": "693761b1d0a1fe4393d701bc054b37b6"
+    "mtime": 1780456751.053457,
+    "hash": "4f55901bafb7b40bfae6c46c45694fe2"
   },
   "/home/sbrn/Projects/garde-manger/scripts/og-image.svg": {
     "mtime": 1780455097.3313603,
