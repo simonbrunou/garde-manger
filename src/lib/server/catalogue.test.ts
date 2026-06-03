@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createDb, runMigrations, type DB } from './db/client';
 import { foods, shelfLives } from './db/schema';
-import { searchFoods, computeBestBy, UNIT_MS, tipForItem } from './catalogue';
+import { searchFoods, computeBestBy, UNIT_MS, tipForItem, openedEstimate } from './catalogue';
 import { seedFoods } from './seed/seed';
 
 function makeDb(): DB {
@@ -320,5 +320,89 @@ describe('tipForItem', () => {
 		addShelfLife({ location: 'fridge', basis: 'opened', tipsFr: 'Entamé', tipsEn: 'Opened tip' });
 		expect(tipForItem(db, FID, 'fridge', 'en')).toBe('Opened tip');
 		expect(tipForItem(db, FID, 'fridge', 'fr')).toBe('Entamé');
+	});
+});
+
+// ── openedEstimate ─────────────────────────────────────────────────────────────
+
+describe('openedEstimate', () => {
+	let db: DB;
+	const FID = 'food-opened-test';
+	const openedAt = new Date('2024-03-01T00:00:00.000Z');
+
+	beforeEach(() => {
+		db = makeDb();
+		db.insert(foods)
+			.values({
+				id: FID,
+				nameFr: 'Yaourt',
+				nameEn: 'Yogurt',
+				category: 'Produits laitiers',
+				defaultLocation: 'fridge'
+			})
+			.run();
+	});
+
+	it('returns a Date equal to computeBestBy of the opened-basis row', () => {
+		db.insert(shelfLives)
+			.values({
+				id: 'sl-opened-fridge',
+				foodId: FID,
+				location: 'fridge',
+				basis: 'opened',
+				min: 3,
+				max: 5,
+				unit: 'days',
+				notRecommended: false
+			})
+			.run();
+
+		const result = openedEstimate(db, FID, 'fridge', openedAt);
+		expect(result).not.toBeNull();
+
+		// Should equal computeBestBy of that same row
+		const expected = computeBestBy(
+			{ min: 3, max: 5, unit: 'days', notRecommended: false },
+			openedAt
+		);
+		expect('date' in expected && expected.date !== null).toBe(true);
+		if ('date' in expected && expected.date !== null) {
+			expect(result!.getTime()).toBe(expected.date.getTime());
+		}
+	});
+
+	it('returns null when there is no opened-basis row for that location', () => {
+		// Only a purchase-basis row exists
+		db.insert(shelfLives)
+			.values({
+				id: 'sl-purchase-fridge',
+				foodId: FID,
+				location: 'fridge',
+				basis: 'purchase',
+				min: 7,
+				max: 14,
+				unit: 'days',
+				notRecommended: false
+			})
+			.run();
+
+		expect(openedEstimate(db, FID, 'fridge', openedAt)).toBeNull();
+	});
+
+	it('returns null when the opened row is notRecommended', () => {
+		db.insert(shelfLives)
+			.values({
+				id: 'sl-opened-fridge-nr',
+				foodId: FID,
+				location: 'fridge',
+				basis: 'opened',
+				min: 1,
+				max: 3,
+				unit: 'days',
+				notRecommended: true
+			})
+			.run();
+
+		expect(openedEstimate(db, FID, 'fridge', openedAt)).toBeNull();
 	});
 });

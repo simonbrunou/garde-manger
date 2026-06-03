@@ -196,6 +196,45 @@ test('Consume on a multi-unit item decrements quantity and stays on item page', 
 	await expect(page.locator('input[name="quantity"]')).toHaveValue('1');
 });
 
+test('Mark as opened: re-dates the item from the opened-basis shelf life', async ({ page }) => {
+	const { householdId, ownerId } = freshHousehold();
+
+	// Seed a food with an opened-basis shelf life (fridge, 2–4 days)
+	const foodId = `food-opened-${crypto.randomUUID()}`;
+	db.seedFood({
+		id: foodId,
+		nameFr: 'Lait test',
+		nameEn: 'Test Milk',
+		category: 'Dairy',
+		defaultLocation: 'fridge'
+	});
+	db.seedShelfLife({ foodId, location: 'fridge', basis: 'opened', min: 2, max: 4, unit: 'days' });
+
+	// Seed an inventory item referencing that food (no date yet)
+	const itemId = db.seedItem({ householdId, addedBy: ownerId, foodId, location: 'fridge' });
+
+	await setActiveHousehold(page.context(), householdId);
+	await page.goto(`/item/${itemId}`);
+
+	// The "Mark as opened" button should be visible
+	await expect(page.getByRole('button', { name: 'Mark as opened' })).toBeVisible();
+
+	// Click it
+	await page.getByRole('button', { name: 'Mark as opened' }).click();
+
+	// Should redirect back to the same item page
+	await page.waitForURL(`**/item/${itemId}`);
+
+	// The item should now have a best_by_date set and is_estimate = 1
+	const row = db.getItem(itemId)!;
+	expect(row.best_by_date).not.toBeNull();
+	expect(Number(row.is_estimate)).toBe(1);
+	expect(row.use_by_date).toBeNull();
+
+	// The estimate marker should be visible on the page
+	await expect(page.locator('.est-note')).toBeVisible();
+});
+
 test('Quantity floored at 1: setting 0 must not persist 0', async ({ page }) => {
 	const { householdId, ownerId } = freshHousehold();
 	const itemId = db.seedItem({
@@ -223,4 +262,27 @@ test('Quantity floored at 1: setting 0 must not persist 0', async ({ page }) => 
 	// exactly 1 also proves the form submitted (it wasn't blocked by native validation).
 	const row = db.getItem(itemId)!;
 	expect(Number(row.quantity)).toBe(1);
+});
+
+test('Editing an estimated item clears the ~ estimate marker', async ({ page }) => {
+	const { householdId, ownerId } = freshHousehold();
+	const itemId = db.seedItem({
+		householdId,
+		addedBy: ownerId,
+		customName: 'Estimated yogurt',
+		bestByDate: new Date(Date.now() + 3 * 86_400_000),
+		isEstimate: true
+	});
+	await setActiveHousehold(page.context(), householdId);
+	await page.goto(`/item/${itemId}`);
+
+	// An estimated date shows the "~ estimated" caption.
+	await expect(page.locator('.est-note')).toBeVisible();
+
+	// Saving the edit form makes the date user-controlled — the estimate marker clears.
+	await page.getByRole('button', { name: 'Save' }).click();
+	await page.waitForURL(`**/item/${itemId}`);
+
+	await expect(page.locator('.est-note')).toHaveCount(0);
+	expect(Number(db.getItem(itemId)!.is_estimate)).toBe(0);
 });

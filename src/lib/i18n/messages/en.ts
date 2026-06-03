@@ -223,6 +223,8 @@ export const en: Messages = {
 	item_added_on: 'Added on',
 	item_notes_label: 'Notes',
 	item_notes_placeholder: 'Opened, finish soon…',
+	item_mark_opened: 'Mark as opened',
+	item_open_no_data: 'No opened-storage guidance for this item.',
 	item_save: 'Save',
 	item_delete: 'Delete item',
 	item_delete_confirm: 'Confirm deletion',
@@ -256,6 +258,11 @@ export const en: Messages = {
 	bilan_empty_body: 'Mark items as eaten or thrown away to track your waste.',
 
 	bilan_streak_zero: 'Back to zero — fresh start!',
+
+	bilan_trend_first: 'No comparison with last month yet',
+	bilan_trend_better: (prev: number) => `Less waste than last month (${prev}) 🎉`,
+	bilan_trend_worse: (prev: number) => `More waste than last month (${prev})`,
+	bilan_trend_same: (prev: number) => `Same as last month (${prev})`,
 
 	// --- Landing (public) ---
 	landing_hero_title: 'Stop wasting food. Cook what you have.',

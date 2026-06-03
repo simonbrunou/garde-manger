@@ -115,6 +115,35 @@ export function tipForItem(
 	return preferred ? withTip(preferred) || null : null;
 }
 
+// ── openedEstimate ─────────────────────────────────────────────────────────────
+
+/**
+ * Return the best-by Date computed from the opened-basis shelf life for the
+ * given food + location, using openedAt as the clock start.
+ * Returns null if no opened-basis row exists or if the row is notRecommended.
+ */
+export function openedEstimate(
+	db: DB,
+	foodId: string,
+	location: 'pantry' | 'fridge' | 'freezer',
+	openedAt: Date
+): Date | null {
+	const sl = db
+		.select()
+		.from(shelfLives)
+		.where(
+			and(
+				eq(shelfLives.foodId, foodId),
+				eq(shelfLives.location, location),
+				eq(shelfLives.basis, 'opened')
+			)
+		)
+		.get();
+	if (!sl) return null;
+	const result = computeBestBy(sl, openedAt);
+	return 'date' in result && result.date !== null ? result.date : null;
+}
+
 // ── computeBestBy ──────────────────────────────────────────────────────────────
 
 /**

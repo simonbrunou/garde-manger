@@ -222,6 +222,8 @@ export const fr: Messages = {
 	item_added_on: 'Ajouté le',
 	item_notes_label: 'Notes',
 	item_notes_placeholder: 'Entamé, à finir…',
+	item_mark_opened: "Je l'ai entamé",
+	item_open_no_data: 'Pas de conseil de conservation après ouverture pour cet article.',
 	item_save: 'Enregistrer',
 	item_delete: "Supprimer l'aliment",
 	item_delete_confirm: 'Confirmer la suppression',
@@ -256,6 +258,11 @@ export const fr: Messages = {
 	bilan_empty_body: 'Marquez des aliments comme mangés ou jetés pour suivre votre anti-gaspi.',
 
 	bilan_streak_zero: "Reparti·e à zéro — c'est reparti !",
+
+	bilan_trend_first: 'Pas encore de comparaison avec le mois dernier',
+	bilan_trend_better: (prev: number) => `Moins de gaspillage que le mois dernier (${prev}) 🎉`,
+	bilan_trend_worse: (prev: number) => `Plus de gaspillage que le mois dernier (${prev})`,
+	bilan_trend_same: (prev: number) => `Comme le mois dernier (${prev})`,
 
 	// --- Landing (public) ---
 	landing_hero_title: 'Ne gaspillez plus. Cuisinez ce que vous avez.',
@@ -478,6 +485,8 @@ export interface Messages {
 	item_added_on: string;
 	item_notes_label: string;
 	item_notes_placeholder: string;
+	item_mark_opened: string;
+	item_open_no_data: string;
 	item_save: string;
 	item_delete: string;
 	item_delete_confirm: string;
@@ -507,6 +516,10 @@ export interface Messages {
 	bilan_empty_title: string;
 	bilan_empty_body: string;
 	bilan_streak_zero: string;
+	bilan_trend_first: string;
+	bilan_trend_better: (prev: number) => string;
+	bilan_trend_worse: (prev: number) => string;
+	bilan_trend_same: (prev: number) => string;
 	// --- Landing (public) ---
 	landing_hero_title: string;
 	landing_hero_subtitle: string;

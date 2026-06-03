@@ -7,6 +7,13 @@
 	const t = $derived(m(data.locale));
 	const s = $derived(data.noHousehold ? null : data.stats);
 	const empty = $derived(!!s && s.eaten === 0 && s.wasted === 0 && s.streakDays === null);
+	const wasteTrend = $derived.by(() => {
+		if (!s) return null;
+		if (s.prevEaten === 0 && s.prevWasted === 0) return t.bilan_trend_first;
+		if (s.wasted < s.prevWasted) return t.bilan_trend_better(s.prevWasted);
+		if (s.wasted > s.prevWasted) return t.bilan_trend_worse(s.prevWasted);
+		return t.bilan_trend_same(s.prevWasted);
+	});
 </script>
 
 <svelte:head><title>{t.bilan_title}</title></svelte:head>
@@ -30,6 +37,7 @@
 				? t.bilan_streak_zero
 				: t.bilan_streak(s.streakDays)}
 	</p>
+	{#if wasteTrend}<p class="trend">{wasteTrend}</p>{/if}
 {/if}
 
 <style>
@@ -51,5 +59,11 @@
 		color: var(--green-dark);
 		border-radius: var(--radius);
 		padding: 0.9rem;
+	}
+	.trend {
+		color: var(--text-muted);
+		font-size: 0.88rem;
+		text-align: center;
+		margin-top: 0.5rem;
 	}
 </style>

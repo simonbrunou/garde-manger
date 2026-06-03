@@ -661,6 +661,19 @@ describe('getItemScoped / updateItem / deleteItem', () => {
 		expect(updateItem(db, { id: item.id, householdId: 'other', quantity: 9 })).toBeUndefined();
 	});
 
+	it('updateItem with { isEstimate: true } persists isEstimate=true', () => {
+		const item = addCustom(db, {
+			householdId: HOUSEHOLD_ID,
+			addedBy: USER_ID,
+			customName: 'Lait entamé',
+			location: 'fridge'
+		});
+		const upd = updateItem(db, { id: item.id, householdId: HOUSEHOLD_ID, isEstimate: true });
+		expect(upd?.isEstimate).toBe(true);
+		const upd2 = updateItem(db, { id: item.id, householdId: HOUSEHOLD_ID, isEstimate: false });
+		expect(upd2?.isEstimate).toBe(false);
+	});
+
 	it('updateItem with no fields returns the scoped item unchanged', () => {
 		const item = addCustom(db, {
 			householdId: HOUSEHOLD_ID,
