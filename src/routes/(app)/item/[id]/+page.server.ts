@@ -120,6 +120,9 @@ export const actions: Actions = {
 		// date that `effectiveDate = coalesce(use_by_date, best_by_date)` still reads.
 		patch.useByDate = dateKind === 'DLC' ? date : null;
 		patch.bestByDate = dateKind === 'DDM' ? date : null;
+		// A manual edit makes the date user-controlled, so it is no longer an estimate
+		// (clears the ~ marker left by an add-time estimate or a "mark as opened").
+		patch.isEstimate = false;
 
 		const updated = updateItem(db, patch);
 		if (!updated) return fail(404, { message: 'Not found' });
@@ -172,13 +175,14 @@ export const actions: Actions = {
 		if (!item || item.status !== 'active' || !item.foodId) error(404, 'Not found');
 		const date = openedEstimate(db, item.foodId, item.location, new Date());
 		if (!date) return fail(400, { message: t.item_open_no_data });
-		updateItem(db, {
+		const opened = updateItem(db, {
 			id: params.id,
 			householdId: hh,
 			bestByDate: date,
 			useByDate: null,
 			isEstimate: true
 		});
+		if (!opened) error(404, 'Not found');
 		redirect(303, `/item/${params.id}`);
 	},
 

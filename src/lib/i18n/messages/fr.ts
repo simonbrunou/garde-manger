@@ -259,7 +259,7 @@ export const fr: Messages = {
 
 	bilan_streak_zero: "Reparti·e à zéro — c'est reparti !",
 
-	bilan_trend_first: 'Votre premier mois — pas encore de comparaison',
+	bilan_trend_first: 'Pas encore de comparaison avec le mois dernier',
 	bilan_trend_better: (prev: number) => `Moins de gaspillage que le mois dernier (${prev}) 🎉`,
 	bilan_trend_worse: (prev: number) => `Plus de gaspillage que le mois dernier (${prev})`,
 	bilan_trend_same: (prev: number) => `Comme le mois dernier (${prev})`,

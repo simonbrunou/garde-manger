@@ -263,3 +263,26 @@ test('Quantity floored at 1: setting 0 must not persist 0', async ({ page }) => 
 	const row = db.getItem(itemId)!;
 	expect(Number(row.quantity)).toBe(1);
 });
+
+test('Editing an estimated item clears the ~ estimate marker', async ({ page }) => {
+	const { householdId, ownerId } = freshHousehold();
+	const itemId = db.seedItem({
+		householdId,
+		addedBy: ownerId,
+		customName: 'Estimated yogurt',
+		bestByDate: new Date(Date.now() + 3 * 86_400_000),
+		isEstimate: true
+	});
+	await setActiveHousehold(page.context(), householdId);
+	await page.goto(`/item/${itemId}`);
+
+	// An estimated date shows the "~ estimated" caption.
+	await expect(page.locator('.est-note')).toBeVisible();
+
+	// Saving the edit form makes the date user-controlled — the estimate marker clears.
+	await page.getByRole('button', { name: 'Save' }).click();
+	await page.waitForURL(`**/item/${itemId}`);
+
+	await expect(page.locator('.est-note')).toHaveCount(0);
+	expect(Number(db.getItem(itemId)!.is_estimate)).toBe(0);
+});

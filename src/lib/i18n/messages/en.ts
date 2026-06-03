@@ -259,7 +259,7 @@ export const en: Messages = {
 
 	bilan_streak_zero: 'Back to zero — fresh start!',
 
-	bilan_trend_first: 'Your first month — no comparison yet',
+	bilan_trend_first: 'No comparison with last month yet',
 	bilan_trend_better: (prev: number) => `Less waste than last month (${prev}) 🎉`,
 	bilan_trend_worse: (prev: number) => `More waste than last month (${prev})`,
 	bilan_trend_same: (prev: number) => `Same as last month (${prev})`,
