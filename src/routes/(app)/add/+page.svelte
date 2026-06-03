@@ -64,6 +64,7 @@
 						<strong>{t.add_estimate_prefix} {defaultEst.date}</strong>
 					</p>
 					<p class="estimate-note">{t.add_estimate_note}</p>
+					<p class="estimate-disclaimer">{t.est_disclaimer}</p>
 				</div>
 			{:else if defaultEst && defaultEst.guidance}
 				<div class="estimate-box estimate-guidance" role="note">
@@ -299,6 +300,11 @@
 	.estimate-note {
 		color: var(--amber-dark);
 		font-size: 0.8rem;
+	}
+	.estimate-disclaimer {
+		color: var(--amber-dark);
+		font-size: 0.78rem;
+		margin-top: 0.2rem;
 	}
 	.estimate-guidance {
 		background: var(--amber-tint);

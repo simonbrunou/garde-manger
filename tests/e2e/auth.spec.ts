@@ -121,4 +121,54 @@ test.describe('auth', () => {
 
 		await expect(page.getByRole('alert')).toHaveText('An account already exists with this email');
 	});
+
+	test('login rate limit: 10 failed attempts trigger the rate-limited message on the 11th', async ({
+		page
+	}) => {
+		// Use a unique email that does not exist — user-not-found also records an attempt,
+		// so we never need a real account to exercise the cap. Using a non-existent address
+		// also means no interference from previous test runs' in-memory state (each unique
+		// email starts fresh in the limiter).
+		const email = `ratelimit-${crypto.randomUUID()}@example.com`;
+
+		await page.goto('/login');
+
+		// Submit 10 wrong-password attempts — each should return "Invalid credentials".
+		for (let i = 0; i < 10; i++) {
+			await page.getByLabel('Email address').fill(email);
+			await page.getByLabel('Password').fill(`wrong-password-${i}`);
+			await page.getByRole('button', { name: 'Log in' }).click();
+			await expect(page.getByRole('alert')).toHaveText('Invalid credentials');
+		}
+
+		// 11th attempt: the rate limit cap has been reached — must show the rate-limited message.
+		await page.getByLabel('Email address').fill(email);
+		await page.getByLabel('Password').fill('wrong-again');
+		await page.getByRole('button', { name: 'Log in' }).click();
+		await expect(page.getByRole('alert')).toHaveText(
+			'Too many attempts. Please wait a few minutes and try again.'
+		);
+		await expect(page).toHaveURL(/\/login$/);
+	});
+
+	test('rate limit: a different email is not affected by another address being limited', async ({
+		page
+	}) => {
+		// Exhaust the cap for one address...
+		const limitedEmail = `ratelimit-other-${crypto.randomUUID()}@example.com`;
+		await page.goto('/login');
+		for (let i = 0; i < 10; i++) {
+			await page.getByLabel('Email address').fill(limitedEmail);
+			await page.getByLabel('Password').fill(`wrong-${i}`);
+			await page.getByRole('button', { name: 'Log in' }).click();
+			await expect(page.getByRole('alert')).toHaveText('Invalid credentials');
+		}
+
+		// ...then verify a fresh address still gets the normal invalid-credentials response.
+		const freshEmail = `ratelimit-fresh-${crypto.randomUUID()}@example.com`;
+		await page.getByLabel('Email address').fill(freshEmail);
+		await page.getByLabel('Password').fill('some-wrong-password');
+		await page.getByRole('button', { name: 'Log in' }).click();
+		await expect(page.getByRole('alert')).toHaveText('Invalid credentials');
+	});
 });

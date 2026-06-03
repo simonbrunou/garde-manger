@@ -264,6 +264,28 @@ test('Quantity floored at 1: setting 0 must not persist 0', async ({ page }) => 
 	expect(Number(row.quantity)).toBe(1);
 });
 
+test('est_disclaimer: the food-safety disclaimer is visible on an estimated item detail page', async ({
+	page
+}) => {
+	const { householdId, ownerId } = freshHousehold();
+	const itemId = db.seedItem({
+		householdId,
+		addedBy: ownerId,
+		customName: 'Disclaimer yogurt',
+		bestByDate: new Date(Date.now() + 5 * 86_400_000),
+		isEstimate: true
+	});
+	await setActiveHousehold(page.context(), householdId);
+	await page.goto(`/item/${itemId}`);
+
+	// The estimate marker and disclaimer must both be visible.
+	await expect(page.locator('.est-note')).toBeVisible();
+	await expect(page.locator('.est-disclaimer')).toBeVisible();
+	await expect(page.locator('.est-disclaimer')).toHaveText(
+		'Estimated date — not a food-safety guarantee. When in doubt, trust your senses.'
+	);
+});
+
 test('Editing an estimated item clears the ~ estimate marker', async ({ page }) => {
 	const { householdId, ownerId } = freshHousehold();
 	const itemId = db.seedItem({
