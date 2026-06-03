@@ -65,7 +65,7 @@
 	<ul class="results">
 		{#each data.results as { food } (food.id)}
 			<li>
-				<a href={`/encore-bon?q=${encodeURIComponent(data.q)}&food=${food.id}`}>
+				<a href={`/encore-bon?q=${encodeURIComponent(data.q)}&food=${encodeURIComponent(food.id)}`}>
 					{data.locale === 'fr' ? food.nameFr : food.nameEn}
 				</a>
 			</li>

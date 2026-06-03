@@ -34,6 +34,16 @@ test.beforeAll(() => {
 		tipsFr: 'Conseil conservation beurre',
 		tipsEn: 'Keep butter wrapped in fridge'
 	});
+	// freezer purchase: storage not recommended (exercises the notRecommended branch)
+	db.seedShelfLife({
+		foodId: FOOD_ID,
+		location: 'freezer',
+		basis: 'purchase',
+		min: 0,
+		max: 0,
+		unit: 'months',
+		notRecommended: true
+	});
 });
 
 test.describe('encore-bon — shelf-life lookup', () => {
@@ -65,11 +75,17 @@ test.describe('encore-bon — shelf-life lookup', () => {
 		// Food name appears as the card heading.
 		await expect(page.getByRole('heading', { name: FOOD_NAME_EN })).toBeVisible();
 
+		// The pantry / purchase row should show "Keeps 1–7 days".
+		await expect(page.getByText('Keeps 1–7 days')).toBeVisible();
+
 		// The fridge / opened row should show "Keeps 2–4 weeks".
 		await expect(page.getByText('Keeps 2–4 weeks')).toBeVisible();
 
 		// The tip for the opened fridge row should appear.
 		await expect(page.getByText('Keep butter wrapped in fridge')).toBeVisible();
+
+		// The freezer / not-recommended row shows the guidance instead of a range.
+		await expect(page.getByText('Not recommended at this location')).toBeVisible();
 
 		// The disclaimer must be present.
 		await expect(

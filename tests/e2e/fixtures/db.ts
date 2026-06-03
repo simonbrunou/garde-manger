@@ -119,6 +119,7 @@ export function seedShelfLife(opts: {
 	min: number;
 	max: number;
 	unit: 'hours' | 'days' | 'weeks' | 'months' | 'years';
+	notRecommended?: boolean;
 	tipsFr?: string;
 	tipsEn?: string;
 }): string {
@@ -126,7 +127,7 @@ export function seedShelfLife(opts: {
 	withDb((d) => {
 		d.prepare(
 			`INSERT INTO shelf_lives (id, food_id, location, basis, min, max, unit, not_recommended, tips_fr, tips_en)
-			 VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?)`
+			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 		).run(
 			id,
 			opts.foodId,
@@ -135,6 +136,7 @@ export function seedShelfLife(opts: {
 			opts.min,
 			opts.max,
 			opts.unit,
+			opts.notRecommended ? 1 : 0,
 			opts.tipsFr ?? null,
 			opts.tipsEn ?? null
 		);
