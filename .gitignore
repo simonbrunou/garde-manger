@@ -54,3 +54,7 @@ graphify-out/cache/
 
 # graphify watcher dated snapshots (regenerated; not versioned)
 graphify-out/20*/
+
+# Nix / direnv
+.direnv/
+result
