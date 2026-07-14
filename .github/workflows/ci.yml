@@ -43,7 +43,7 @@ jobs:
       # The Playwright runner + node:sqlite fixtures need Node; the app server still
       # runs under Bun via the webServer command in playwright.config.ts.
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
 
