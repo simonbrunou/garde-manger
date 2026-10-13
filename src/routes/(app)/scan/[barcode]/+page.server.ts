@@ -1,18 +1,18 @@
 import { error, redirect, fail } from '@sveltejs/kit';
 import * as v from 'valibot';
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.js';
 import {
 	requireMembership,
 	MembershipError,
 	listForUser,
 	resolveActiveHouseholdId
-} from '$lib/server/households';
-import { addPackaged } from '$lib/server/inventory';
-import { lookupProduct, OffUnavailable } from '$lib/server/off';
-import { getOffConfig, diskImageStore } from '$lib/server/productConfig';
-import { offRateLimitGuard, perUserOffRateLimitGuard } from '$lib/server/offRateLimit';
-import { normalizeBarcode } from '$lib/barcode';
-import { m } from '$lib/i18n';
+} from '#lib/server/households.js';
+import { addPackaged } from '#lib/server/inventory.js';
+import { lookupProduct, OffUnavailable } from '#lib/server/off.js';
+import { getOffConfig, diskImageStore } from '#lib/server/productConfig.js';
+import { offRateLimitGuard, perUserOffRateLimitGuard } from '#lib/server/offRateLimit.js';
+import { normalizeBarcode } from '#lib/barcode.js';
+import { m } from '#lib/i18n/index.js';
 import type { PageServerLoad, Actions } from './$types';
 
 const HOUSEHOLD_COOKIE = 'gm_household';
@@ -40,7 +40,7 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 		throw e;
 	}
 
-	let product: typeof import('$lib/server/db/schema').products.$inferSelect | null = null;
+	let product: typeof import('#lib/server/db/schema.js').products.$inferSelect | null = null;
 	let offUnavailable = false;
 	try {
 		product = await lookupProduct(db, norm, getOffConfig(), {

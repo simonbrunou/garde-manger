@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { m } from '$lib/i18n';
-	import StatTile from '$lib/components/ui/StatTile.svelte';
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
+	import { m } from '#lib/i18n/index.js';
+	import StatTile from '#lib/components/ui/StatTile.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
+	import Button from '#lib/components/ui/Button.svelte';
 	let { data } = $props();
 	const t = $derived(m(data.locale));
 	const s = $derived(data.noHousehold ? null : data.stats);

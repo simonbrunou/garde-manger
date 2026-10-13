@@ -1,5 +1,5 @@
-import { env } from '$env/dynamic/private';
-import { dev } from '$app/environment';
+import * as env from '$app/env/private';
+import { dev } from '$app/env';
 
 /**
  * Server-only VAPID config for Web Push. Keeps keys out of the pure `push.ts`

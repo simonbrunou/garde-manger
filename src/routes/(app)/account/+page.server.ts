@@ -1,12 +1,12 @@
 import { redirect, fail } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { eq } from 'drizzle-orm';
-import { dev } from '$app/environment';
-import { db, users } from '$lib/server/db';
-import { listCredentials, deleteCredential } from '$lib/server/auth/webauthn';
-import { vapidPublicKey } from '$lib/server/pushConfig';
-import { m } from '$lib/i18n';
-import { normalizeChoice, THEME_COOKIE } from '$lib/theme';
+import { dev } from '$app/env';
+import { db, users } from '#lib/server/db/index.js';
+import { listCredentials, deleteCredential } from '#lib/server/auth/webauthn.js';
+import { vapidPublicKey } from '#lib/server/pushConfig.js';
+import { m } from '#lib/i18n/index.js';
+import { normalizeChoice, THEME_COOKIE } from '#lib/theme.js';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, cookies }) => {

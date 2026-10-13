@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
-	import { m, type Locale } from '$lib/i18n';
+	import { m, type Locale } from '#lib/i18n/index.js';
 
 	interface Props {
 		locale: Locale;

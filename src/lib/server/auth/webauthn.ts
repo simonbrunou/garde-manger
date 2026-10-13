@@ -1,5 +1,5 @@
-import { env } from '$env/dynamic/private';
-import { dev } from '$app/environment';
+import * as env from '$app/env/private';
+import { dev } from '$app/env';
 import { randomBytes } from 'node:crypto';
 import { eq, and } from 'drizzle-orm';
 import {

@@ -1,10 +1,10 @@
 import { json, error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { db } from '$lib/server/db';
-import { runDailyReminders, secretMatches } from '$lib/server/cron';
-import { getVapid } from '$lib/server/pushConfig';
-import { webPushSender } from '$lib/server/webPushSender';
-import { resolveHostIps } from '$lib/server/push';
+import * as env from '$app/env/private';
+import { db } from '#lib/server/db/index.js';
+import { runDailyReminders, secretMatches } from '#lib/server/cron.js';
+import { getVapid } from '#lib/server/pushConfig.js';
+import { webPushSender } from '#lib/server/webPushSender.js';
+import { resolveHostIps } from '#lib/server/push.js';
 import type { RequestHandler } from './$types';
 
 /**

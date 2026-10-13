@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { listForUser } from '$lib/server/households';
+import { db } from '#lib/server/db/index.js';
+import { listForUser } from '#lib/server/households.js';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ locals, cookies, url }) => {

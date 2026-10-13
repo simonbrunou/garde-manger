@@ -1,7 +1,7 @@
-import { db } from '$lib/server/db';
-import { foods } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { foods } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
-import { searchFoods, shelfLifeGuide } from '$lib/server/catalogue';
+import { searchFoods, shelfLifeGuide } from '#lib/server/catalogue.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, parent }) => {

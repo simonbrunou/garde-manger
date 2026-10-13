@@ -1,7 +1,7 @@
-import { env } from '$env/dynamic/private';
+import * as env from '$app/env/private';
 import { createDb, runMigrations } from './client';
 import { foods } from './schema';
-import { seedFoods } from '$lib/server/seed/seed';
+import { seedFoods } from '#lib/server/seed/seed.js';
 
 const DATABASE_PATH = env.DATABASE_PATH ?? './data/garde-manger.db';
 

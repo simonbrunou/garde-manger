@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from './Icon.svelte';
-	import type { Messages } from '$lib/i18n';
+	import type { Messages } from '#lib/i18n/index.js';
 	type Household = { id: string; name: string };
 	let {
 		households,

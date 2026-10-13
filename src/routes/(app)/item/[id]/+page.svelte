@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { m } from '$lib/i18n';
-	import Thumb from '$lib/components/ui/Thumb.svelte';
-	import DayBadge from '$lib/components/ui/DayBadge.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
-	import Card from '$lib/components/ui/Card.svelte';
+	import { m } from '#lib/i18n/index.js';
+	import Thumb from '#lib/components/ui/Thumb.svelte';
+	import DayBadge from '#lib/components/ui/DayBadge.svelte';
+	import Button from '#lib/components/ui/Button.svelte';
+	import Card from '#lib/components/ui/Card.svelte';
 	let { data } = $props();
 	const t = $derived(m(data.locale));
 	const it = $derived(data.item);

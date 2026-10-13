@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { SvelteMap } from 'svelte/reactivity';
-	import { m } from '$lib/i18n';
-	import Card from '$lib/components/ui/Card.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
+	import { m } from '#lib/i18n/index.js';
+	import Card from '#lib/components/ui/Card.svelte';
+	import Button from '#lib/components/ui/Button.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();

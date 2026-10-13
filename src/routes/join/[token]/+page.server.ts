@@ -1,8 +1,8 @@
 import { redirect, fail } from '@sveltejs/kit';
-import { dev } from '$app/environment';
-import { db } from '$lib/server/db';
-import { InvitationError, acceptInvitation, previewInvitation } from '$lib/server/invitations';
-import { m, type Messages } from '$lib/i18n';
+import { dev } from '$app/env';
+import { db } from '#lib/server/db/index.js';
+import { InvitationError, acceptInvitation, previewInvitation } from '#lib/server/invitations.js';
+import { m, type Messages } from '#lib/i18n/index.js';
 import type { Actions, PageServerLoad } from './$types';
 
 function joinErrorMessage(t: Messages, code: string): string {

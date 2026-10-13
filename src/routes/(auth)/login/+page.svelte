@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
-	import PasskeyLogin from '$lib/components/PasskeyLogin.svelte';
-	import { m } from '$lib/i18n';
+	import PasskeyLogin from '#lib/components/PasskeyLogin.svelte';
+	import { m } from '#lib/i18n/index.js';
 
 	let { form, data }: { form: ActionData; data: PageData } = $props();
 	const t = $derived(m(data.locale));

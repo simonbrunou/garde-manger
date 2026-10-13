@@ -1,16 +1,22 @@
 import { error, fail, redirect } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { foods, products } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { foods, products } from '#lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import {
 	requireMembership,
 	MembershipError,
 	listForUser,
 	resolveActiveHouseholdId
-} from '$lib/server/households';
-import { getItemScoped, updateItem, deleteItem, recordUse, bandFor } from '$lib/server/inventory';
-import { tipForItem, openedEstimate } from '$lib/server/catalogue';
-import { m } from '$lib/i18n';
+} from '#lib/server/households.js';
+import {
+	getItemScoped,
+	updateItem,
+	deleteItem,
+	recordUse,
+	bandFor
+} from '#lib/server/inventory.js';
+import { tipForItem, openedEstimate } from '#lib/server/catalogue.js';
+import { m } from '#lib/i18n/index.js';
 import type { PageServerLoad, Actions } from './$types';
 
 // Resolve the active household for an action: validate the cookie against the user's

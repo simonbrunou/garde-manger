@@ -1,7 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { requireMembership, MembershipError } from '$lib/server/households';
-import { normalizeBarcode } from '$lib/barcode';
+import { db } from '#lib/server/db/index.js';
+import { requireMembership, MembershipError } from '#lib/server/households.js';
+import { normalizeBarcode } from '#lib/barcode.js';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ parent, locals, url }) => {

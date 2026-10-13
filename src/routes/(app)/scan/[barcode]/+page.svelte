@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
-	import { m } from '$lib/i18n';
-	import Card from '$lib/components/ui/Card.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
-	import Thumb from '$lib/components/ui/Thumb.svelte';
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
+	import { m } from '#lib/i18n/index.js';
+	import Card from '#lib/components/ui/Card.svelte';
+	import Button from '#lib/components/ui/Button.svelte';
+	import Thumb from '#lib/components/ui/Thumb.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	const t = $derived(m(data.locale));

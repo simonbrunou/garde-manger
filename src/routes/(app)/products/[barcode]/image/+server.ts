@@ -2,10 +2,10 @@ import { error } from '@sveltejs/kit';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { eq } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { products } from '$lib/server/db/schema';
-import { productImageDir } from '$lib/server/productConfig';
-import { normalizeBarcode } from '$lib/barcode';
+import { db } from '#lib/server/db/index.js';
+import { products } from '#lib/server/db/schema.js';
+import { productImageDir } from '#lib/server/productConfig.js';
+import { normalizeBarcode } from '#lib/barcode.js';
 import type { RequestHandler } from './$types';
 
 const CONTENT_TYPE_BY_EXT: Record<string, string> = {

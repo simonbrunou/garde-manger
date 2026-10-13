@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import * as v from 'valibot';
-import { db } from '$lib/server/db';
-import { deleteSubscriptionByEndpoint } from '$lib/server/push';
+import { db } from '#lib/server/db/index.js';
+import { deleteSubscriptionByEndpoint } from '#lib/server/push.js';
 import type { RequestHandler } from './$types';
 
 const unsubscribeSchema = v.object({

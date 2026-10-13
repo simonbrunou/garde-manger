@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import type { DB } from './db/client';
 import { products } from './db/schema';
-import { isValidBarcode } from '$lib/barcode';
+import { isValidBarcode } from '../barcode';
 
 // ── Errors ──────────────────────────────────────────────────────────────────
 

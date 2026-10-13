@@ -1,17 +1,17 @@
 import { error, redirect, fail } from '@sveltejs/kit';
 import * as v from 'valibot';
-import { db } from '$lib/server/db';
+import { db } from '#lib/server/db/index.js';
 import {
 	requireMembership,
 	MembershipError,
 	listForUser,
 	resolveActiveHouseholdId
-} from '$lib/server/households';
-import { searchFoods, computeBestBy } from '$lib/server/catalogue';
-import { addFresh, addCustom } from '$lib/server/inventory';
-import { foods, shelfLives } from '$lib/server/db/schema';
+} from '#lib/server/households.js';
+import { searchFoods, computeBestBy } from '#lib/server/catalogue.js';
+import { addFresh, addCustom } from '#lib/server/inventory.js';
+import { foods, shelfLives } from '#lib/server/db/schema.js';
 import { eq, and } from 'drizzle-orm';
-import { m } from '$lib/i18n';
+import { m } from '#lib/i18n/index.js';
 import type { PageServerLoad, Actions } from './$types';
 
 const HOUSEHOLD_COOKIE = 'gm_household';

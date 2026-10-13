@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { m } from '$lib/i18n';
-	import Icon from '$lib/components/ui/Icon.svelte';
-	import type { IconName } from '$lib/components/ui/Icon.svelte';
+	import { m } from '#lib/i18n/index.js';
+	import Icon from '#lib/components/ui/Icon.svelte';
+	import type { IconName } from '#lib/components/ui/Icon.svelte';
 
 	let { data } = $props();
 	const t = $derived(m(data.locale));

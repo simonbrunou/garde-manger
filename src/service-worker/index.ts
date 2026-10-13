@@ -3,18 +3,17 @@
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
 
-import { build, files, version } from '$service-worker';
-
-// Give `self` the correct ServiceWorkerGlobalScope typing inside the worker.
-const sw = self as unknown as ServiceWorkerGlobalScope;
+import { version } from '$app/env';
+import { assets, immutable } from '$app/manifest';
+import { self as sw } from '$app/service-worker';
 
 // Per-deployment cache name so a new version invalidates the old cache.
 const CACHE = 'gm-cache-' + version;
 
-// Precache the app shell AND the scanner WASM: `build` includes every Vite-emitted
+// Precache the app shell AND the scanner WASM: `immutable` includes every Vite-emitted
 // hashed asset (the zxing .wasm is imported with `?url`, so it lands here), and
-// `files` is everything in `static/` (manifest + icons).
-const ASSETS = [...build, ...files];
+// `assets` is everything in `static/` (manifest + icons).
+const ASSETS = [...immutable, ...assets].map(({ path }) => '/' + path);
 const ASSET_SET = new Set(ASSETS);
 
 // Authenticated / dynamic / sensitive route prefixes: NEVER touch the cache for
@@ -135,6 +134,8 @@ function offlineFallback(): Response {
 // navigate, lang } }` (also tolerate a bare `{ title, body, navigate }`). We must
 // ALWAYS show exactly one visible notification — iOS revokes silent pushes — so we
 // fall back to sensible copy if parsing fails.
+type PushFields = { title?: string; body?: string; navigate?: string; lang?: string };
+
 sw.addEventListener('push', (event) => {
 	let title = 'Garde-Manger';
 	let body = 'Vous avez une nouvelle notification.';
@@ -142,13 +143,10 @@ sw.addEventListener('push', (event) => {
 	let lang: string | undefined;
 
 	try {
-		const data = event.data?.json() as
-			| { notification?: { title?: string; body?: string; navigate?: string; lang?: string } }
-			| { title?: string; body?: string; navigate?: string; lang?: string }
-			| undefined;
+		const data = event.data?.json() as (PushFields & { notification?: PushFields }) | undefined;
 
 		if (data) {
-			const n = 'notification' in data && data.notification ? data.notification : data;
+			const n = data.notification ?? data;
 			if (typeof n.title === 'string' && n.title) title = n.title;
 			if (typeof n.body === 'string' && n.body) body = n.body;
 			if (typeof n.navigate === 'string') navigate = n.navigate;

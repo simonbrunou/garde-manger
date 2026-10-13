@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { dayBadge, formatDayBadge } from '$lib/dates';
-	import type { Messages } from '$lib/i18n';
-	import type { Band } from '$lib/server/inventory';
+	import { dayBadge, formatDayBadge } from '#lib/dates.js';
+	import type { Messages } from '#lib/i18n/index.js';
+	import type { Band } from '#lib/server/inventory.js';
 	let {
 		band,
 		effectiveDate,

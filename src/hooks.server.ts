@@ -1,9 +1,9 @@
-import type { Handle } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { validateSessionToken } from '$lib/server/auth/session';
-import { SESSION_COOKIE, clearSessionCookie } from '$lib/server/auth/cookies';
-import { resolveLocale } from '$lib/i18n';
-import { resolveTheme } from '$lib/theme';
+import type { Handle } from '@sveltejs/kit/hooks';
+import { db } from '#lib/server/db/index.js';
+import { validateSessionToken } from '#lib/server/auth/session.js';
+import { SESSION_COOKIE, clearSessionCookie } from '#lib/server/auth/cookies.js';
+import { resolveLocale } from '#lib/i18n/index.js';
+import { resolveTheme } from '#lib/theme.js';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get(SESSION_COOKIE);
