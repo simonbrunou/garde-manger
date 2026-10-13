@@ -8,11 +8,7 @@ import {
 	generateAuthenticationOptions,
 	verifyAuthenticationResponse
 } from '@simplewebauthn/server';
-import type {
-	RegistrationResponseJSON,
-	AuthenticationResponseJSON,
-	AuthenticatorTransportFuture
-} from '@simplewebauthn/server';
+import type { RegistrationResponseJSON, AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { DB } from '../db/client';
 import { credentials, users } from '../db/schema';
 
@@ -64,9 +60,7 @@ export async function registrationOptions(db: DB, user: User) {
 		attestationType: 'none',
 		excludeCredentials: existingCredentials.map((c) => ({
 			id: c.credentialId,
-			transports: c.transports
-				? (JSON.parse(c.transports) as AuthenticatorTransportFuture[])
-				: undefined
+			transports: c.transports ? (JSON.parse(c.transports) as string[]) : undefined
 		})),
 		authenticatorSelection: {
 			residentKey: 'preferred',
