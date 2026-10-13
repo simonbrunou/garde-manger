@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import * as v from 'valibot';
-import { db } from '$lib/server/db';
-import { saveSubscription, isSafePushEndpoint } from '$lib/server/push';
+import { db } from '#lib/server/db/index.js';
+import { saveSubscription, isSafePushEndpoint } from '#lib/server/push.js';
 import type { RequestHandler } from './$types';
 
 // A PushSubscription serialized via subscription.toJSON().

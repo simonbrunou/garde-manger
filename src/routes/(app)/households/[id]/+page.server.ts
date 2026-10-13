@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import { dev } from '$app/environment';
-import { db, households, memberships, users } from '$lib/server/db';
+import { dev } from '$app/env';
+import { db, households, memberships, users } from '#lib/server/db/index.js';
 import {
 	MembershipError,
 	requireMembership,
@@ -11,9 +11,13 @@ import {
 	deleteHousehold,
 	setMemberRole,
 	removeMember
-} from '$lib/server/households';
-import { listPendingInvitations, revokeInvitation, InvitationError } from '$lib/server/invitations';
-import { m } from '$lib/i18n';
+} from '#lib/server/households.js';
+import {
+	listPendingInvitations,
+	revokeInvitation,
+	InvitationError
+} from '#lib/server/invitations.js';
+import { m } from '#lib/i18n/index.js';
 import type { Actions, PageServerLoad } from './$types';
 
 const HOUSEHOLD_COOKIE = 'gm_household';
@@ -66,9 +70,16 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		.all();
 
 	const isAdmin = membership.role === 'admin';
+
 	const pendingInvitations = isAdmin ? listPendingInvitations(db, params.id, new Date()) : [];
 
-	return { household, members, isAdmin, currentUserId: locals.user!.id, pendingInvitations };
+	return {
+		household,
+		members,
+		isAdmin,
+		currentUserId: locals.user!.id,
+		pendingInvitations
+	};
 };
 
 export const actions: Actions = {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
-	import { m } from '$lib/i18n';
+	import { m } from '#lib/i18n/index.js';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	const t = $derived(m(data.locale));

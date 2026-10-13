@@ -1,12 +1,12 @@
 import { redirect, fail } from '@sveltejs/kit';
 import * as v from 'valibot';
 import { eq } from 'drizzle-orm';
-import { db, users } from '$lib/server/db';
-import { hashPassword } from '$lib/server/auth/password';
-import { createSession } from '$lib/server/auth/session';
-import { setSessionCookie } from '$lib/server/auth/cookies';
-import { signupSchema, safeLocalPath } from '$lib/validation';
-import { m } from '$lib/i18n';
+import { db, users } from '#lib/server/db/index.js';
+import { hashPassword } from '#lib/server/auth/password.js';
+import { createSession } from '#lib/server/auth/session.js';
+import { setSessionCookie } from '#lib/server/auth/cookies.js';
+import { signupSchema, safeLocalPath } from '#lib/validation.js';
+import { m } from '#lib/i18n/index.js';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {

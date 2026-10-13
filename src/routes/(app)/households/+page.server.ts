@@ -1,13 +1,13 @@
 import { redirect, fail } from '@sveltejs/kit';
-import { dev } from '$app/environment';
-import { db } from '$lib/server/db';
+import { dev } from '$app/env';
+import { db } from '#lib/server/db/index.js';
 import {
 	createHousehold,
 	listForUser,
 	MembershipError,
 	requireMembership
-} from '$lib/server/households';
-import { m } from '$lib/i18n';
+} from '#lib/server/households.js';
+import { m } from '#lib/i18n/index.js';
 import type { PageServerLoad, Actions } from './$types';
 
 const HOUSEHOLD_COOKIE = 'gm_household';

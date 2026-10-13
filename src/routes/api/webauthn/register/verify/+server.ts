@@ -1,8 +1,8 @@
 import { json, error } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 import type { RegistrationResponseJSON } from '@simplewebauthn/server';
-import { db, users } from '$lib/server/db';
-import { verifyRegistration } from '$lib/server/auth/webauthn';
+import { db, users } from '#lib/server/db/index.js';
+import { verifyRegistration } from '#lib/server/auth/webauthn.js';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ locals, cookies, request }) => {

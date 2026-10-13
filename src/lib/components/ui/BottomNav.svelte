@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import Icon from './Icon.svelte';
-	import type { Messages } from '$lib/i18n';
+	import type { Messages } from '#lib/i18n/index.js';
 	let { t }: { t: Messages } = $props();
 	const path = $derived(page.url.pathname);
 </script>

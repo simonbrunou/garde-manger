@@ -1,5 +1,5 @@
-import { env } from '$env/dynamic/private';
-import { dev } from '$app/environment';
+import * as env from '$app/env/private';
+import { dev } from '$app/env';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import type { OffConfig, ImageStore } from './off';

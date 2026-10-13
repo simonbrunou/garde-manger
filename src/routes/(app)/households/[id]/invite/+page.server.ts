@@ -1,8 +1,8 @@
 import { error, fail } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { MembershipError, requireMembership } from '$lib/server/households';
-import { createInvitation } from '$lib/server/invitations';
-import { m } from '$lib/i18n';
+import { db } from '#lib/server/db/index.js';
+import { MembershipError, requireMembership } from '#lib/server/households.js';
+import { createInvitation } from '#lib/server/invitations.js';
+import { m } from '#lib/i18n/index.js';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, locals }) => {

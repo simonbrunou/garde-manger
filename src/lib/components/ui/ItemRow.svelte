@@ -3,8 +3,8 @@
 	import DayBadge from './DayBadge.svelte';
 	import Icon from './Icon.svelte';
 	import SwipeActions from './SwipeActions.svelte';
-	import type { Messages } from '$lib/i18n';
-	import type { Band } from '$lib/server/inventory';
+	import type { Messages } from '#lib/i18n/index.js';
+	import type { Band } from '#lib/server/inventory.js';
 
 	export interface RowItem {
 		id: string;

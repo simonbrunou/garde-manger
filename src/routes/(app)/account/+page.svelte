@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
-	import PasskeyEnroll from '$lib/components/PasskeyEnroll.svelte';
-	import PushSettings from '$lib/components/PushSettings.svelte';
-	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
-	import List from '$lib/components/ui/List.svelte';
-	import ListRow from '$lib/components/ui/ListRow.svelte';
-	import { m } from '$lib/i18n';
+	import PasskeyEnroll from '#lib/components/PasskeyEnroll.svelte';
+	import PushSettings from '#lib/components/PushSettings.svelte';
+	import ThemeToggle from '#lib/components/ui/ThemeToggle.svelte';
+	import List from '#lib/components/ui/List.svelte';
+	import ListRow from '#lib/components/ui/ListRow.svelte';
+	import { m } from '#lib/i18n/index.js';
 
 	let { form, data }: { form: ActionData; data: PageData } = $props();
 	const t = $derived(m(data.locale));

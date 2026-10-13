@@ -1,9 +1,9 @@
 import { json, error } from '@sveltejs/kit';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
-import { db } from '$lib/server/db';
-import { verifyAuthentication } from '$lib/server/auth/webauthn';
-import { createSession } from '$lib/server/auth/session';
-import { setSessionCookie } from '$lib/server/auth/cookies';
+import { db } from '#lib/server/db/index.js';
+import { verifyAuthentication } from '#lib/server/auth/webauthn.js';
+import { createSession } from '#lib/server/auth/session.js';
+import { setSessionCookie } from '#lib/server/auth/cookies.js';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ cookies, request }) => {

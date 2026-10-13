@@ -1,8 +1,8 @@
 import { json, error } from '@sveltejs/kit';
-import { dev } from '$app/environment';
+import { dev } from '$app/env';
 import { eq } from 'drizzle-orm';
-import { db, users } from '$lib/server/db';
-import { registrationOptions } from '$lib/server/auth/webauthn';
+import { db, users } from '#lib/server/db/index.js';
+import { registrationOptions } from '#lib/server/auth/webauthn.js';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ locals, cookies }) => {

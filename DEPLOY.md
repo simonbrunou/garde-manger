@@ -48,15 +48,24 @@ bunx web-push generate-vapid-keys
 
 ## 3. Reverse proxy (Traefik / Coolify)
 
-adapter-node derives the request origin from proxy headers — set:
+adapter-node 6 has no runtime `ORIGIN` of its own: it derives the request origin
+per request from the `Host` header, or from the proxy headers below, and assumes
+`https` when no protocol header arrives. Set:
 
 - `PROTOCOL_HEADER=x-forwarded-proto`
 - `HOST_HEADER=x-forwarded-host`
 - `PORT` / `HOST` are provided by Coolify.
 
-These make the CSRF Origin check and the WebAuthn origin correct behind TLS
-termination. HSTS should be added at the proxy (the app intentionally does not
-send HSTS, so localhost/dev over http keep working).
+These make the CSRF Origin check correct behind TLS termination. (The app still
+reads the `ORIGIN` env var itself for the WebAuthn origin.) A plain-http run with
+no proxy in front (e.g. the e2e server) must instead pin the origin at **build**
+time with `ORIGIN=http://host:port bun run build` (`paths.origin` in
+`vite.config.ts`); otherwise every form POST is rejected with 403. Leave it unset
+when building for the proxied production deploy unless it is the public `https`
+origin.
+
+HSTS should be added at the proxy (the app intentionally does not send HSTS, so
+localhost/dev over http keep working).
 
 ## 4. Persistent storage (single writer)
 

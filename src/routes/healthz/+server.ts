@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
-import { db } from '$lib/server/db';
-import { checkHealth } from '$lib/server/health';
+import { db } from '#lib/server/db/index.js';
+import { checkHealth } from '#lib/server/health.js';
 
 export const prerender = false;
 

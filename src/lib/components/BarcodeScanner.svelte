@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { onMount, onDestroy } from 'svelte';
-	import { m, type Locale } from '$lib/i18n';
-	import { normalizeBarcode } from '$lib/barcode';
+	import { m, type Locale } from '#lib/i18n/index.js';
+	import { normalizeBarcode } from '#lib/barcode.js';
 	// Self-hosted, same-origin WASM URL (hashed asset emitted by Vite).
 	import zxingWasmUrl from 'zxing-wasm/reader/zxing_reader.wasm?url';
 
@@ -14,8 +14,8 @@
 	const t = $derived(m(locale));
 
 	type Phase = 'starting' | 'searching' | 'detected' | 'denied' | 'unsupported';
-	let phase = $state<Phase>('starting');
 
+	let phase = $state<Phase>('starting');
 	let videoEl = $state<HTMLVideoElement | null>(null);
 
 	// Non-reactive runtime handles (no need to be $state).

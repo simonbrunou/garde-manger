@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { m } from '$lib/i18n';
-	import NavigationBar from '$lib/components/ui/NavigationBar.svelte';
-	import HouseholdMenu from '$lib/components/ui/HouseholdMenu.svelte';
-	import Icon from '$lib/components/ui/Icon.svelte';
-	import SegmentedControl from '$lib/components/ui/SegmentedControl.svelte';
-	import ItemRow from '$lib/components/ui/ItemRow.svelte';
-	import EmptyState from '$lib/components/ui/EmptyState.svelte';
-	import Button from '$lib/components/ui/Button.svelte';
+	import { m } from '#lib/i18n/index.js';
+	import NavigationBar from '#lib/components/ui/NavigationBar.svelte';
+	import HouseholdMenu from '#lib/components/ui/HouseholdMenu.svelte';
+	import Icon from '#lib/components/ui/Icon.svelte';
+	import SegmentedControl from '#lib/components/ui/SegmentedControl.svelte';
+	import ItemRow from '#lib/components/ui/ItemRow.svelte';
+	import EmptyState from '#lib/components/ui/EmptyState.svelte';
+	import Button from '#lib/components/ui/Button.svelte';
 	let { data } = $props();
 	const t = $derived(m(data.locale));
 	const filterOptions = $derived([

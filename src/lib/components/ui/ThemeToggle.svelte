@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from './Icon.svelte';
-	import type { Messages } from '$lib/i18n';
-	import type { ThemeChoice } from '$lib/theme';
+	import type { Messages } from '#lib/i18n/index.js';
+	import type { ThemeChoice } from '#lib/theme.js';
 	let { value, t }: { value: ThemeChoice; t: Messages } = $props();
 	const opts = $derived<{ v: ThemeChoice; label: string; icon: 'monitor' | 'sun' | 'moon' }[]>([
 		{ v: 'auto', label: t.theme_auto, icon: 'monitor' },

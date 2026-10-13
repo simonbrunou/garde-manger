@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from './Icon.svelte';
-	import { categoryIcon } from '$lib/icons';
+	import { categoryIcon } from '#lib/icons.js';
 	let {
 		imagePath = null,
 		barcode = null,

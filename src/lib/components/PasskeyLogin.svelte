@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { startAuthentication } from '@simplewebauthn/browser';
-	import { isPasskeyCancellation } from '$lib/passkeyError';
-	import type { Messages } from '$lib/i18n';
+	import { isPasskeyCancellation } from '#lib/passkeyError.js';
+	import type { Messages } from '#lib/i18n/index.js';
 
 	interface Props {
 		redirectTo?: string;

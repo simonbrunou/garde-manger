@@ -1,16 +1,16 @@
 import { error, redirect } from '@sveltejs/kit';
 import { inArray } from 'drizzle-orm';
-import { db } from '$lib/server/db';
-import { foods, products } from '$lib/server/db/schema';
+import { db } from '#lib/server/db/index.js';
+import { foods, products } from '#lib/server/db/schema.js';
 import {
 	requireMembership,
 	MembershipError,
 	listForUser,
 	resolveActiveHouseholdId
-} from '$lib/server/households';
-import { listActive, recordUse, bandFor } from '$lib/server/inventory';
+} from '#lib/server/households.js';
+import { listActive, recordUse, bandFor } from '#lib/server/inventory.js';
 import type { PageServerLoad, Actions } from './$types';
-import type { Band } from '$lib/server/inventory';
+import type { Band } from '#lib/server/inventory.js';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
