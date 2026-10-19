@@ -10,3 +10,7 @@ export const BASE_URL = `http://localhost:${PORT}`;
 // playwright.config.ts launches the server against this exact path via webServer.env,
 // and the fixtures open the same file — so the two can never diverge.
 export const DB_PATH = '.e2e/run.db';
+
+// Cron trigger secret: the server reads it from webServer.env, and the cron spec
+// presents it the way the Coolify scheduled task does.
+export const CRON_SECRET = 'test-cron-secret';

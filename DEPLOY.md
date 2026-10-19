@@ -92,12 +92,17 @@ Create two Coolify Scheduled Tasks:
 
    ```sh
    curl -fsS -X POST -H "x-cron-secret: $CRON_SECRET" \
+     -H "content-type: application/json" \
      https://garde-manger.example/internal/cron/check-expiry
    ```
 
    Sends one aggregated Web Push per device to each user with expiring items.
    Idempotent (safe to run twice/day). A wrong/absent secret returns 401; an
    unconfigured `CRON_SECRET` returns 503.
+
+   Keep the `content-type` header: SvelteKit 3 treats a POST with no
+   content-type and no `Origin` as a cross-site form submission and returns
+   403 before the endpoint runs.
 
 2. **Daily backup** — e.g. `30 3 * * *`:
    ```sh
