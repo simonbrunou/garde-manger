@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { PORT, BASE_URL, DB_PATH } from './tests/e2e/fixtures/constants';
+import { PORT, BASE_URL, DB_PATH, CRON_SECRET } from './tests/e2e/fixtures/constants';
 
 // Valid-format throwaway VAPID keypair (reused from src/lib/server/pushConfig.ts
 // DEV_* constants). Test-only; never used against a real push service.
@@ -20,7 +20,7 @@ const serverEnv: Record<string, string> = {
 	VAPID_PUBLIC_KEY: VAPID_PUBLIC,
 	VAPID_PRIVATE_KEY: VAPID_PRIVATE,
 	VAPID_SUBJECT: 'mailto:e2e@garde-manger.local',
-	CRON_SECRET: 'test-cron-secret'
+	CRON_SECRET
 };
 
 export default defineConfig({
@@ -49,12 +49,18 @@ export default defineConfig({
 		{
 			name: 'app',
 			dependencies: ['setup'],
-			testIgnore: [/auth\.setup\.ts/, /passkey\.spec\.ts/, /auth\.spec\.ts/, /smoke\.spec\.ts/],
+			testIgnore: [
+				/auth\.setup\.ts/,
+				/passkey\.spec\.ts/,
+				/auth\.spec\.ts/,
+				/smoke\.spec\.ts/,
+				/cron\.spec\.ts/
+			],
 			use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/user.json' }
 		},
 		{
 			name: 'anon',
-			testMatch: /(auth|smoke)\.spec\.ts/,
+			testMatch: /(auth|smoke|cron)\.spec\.ts/,
 			use: { ...devices['Desktop Chrome'] }
 		},
 		{
