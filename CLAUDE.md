@@ -84,6 +84,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 Agents may merge their own PR without asking once all three hold: a code review ran on the diff (the `code-review` skill or the `pr-review-toolkit:code-reviewer` agent) and its real findings are fixed; CI is green on the pushed SHA; the branch is up to date with `origin/main`. The production deploy that the merge triggers is accepted. Ask first only when the PR drops or rewrites stored data (a destructive migration, a backfill that overwrites rows).
 
+## E2E tests
+
+Outside CI, Playwright reuses whatever already listens on the e2e port 4173 (`reuseExistingServer` in `playwright.config.ts`) instead of wiping `.e2e` and building fresh. A server left from an earlier run, or a `bun run preview` (Vite's default port is also 4173), then serves stale code and an old DB, and new routes or UI fail while the code is fine. Free the port before each run with `fuser -k 4173/tcp || true`, which kills by port; `pkill -f build/index.js` would also match your own shell. The port is shared by every worktree on the host, so run one e2e suite at a time.
+
 ## Agent skills
 
 ### Issue tracker

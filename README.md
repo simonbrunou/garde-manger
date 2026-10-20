@@ -58,7 +58,8 @@ Drizzle ORM + `bun:sqlite`. Run `bun run db:generate` after schema changes. Migr
 
 See **[DEPLOY.md](./DEPLOY.md)** for the full guide: env vars, persistent volume,
 recreate strategy, reverse-proxy headers, the two daily Scheduled Tasks (reminder
-push + backup), security headers, and a post-deploy smoke checklist.
+push + backup), how to read their run history in prod, security headers, and a
+post-deploy smoke checklist.
 
 In short: Railpack build pack (Bun), start `bun ./build/index.js`, mount a
 directory volume at `/app/data`, recreate strategy (single SQLite writer),
