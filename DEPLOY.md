@@ -114,9 +114,9 @@ Create two Coolify Scheduled Tasks:
 
 ## 7. Operating prod
 
-How to find a running deploy, its Scheduled Tasks and their run history. The
-names below are the ones the homelab deploy uses: application `garde-manger`,
-tasks `daily-reminder-push` and `daily-db-backup` (§6).
+Use this to find a running deploy, its Scheduled Tasks and their run history.
+On the homelab deploy the application is named `garde-manger`, and the two §6
+tasks are named `daily-reminder-push` and `daily-db-backup`.
 
 - **App container:** Coolify names it `<app uuid>-<deploy timestamp>`, so the
   name changes on every deploy. The uuid is on the application's page in
@@ -128,7 +128,8 @@ tasks `daily-reminder-push` and `daily-db-backup` (§6).
   snapshot path, and a failed `curl` its HTTP status.
 - **Run history from a shell:** Coolify stores runs in its own Postgres. On the
   Coolify host, pipe SQL on stdin to
-  `docker exec -i coolify-db psql -U coolify -d coolify`:
+  `docker exec -i coolify-db psql -U coolify -d coolify -x` (`-x` keeps the
+  multi-line task output readable):
 
   ```sql
   select t.name, e.status, e.created_at, e.message
@@ -140,9 +141,15 @@ tasks `daily-reminder-push` and `daily-db-backup` (§6).
   limit 10;
   ```
 
-- **Scripts in the container:** over ssh, feed a multi-line script on stdin
-  with a quoted heredoc; nested inline quoting breaks:
-  `cat <<'EOF' | ssh <server> 'docker exec -i <container> sh'`.
+- **Scripts in the container:** pass a multi-line script on stdin with a
+  quoted heredoc, run against the server Coolify deploys to and the current
+  container from the first bullet. Quotes nested inside the ssh command break.
+
+  ```sh
+  ssh <server> 'docker exec -i <container> sh' <<'EOF'
+  ...script...
+  EOF
+  ```
 
 ## 8. Manual smoke checklist (post-deploy)
 

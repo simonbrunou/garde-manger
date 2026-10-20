@@ -86,7 +86,7 @@ Agents may merge their own PR without asking once all three hold: a code review 
 
 ## E2E tests
 
-Outside CI, Playwright reuses any server already listening on the e2e port (4173, `PORT` in `tests/e2e/fixtures/constants.ts`): `playwright.config.ts` sets `reuseExistingServer: !process.env.CI`. Its `webServer` command only rebuilds and wipes `.e2e` when it starts a fresh server, so a server left over from an earlier run serves stale code and an old DB, and new routes or UI fail in e2e while the code is fine. Free the port before every e2e run with `fuser -k 4173/tcp || true`. It kills by port; `pkill -f build/index.js` also matches the agent's own shell.
+Outside CI, Playwright reuses whatever already listens on the e2e port 4173 (`reuseExistingServer` in `playwright.config.ts`) instead of wiping `.e2e` and building fresh. A server left from an earlier run, or a `bun run preview` (Vite's default port is also 4173), then serves stale code and an old DB, and new routes or UI fail while the code is fine. Free the port before each run with `fuser -k 4173/tcp || true`, which kills by port; `pkill -f build/index.js` would also match your own shell. The port is shared by every worktree on the host, so run one e2e suite at a time.
 
 ## Agent skills
 

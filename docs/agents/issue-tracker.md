@@ -56,7 +56,7 @@ Read it as in **Read an issue** above.
 
 Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.
 
-The `wayfinder:*` labels exist on the repo (`map`, `research`, `prototype`, `grilling`, `task`); check with `fj -H git.sbrn.eu repo labels simonbrunou/garde-manger view`.
+The `wayfinder:*` labels exist on the repo (`map`, `research`, `prototype`, `grilling`, `task`); check with `fj -H git.sbrn.eu repo labels simonbrunou/garde-manger view`, or with `curl ... "$API/labels?limit=100" | jq -r '.[].name'` when you need to test the result. If one has gone missing, recreate it with `fj -H git.sbrn.eu repo labels simonbrunou/garde-manger create wayfinder:<name> <hex-color> -d "<description>"`.
 
 - **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. Create it with `fj issue create`, then add the label.
 - **Child ticket**: an issue with `Part of #<map>` at the top of its body, listed in a task list in the map body. Labels: `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.
