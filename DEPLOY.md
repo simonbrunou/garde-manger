@@ -112,7 +112,39 @@ Create two Coolify Scheduled Tasks:
    Then push the produced file off-box (rsync/restic/object storage of your
    choice). Prune old snapshots as desired.
 
-## 7. Manual smoke checklist (post-deploy)
+## 7. Operating prod
+
+How to find a running deploy, its Scheduled Tasks and their run history. The
+names below are the ones the homelab deploy uses: application `garde-manger`,
+tasks `daily-reminder-push` and `daily-db-backup` (§6).
+
+- **App container:** Coolify names it `<app uuid>-<deploy timestamp>`, so the
+  name changes on every deploy. The uuid is on the application's page in
+  Coolify. On the server Coolify deploys to, `docker ps --filter name=<app uuid>`
+  shows the current container.
+- **Task runs:** the application's Scheduled Tasks tab lists both tasks, and
+  each task keeps its executions with status and output. The reminder logs the
+  endpoint's JSON summary (`usersNotified`, `devicesSent`, ...), the backup the
+  snapshot path, and a failed `curl` its HTTP status.
+- **Run history from a shell:** Coolify stores runs in its own Postgres. On the
+  Coolify host, pipe SQL on stdin to
+  `docker exec -i coolify-db psql -U coolify -d coolify`:
+
+  ```sql
+  select t.name, e.status, e.created_at, e.message
+  from scheduled_task_executions e
+  join scheduled_tasks t on t.id = e.scheduled_task_id
+  join applications a on a.id = t.application_id
+  where a.name = 'garde-manger'
+  order by e.created_at desc
+  limit 10;
+  ```
+
+- **Scripts in the container:** over ssh, feed a multi-line script on stdin
+  with a quoted heredoc; nested inline quoting breaks:
+  `cat <<'EOF' | ssh <server> 'docker exec -i <container> sh'`.
+
+## 8. Manual smoke checklist (post-deploy)
 
 The automated suite (`bun test`, 200+ tests) covers unit + integration. A few
 flows can only be checked on a real device over HTTPS — run these once after a
@@ -135,7 +167,7 @@ deploy:
       only) with the offline banner.
 - [ ] Confirm response headers include the CSP and the camera Permissions-Policy, and the scanner WASM is served as `application/wasm`.
 
-## 8. First-run notes
+## 9. First-run notes
 
 - The app creates `DATABASE_PATH`'s parent directory, asserts WAL, and runs
   migrations on boot. No manual DB step is needed.
