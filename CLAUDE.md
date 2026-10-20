@@ -80,6 +80,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
+## Merge authority
+
+Agents may merge their own PR without asking once all three hold: a code review ran on the diff (the `code-review` skill or the `pr-review-toolkit:code-reviewer` agent) and its real findings are fixed; CI is green on the pushed SHA; the branch is up to date with `origin/main`. The production deploy that the merge triggers is accepted. Ask first only when the PR drops or rewrites stored data (a destructive migration, a backfill that overwrites rows).
+
 ## Agent skills
 
 ### Issue tracker
