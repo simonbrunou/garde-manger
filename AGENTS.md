@@ -90,7 +90,7 @@ Agents may merge their own PR without asking once all three hold:
 
 A branch behind `main` with no conflict merges as it is, on the CI run it already has. The accepted risk is that two PRs that each pass on their own can break `main` together, and the CI run on `main` after the merge shows it. On a conflict, merge `origin/main` into the branch and resolve it. Run the steps of the `verify` job in `.forgejo/workflows/ci.yml`, push, and check the three conditions again on the new head.
 
-The production deploy that the merge triggers is accepted. Ask first only when the PR drops or rewrites stored data (a destructive migration, a backfill that overwrites rows). After the merge, check the deploy as `docs/agents/deploy.md` says.
+The production deploy that the merge triggers is accepted. Ask first only when the PR drops or rewrites stored data (a destructive migration, a backfill that overwrites rows). To check a production deploy, after a merge or whenever someone asks what `main` runs in production, follow `docs/agents/deploy.md`.
 
 ## E2E tests
 
