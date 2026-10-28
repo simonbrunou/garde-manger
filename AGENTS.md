@@ -84,7 +84,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 Agents may merge their own PR without asking once all three hold:
 
-- A code review ran on the diff (the `code-review` skill or the `pr-review-toolkit:code-reviewer` agent) and its real findings are fixed.
+- A code review ran on the diff (the `code-review` skill or the `pr-review-toolkit:code-reviewer` agent) and its real findings are fixed, nits aside (the global agent rules define a nit).
 - CI is green on the pushed SHA.
 - The branch has no conflict with `origin/main`. With the pushed SHA checked out, run `git fetch origin`, then `git merge-tree --write-tree origin/main HEAD` must exit 0.
 
