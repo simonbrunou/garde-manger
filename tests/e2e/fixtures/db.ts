@@ -40,8 +40,7 @@ export function seedUser(
 	const displayName = opts.displayName ?? 'Seed User';
 	return withDb((d) => {
 		const existing = d.prepare('SELECT id FROM users WHERE email = ?').get(email) as
-			| { id: string }
-			| undefined;
+			{ id: string } | undefined;
 		if (existing) return { id: existing.id, email, displayName };
 		const id = rid('user');
 		d.prepare(
@@ -270,8 +269,7 @@ export function getHouseholdIdForUser(userId: string): string | undefined {
 		(d) =>
 			(
 				d.prepare('SELECT household_id FROM memberships WHERE user_id = ? LIMIT 1').get(userId) as
-					| { household_id: string }
-					| undefined
+					{ household_id: string } | undefined
 			)?.household_id
 	);
 }
