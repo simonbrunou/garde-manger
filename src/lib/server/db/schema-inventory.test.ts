@@ -147,10 +147,9 @@ describe('inventory schema', () => {
 
 	it('index inv_household_status_eff exists in sqlite_master', () => {
 		const row = sqlite
-			.query<
-				{ name: string },
-				[]
-			>("SELECT name FROM sqlite_master WHERE type='index' AND name='inv_household_status_eff'")
+			.query<{ name: string }, []>(
+				"SELECT name FROM sqlite_master WHERE type='index' AND name='inv_household_status_eff'"
+			)
 			.get();
 		expect(row).not.toBeNull();
 		expect(row?.name).toBe('inv_household_status_eff');
