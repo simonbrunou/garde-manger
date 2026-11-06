@@ -92,6 +92,10 @@ A branch behind `main` with no conflict merges as it is, on the CI run it alread
 
 The production deploy that the merge triggers is accepted. Ask first only when the PR drops or rewrites stored data (a destructive migration, a backfill that overwrites rows). To check a production deploy, after a merge or whenever someone asks what `main` runs in production, follow `docs/agents/deploy.md`.
 
+## Bun version
+
+CI and production run the Bun that the repo pins, and the dev shell does not (#61). CI installs the `bun-version` set in both jobs of `.forgejo/workflows/ci.yml`. Production installs the `packageManager` version in `package.json`, which Railpack reads (`DEPLOY.md`). Renovate bumps both pins in one PR. The dev shell takes `bun` from the nixpkgs that `flake.lock` locks, so it can trail the pins by several releases. The pinned Bun is the one that counts. The local run of the `verify` steps that Merge authority asks for after a conflict is a pre-check, and the CI run on the pushed SHA decides the merge. A `bun.lock` written on another Bun can resolve to a different tree, and `bun install --frozen-lockfile` on the pinned Bun still accepts it, so write a lock change with `bunx bun@<pin> install`.
+
 ## E2E tests
 
 Outside CI, Playwright reuses whatever already listens on the e2e port 4173 (`reuseExistingServer` in `playwright.config.ts`) instead of wiping `.e2e` and building fresh. A server left from an earlier run, or a `bun run preview` (Vite's default port is also 4173), then serves stale code and an old DB, and new routes or UI fail while the code is fine. Free the port before each run with `fuser -k 4173/tcp || true`, which kills by port; `pkill -f build/index.js` would also match your own shell. The port is shared by every worktree on the host, so run one e2e suite at a time.
