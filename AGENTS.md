@@ -88,13 +88,15 @@ Agents may merge their own PR without asking once all three hold:
 - CI is green on the pushed SHA.
 - The branch has no conflict with `origin/main`. With the pushed SHA checked out, run `git fetch origin`, then `git merge-tree --write-tree origin/main HEAD` must exit 0.
 
-A branch behind `main` with no conflict merges as it is, on the CI run it already has. The accepted risk is that two PRs that each pass on their own can break `main` together, and the CI run on `main` after the merge shows it. On a conflict, merge `origin/main` into the branch and resolve it. Run the steps of the `verify` job in `.forgejo/workflows/ci.yml`, push, and check the three conditions again on the new head.
+A branch behind `main` with no conflict merges as it is, on the CI run it already has. The accepted risk is that two PRs that each pass on their own can break `main` together, and the CI run on `main` after the merge shows it. On a conflict, merge `origin/main` into the branch and resolve it. Run the steps of the `verify` job in `.forgejo/workflows/ci.yml`, push, and check the three conditions again on the new head. That local run is only a pre-check, because the dev shell's Bun can trail CI's (see Bun version).
 
 The production deploy that the merge triggers is accepted. Ask first only when the PR drops or rewrites stored data (a destructive migration, a backfill that overwrites rows). To check a production deploy, after a merge or whenever someone asks what `main` runs in production, follow `docs/agents/deploy.md`.
 
 ## Bun version
 
-CI and production run the Bun that the repo pins, and the dev shell does not (#61). CI installs the `bun-version` set in both jobs of `.forgejo/workflows/ci.yml`. Production installs the `packageManager` version in `package.json`, which Railpack reads (`DEPLOY.md`). Renovate bumps both pins in one PR. The dev shell takes `bun` from the nixpkgs that `flake.lock` locks, so it can trail the pins by several releases. The pinned Bun is the one that counts. The local run of the `verify` steps that Merge authority asks for after a conflict is a pre-check, and the CI run on the pushed SHA decides the merge. A `bun.lock` written on another Bun can resolve to a different tree, and `bun install --frozen-lockfile` on the pinned Bun still accepts it, so write a lock change with `bunx bun@<pin> install`.
+CI and production run the Bun that the repo pins, and the dev shell does not. CI installs the `bun-version` set in both jobs of `.forgejo/workflows/ci.yml`. Production installs the `packageManager` version in `package.json`. Railpack reads it and names it `idiomatic-version-file` in the deploy log's build plan. Renovate bumps both pins in one PR, and nothing checks that they match. The dev shell takes `bun` from the nixpkgs that `flake.lock` locks, so it can trail the pins by several releases. A check proves a change only when it ran on the pinned Bun, as CI's run does.
+
+Another Bun can also write `bun.lock` differently. Bun 1.3.13, the dev shell's on 2026-11-06, drops the `libc` field of platform-specific packages, so an install from its lock adds their musl builds, and it can resolve an npm alias to another version. `bun install --frozen-lockfile` on the pinned Bun accepts such a lock, so CI does not catch it. Write every lock change through the pinned Bun, as in `bunx bun@<pin> install` or `bunx bun@<pin> add <package>`.
 
 ## E2E tests
 
