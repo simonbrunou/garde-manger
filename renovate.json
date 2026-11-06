@@ -16,8 +16,8 @@
 			"automerge": true
 		},
 		{
-			"description": "Keep the CI workflow's setup-node `node-version: 26` out of the top-level rangeStrategy bump: under bump, Renovate rewrites the major to a full release (#70, 26 to 26.13.0) and would open a PR for every Node release. auto leaves `26` alone and still proposes the next major, as #64 did.",
-			"matchManagers": ["github-actions"],
+			"description": "Keep the Node major pins, the CI workflow's setup-node `node-version: 26` and package.json's `engines.node` `26` (the major Railpack installs in production, #66), out of the top-level rangeStrategy bump: under bump, Renovate rewrites the major to a full release (#70, 26 to 26.13.0) and would open a PR for every Node release. auto leaves `26` alone and still proposes the next major, as #64 did.",
+			"matchManagers": ["github-actions", "bun"],
 			"matchDepNames": ["node"],
 			"rangeStrategy": "auto"
 		}
