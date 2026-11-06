@@ -96,7 +96,7 @@ The production deploy that the merge triggers is accepted. Ask first only when t
 
 CI and production run the Bun that the repo pins, and the dev shell does not. CI installs the `bun-version` set in both jobs of `.forgejo/workflows/ci.yml`. Production installs the `packageManager` version in `package.json`. Railpack reads it and names it `idiomatic-version-file` in the deploy log's build plan. Renovate bumps both pins in one PR, and nothing checks that they match. The dev shell takes `bun` from the nixpkgs that `flake.lock` locks, so it can trail the pins by several releases. A check proves a change only when it ran on the pinned Bun, as CI's run does.
 
-Another Bun can also write `bun.lock` differently. Bun 1.3.13, the dev shell's on 2026-11-06, drops the `libc` field of platform-specific packages, so an install from its lock adds their musl builds, and it can resolve an npm alias to another version. `bun install --frozen-lockfile` on the pinned Bun accepts such a lock, so CI does not catch it. Write every lock change through the pinned Bun, as in `bunx bun@<pin> install` or `bunx bun@<pin> add <package>`.
+A Bun other than the pinned one can write a different `bun.lock`. Bun 1.3.13, which the dev shell ran on 2026-11-06, drops the `libc` field of platform-specific packages, so an install from its lock also installs their musl builds. It can also resolve an npm alias to another version. `bun install --frozen-lockfile` on the pinned Bun accepts such a lock, so CI does not catch it. Write every lock change through the pinned Bun, as in `bunx bun@<pin> install` or `bunx bun@<pin> add <package>`.
 
 ## E2E tests
 
