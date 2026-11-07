@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
-import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -13,7 +13,7 @@ afterEach(() => rmSync(dir, { recursive: true, force: true }));
 
 // Writes one fixture test file outside src/, runs the script on it with its own
 // TMPDIR, and returns the exit code, the output and what the script left in that TMPDIR.
-function runScript(fixtureBody: string) {
+function runScript(fixtureBody: string, scriptTmpdir?: string) {
 	const fixtures = join(dir, 'fixtures');
 	const outerTmp = join(dir, 'tmp');
 	mkdirSync(fixtures);
@@ -31,7 +31,7 @@ ${fixtureBody}
 	);
 	const proc = Bun.spawnSync(['sh', SCRIPT, './fixtures'], {
 		cwd: dir,
-		env: { ...process.env, TMPDIR: outerTmp }
+		env: { ...process.env, TMPDIR: scriptTmpdir ?? outerTmp }
 	});
 	return {
 		exitCode: proc.exitCode,
@@ -59,5 +59,12 @@ describe('bun-test-clean-tmpdir.sh', () => {
 		const r = runScript(`expect(1).toBe(2);`);
 		expect(r.exitCode).not.toBe(0);
 		expect(r.stdout).not.toContain('TMPDIR is empty after the unit tests');
+	});
+
+	it('stops before the tests run when mktemp fails', () => {
+		const ran = join(dir, 'ran');
+		const r = runScript(`writeFileSync(${JSON.stringify(ran)}, '');`, join(dir, 'missing'));
+		expect(r.exitCode).not.toBe(0);
+		expect(existsSync(ran)).toBe(false);
 	});
 });
