@@ -87,13 +87,14 @@ describe('check-graphify-out.sh', () => {
 		expect(r.stdout).toContain('graphify-out/GRAPH_REPORT.md');
 	});
 
-	it('fails a PR that changes code and a graph file with a non-ASCII name', () => {
+	it('fails a PR that changes code and a graph file with a non-ASCII name, and names it', () => {
 		write('src/app.ts', 'export const a = 1;\n');
 		write('graphify-out/wiki/Économie.md', '# page\n');
 		commit('mixed');
 		const r = guard();
 		expect(r.exitCode).toBe(1);
 		expect(r.stdout).toContain('This PR changes graphify-out/ and other files');
+		expect(r.stdout).toContain('graphify-out/wiki/Économie.md');
 	});
 
 	it('counts a directory named like graphify-out/ but longer as code', () => {

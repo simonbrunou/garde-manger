@@ -7,10 +7,11 @@ set -e
 base="${GRAPHIFY_GUARD_BASE:-origin/main}"
 # A missing base ref fails here, so the guard never passes without a base.
 mb="$(git merge-base "$base" HEAD)"
-# The pathspecs, not a grep on the output, sort the paths: git quotes a path
-# with non-ASCII bytes. Git applies a pathspec before it detects renames, so a
-# move out of graphify-out/ shows up in both lists.
-graph="$(git diff --name-only "$mb" HEAD -- ':(top)graphify-out/')"
+# The pathspecs, not a grep on the output, sort the paths: git can quote a
+# path in its output. Git applies a pathspec before it detects renames, so a
+# move out of graphify-out/ shows up in both lists. core.quotePath=false prints
+# a non-ASCII graph path as it is, not as octal escapes.
+graph="$(git -c core.quotePath=false diff --name-only "$mb" HEAD -- ':(top)graphify-out/')"
 other="$(git diff --name-only "$mb" HEAD -- ':(top,exclude)graphify-out/')"
 if [ -n "$graph" ] && [ -n "$other" ]; then
 	printf 'This PR changes graphify-out/ and other files. Only a graph refresh PR may change graphify-out/, and it changes nothing else.\n'
