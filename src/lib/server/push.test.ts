@@ -462,6 +462,33 @@ describe('isEndpointSendable', () => {
 		expect(await isEndpointSendable('https://nx.example/x', async () => [])).toBe(false);
 	});
 
+	it('judges an IPv4-mapped IPv6 answer by the IPv4 address it carries', async () => {
+		for (const ip of [
+			'::ffff:127.0.0.1',
+			'::ffff:7f00:1',
+			'0:0:0:0:0:ffff:7f00:1',
+			'::FFFF:A9FE:A9FE',
+			'::ffff:169.254.169.254'
+		]) {
+			expect(await isEndpointSendable('https://evil.example/x', async () => [ip])).toBe(false);
+		}
+		expect(
+			await isEndpointSendable('https://evil.example/x', async () => [
+				'142.250.1.1',
+				'::ffff:a00:1'
+			])
+		).toBe(false);
+		expect(
+			await isEndpointSendable('https://push.example/x', async () => ['::ffff:93.184.216.34'])
+		).toBe(true);
+	});
+
+	it('judges an uncompressed IPv6 answer like its compressed form', async () => {
+		for (const ip of ['0:0:0:0:0:0:0:1', 'FE80:0:0:0:0:0:0:1']) {
+			expect(await isEndpointSendable('https://evil.example/x', async () => [ip])).toBe(false);
+		}
+	});
+
 	it('skips DNS for a public IP-literal endpoint (already vetted)', async () => {
 		let called = false;
 		const ok = await isEndpointSendable('https://93.184.216.34/x', async () => {
