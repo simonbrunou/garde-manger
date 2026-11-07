@@ -131,7 +131,21 @@ function isPrivateOrLocalHost(host: string): boolean {
 
 	// IPv6 literal? `url.hostname` keeps the surrounding [] brackets — strip them.
 	if (host.includes(':')) {
-		const h = host.replace(/^\[/, '').replace(/\]$/, '').toLowerCase();
+		const bare = host.replace(/^\[/, '').replace(/\]$/, '');
+		// A resolver answer keeps the spelling it got (0:0:0:0:0:0:0:1, ::ffff:127.0.0.1).
+		// URL rewrites each one in a single form: lowercase, zeros compressed, and an
+		// IPv4-mapped address as ::ffff:hhhh:hhhh. Only address characters go into
+		// the URL, so a junk answer like "fe80::1]@[2001:db8::1" can't name a new host.
+		const h =
+			/^[0-9a-f:.]+$/i.test(bare) && URL.canParse(`http://[${bare}]`)
+				? new URL(`http://[${bare}]`).hostname.slice(1, -1)
+				: bare.toLowerCase();
+		// An IPv4-mapped address connects to the IPv4 address it carries: judge that.
+		const mapped = /^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(h);
+		if (mapped) {
+			const [hi, lo] = [parseInt(mapped[1], 16), parseInt(mapped[2], 16)];
+			return isPrivateOrLocalHost(`${hi >> 8}.${hi & 255}.${lo >> 8}.${lo & 255}`);
+		}
 		if (h === '::1' || h === '::') return true; // loopback / unspecified
 		if (h.startsWith('fc') || h.startsWith('fd')) return true; // unique-local fc00::/7
 		if (h.startsWith('fe8') || h.startsWith('fe9') || h.startsWith('fea') || h.startsWith('feb'))
@@ -156,6 +170,10 @@ export function isSafePushEndpoint(endpoint: string): boolean {
 		return false;
 	}
 	if (url.protocol !== 'https:') return false;
+	// web-push 4 hands `url.hostname` to https.request with its [] brackets, and
+	// the DNS lookup of "[2001:db8::1]" fails, so an IPv6-literal endpoint can never
+	// be delivered to. No browser push service hands one out.
+	if (url.hostname.startsWith('[')) return false;
 	return !isPrivateOrLocalHost(url.hostname.toLowerCase());
 }
 
