@@ -11,6 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # Full history, so the graphify-out guard finds the merge base with main.
+          fetch-depth: 0
+
+      - name: graphify-out guard
+        # Only a graph refresh PR may change graphify-out/, and it changes nothing else (#58).
+        # A push to main has no base to diff against.
+        if: github.event_name == 'pull_request'
+        env:
+          GRAPHIFY_GUARD_BASE: origin/${{ github.base_ref }}
+        run: sh scripts/check-graphify-out.sh
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
