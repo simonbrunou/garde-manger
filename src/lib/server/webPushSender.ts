@@ -1,10 +1,11 @@
-import webpush from 'web-push';
+import * as webpush from 'web-push';
 import type { PushSender } from './push';
 
 /**
  * Production `PushSender` backed by the `web-push` library. Kept deliberately
- * thin (it just wraps the network lib) and therefore NOT unit-tested — `push.ts`
- * is exercised with a fake sender instead.
+ * thin (it just wraps the network lib), so its network path is NOT unit-tested:
+ * `push.ts` is exercised with a fake sender instead. `webPushSender.test.ts`
+ * only checks that the library loads and that its errors reach the caller.
  */
 export const webPushSender: PushSender = {
 	async send(target, payload, { vapid, ttl }) {
