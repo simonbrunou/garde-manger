@@ -156,6 +156,10 @@ export function isSafePushEndpoint(endpoint: string): boolean {
 		return false;
 	}
 	if (url.protocol !== 'https:') return false;
+	// web-push 4 hands `url.hostname` to https.request with its [] brackets, and
+	// the DNS lookup of "[2001:db8::1]" fails, so an IPv6-literal endpoint can never
+	// be delivered to. No browser push service hands one out.
+	if (url.hostname.startsWith('[')) return false;
 	return !isPrivateOrLocalHost(url.hostname.toLowerCase());
 }
 

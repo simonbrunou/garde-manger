@@ -366,6 +366,10 @@ describe('isSafePushEndpoint', () => {
 		expect(isSafePushEndpoint('https://[::1]/x')).toBe(false);
 	});
 
+	it('rejects a public IPv6-literal host, which web-push 4 cannot reach', () => {
+		expect(isSafePushEndpoint('https://[2001:4860:4860::8888]/x')).toBe(false);
+	});
+
 	it('rejects garbage', () => {
 		expect(isSafePushEndpoint('not a url')).toBe(false);
 		expect(isSafePushEndpoint('')).toBe(false);
