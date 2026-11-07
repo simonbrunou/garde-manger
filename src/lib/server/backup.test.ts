@@ -1,16 +1,19 @@
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect, afterAll } from 'bun:test';
 import { Database } from 'bun:sqlite';
-import { existsSync, statSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createDb, runMigrations } from './db/client';
 import { users } from './db/schema';
 import { backupDatabase } from './backup';
 
+const dir = mkdtempSync(join(tmpdir(), 'gm-backup-'));
+afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
 describe('backupDatabase (VACUUM INTO)', () => {
 	it('writes a valid SQLite snapshot with the same data', () => {
-		const srcPath = join(tmpdir(), `backup-src-${crypto.randomUUID()}.db`);
-		const destPath = join(tmpdir(), `backup-dest-${crypto.randomUUID()}.db`);
+		const srcPath = join(dir, `backup-src-${crypto.randomUUID()}.db`);
+		const destPath = join(dir, `backup-dest-${crypto.randomUUID()}.db`);
 
 		const { db, sqlite } = createDb(srcPath);
 		runMigrations(db);
@@ -38,8 +41,8 @@ describe('backupDatabase (VACUUM INTO)', () => {
 	});
 
 	it("escapes single quotes in the destination path so it can't break the VACUUM statement", () => {
-		const srcPath = join(tmpdir(), `backup-src-${crypto.randomUUID()}.db`);
-		const destPath = join(tmpdir(), `backup ' dest-${crypto.randomUUID()}.db`);
+		const srcPath = join(dir, `backup-src-${crypto.randomUUID()}.db`);
+		const destPath = join(dir, `backup ' dest-${crypto.randomUUID()}.db`);
 		const { db, sqlite } = createDb(srcPath);
 		runMigrations(db);
 		backupDatabase(sqlite, destPath);
