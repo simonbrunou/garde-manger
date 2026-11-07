@@ -134,10 +134,12 @@ function isPrivateOrLocalHost(host: string): boolean {
 		const bare = host.replace(/^\[/, '').replace(/\]$/, '');
 		// A resolver answer keeps the spelling it got (0:0:0:0:0:0:0:1, ::ffff:127.0.0.1).
 		// URL rewrites each one in a single form: lowercase, zeros compressed, and an
-		// IPv4-mapped address as ::ffff:hhhh:hhhh.
-		const h = URL.canParse(`http://[${bare}]`)
-			? new URL(`http://[${bare}]`).hostname.slice(1, -1)
-			: bare.toLowerCase();
+		// IPv4-mapped address as ::ffff:hhhh:hhhh. Only address characters go into
+		// the URL, so a junk answer like "fe80::1]@[2001:db8::1" can't name a new host.
+		const h =
+			/^[0-9a-f:.]+$/i.test(bare) && URL.canParse(`http://[${bare}]`)
+				? new URL(`http://[${bare}]`).hostname.slice(1, -1)
+				: bare.toLowerCase();
 		// An IPv4-mapped address connects to the IPv4 address it carries: judge that.
 		const mapped = /^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(h);
 		if (mapped) {

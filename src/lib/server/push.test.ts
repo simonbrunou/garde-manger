@@ -468,7 +468,8 @@ describe('isEndpointSendable', () => {
 			'::ffff:7f00:1',
 			'0:0:0:0:0:ffff:7f00:1',
 			'::FFFF:A9FE:A9FE',
-			'::ffff:169.254.169.254'
+			'::ffff:169.254.169.254',
+			'::ffff:192.168.1.1'
 		]) {
 			expect(await isEndpointSendable('https://evil.example/x', async () => [ip])).toBe(false);
 		}
@@ -485,6 +486,12 @@ describe('isEndpointSendable', () => {
 
 	it('judges an uncompressed IPv6 answer like its compressed form', async () => {
 		for (const ip of ['0:0:0:0:0:0:0:1', 'FE80:0:0:0:0:0:0:1']) {
+			expect(await isEndpointSendable('https://evil.example/x', async () => [ip])).toBe(false);
+		}
+	});
+
+	it('does not read a junk answer as the address hidden inside it', async () => {
+		for (const ip of ['fe80::1]@[2001:db8::1', 'fc00::1]@[2001:db8::1', 'fe80::1]@a.b/']) {
 			expect(await isEndpointSendable('https://evil.example/x', async () => [ip])).toBe(false);
 		}
 	});
