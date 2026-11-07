@@ -29,15 +29,7 @@ jobs:
       - name: Unit tests
         # e2e specs (tests/e2e) run under Playwright via `bun run test:e2e`, not Bun.
         # The run gets an empty TMPDIR and fails when a test leaves a file there (#83).
-        run: |
-          export TMPDIR="$(mktemp -d)"
-          bun test ./src
-          leftover="$(ls -A "$TMPDIR")"
-          if [ -n "$leftover" ]; then
-            printf 'Unit tests left files in TMPDIR; remove them in an afterEach or afterAll hook:\n%s\n' "$leftover"
-            exit 1
-          fi
-          echo "TMPDIR is empty after the unit tests"
+        run: sh scripts/bun-test-clean-tmpdir.sh ./src ./scripts
 
   e2e:
     runs-on: ubuntu-latest
