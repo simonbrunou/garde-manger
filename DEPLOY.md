@@ -16,9 +16,10 @@ Scheduled Tasks for the reminder cron and the backup.
   pins `"packageManager": "bun@<version>"` and `bun.lock` is committed.
 - **Node:** Railpack also installs Node next to Bun, and `bun install` runs
   `svelte-kit sync` under it. `package.json` `engines.node` pins its major.
-  Keep it equal to the `node-version` in `.forgejo/workflows/ci.yml`: nothing
-  checks that they match, but Renovate bumps both in one PR. Without the pin,
-  Railpack installs its `lts` default.
+  CI's `e2e` job reads the same field through setup-node's
+  `node-version-file: package.json`, so a Renovate bump of `engines.node` moves
+  production and CI together. Without the pin, Railpack installs its `lts`
+  default.
 - **Build:** `bunx --bun vite build` (the `--bun` flag is required so `bun:sqlite`
   resolves in the SSR graph). This is the repo's `build` script.
 - **Start:** `bun ./build/index.js` (adapter-node).
