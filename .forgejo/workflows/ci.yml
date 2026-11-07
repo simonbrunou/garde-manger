@@ -28,7 +28,8 @@ jobs:
 
       - name: Unit tests
         # e2e specs (tests/e2e) run under Playwright via `bun run test:e2e`, not Bun.
-        run: bun test ./src
+        # The run gets an empty TMPDIR and fails when a test leaves a file there (#83).
+        run: sh scripts/bun-test-clean-tmpdir.sh ./src ./scripts
 
   e2e:
     runs-on: ubuntu-latest
