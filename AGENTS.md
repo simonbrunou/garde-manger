@@ -104,7 +104,7 @@ Outside CI, Playwright reuses whatever already listens on the e2e port 4173 (`re
 
 ## Scratch copies
 
-Give a copy of the checkout (a probe tree, a `git merge-tree` result) its own `node_modules`: run `env TMPDIR=/tmp bunx bun@<pin> install --frozen-lockfile` in it, or `cp -a --reflink=auto node_modules` into it. `svelte-kit sync` writes the tsconfig base to `node_modules/$app/tsconfig.json`, and its `rootDirs` (`../..` and `../../.svelte-kit/types`) resolve from wherever that `node_modules` really lives. With `node_modules` symlinked to another checkout, `bun run check` in the copy fails on every `./$types` import (177 errors on 2026-11-08), and with its own copy it passes.
+Give a copy of the checkout (a probe tree, a tree extracted with `git archive`) its own `node_modules`. Run `env TMPDIR=/tmp bunx bun@<pin> install --frozen-lockfile` in the copy (see Bun version), or `cp -a --reflink=auto <checkout>/node_modules <copy>/`. `svelte-kit sync` writes the tsconfig base to `node_modules/$app/tsconfig.json`. Its `rootDirs` (`../..` and `../../.svelte-kit/types`) resolve from wherever that `node_modules` really lives. With `node_modules` symlinked to another checkout, `bun run check` in the copy reports `Cannot find module './$types'` in every file that imports it. With its own `node_modules`, the copy passes.
 
 ## Agent skills
 
