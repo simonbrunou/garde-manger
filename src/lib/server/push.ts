@@ -218,7 +218,11 @@ export async function approveEndpoint(
 	return { addresses: ips };
 }
 
-/** `approveEndpoint` as a yes/no answer. */
+/**
+ * `approveEndpoint` as a yes/no answer. The yes alone does not close DNS
+ * rebinding: `sendToSubscription` calls `approveEndpoint` instead and hands the
+ * approved addresses to the sender, which pins the connection to them.
+ */
 export async function isEndpointSendable(
 	endpoint: string,
 	resolve?: HostResolver
