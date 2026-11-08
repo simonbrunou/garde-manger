@@ -15,6 +15,5 @@ If someone ran `graphify hook install`, its git hooks rebuild the graph in the m
 
 1. Run `git restore graphify-out`. It leaves staged output in place, so if you staged it, run `git restore --staged --worktree graphify-out` instead.
 2. Delete the gitignored `graphify-out/.graphify_labels.pending.json`, since the next run reads community names from it.
-3. Delete `graphify-out/.graphify_build_state.json` if it is still there. graphify 0.9.103 writes it on each update, and `.gitignore` does not list it yet (#93), so the plain `git restore` of step 1 leaves it as an untracked file.
 
 The undo is done when `git status --short graphify-out` prints nothing and `graphify-out/.graphify_labels.pending.json` is gone.

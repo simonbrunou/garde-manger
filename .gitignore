@@ -49,6 +49,8 @@ graphify-out/cache/
 graphify-out/.graphify_labels.pending.json
 # written by `graphify label`/`extract` only, so `update` leaves it stale
 graphify-out/.graphify_analysis.json
+# machine-specific rebuild stamp (holds the checkout path), rewritten by every update
+graphify-out/.graphify_build_state.json
 
 # Claude Code harness runtime artifacts (transient, machine-specific)
 .claude/scheduled_tasks.lock
