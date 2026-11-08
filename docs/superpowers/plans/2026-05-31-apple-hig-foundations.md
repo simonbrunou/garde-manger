@@ -415,19 +415,14 @@ Start the dev server (`bun run dev`), then with Playwright/Chrome DevTools MCP o
 
 Expected: no regression vs. pre-M1; new tokens resolve in both themes.
 
-- [ ] **Step 4: Refresh the knowledge graph**
-
-Run: `graphify update .`
-Expected: completes (AST-only, no API cost).
-
-- [ ] **Step 5: Final commit (if any verification fixups were made)**
+- [ ] **Step 4: Final commit (if any verification fixups were made)**
 
 ```bash
 git add -A
 git commit -m "chore(hig): M1 foundations verification fixups"
 ```
 
-(Skip if Steps 1–4 required no changes.)
+(Skip if Steps 1–3 required no changes.)
 
 ---
 
@@ -457,4 +452,4 @@ git commit -m "chore(hig): M1 foundations verification fixups"
 - **M4 Sheets & actions:** `Sheet.svelte`, `ActionSheet.svelte`; Add/Edit as sheets; item destructive actions.
 - **M5 Swipe actions:** `SwipeActions.svelte` on pantry rows with keyboard/desktop fallback.
 - **M6 Per-surface polish:** item detail (pushed view), bilan, cuisiner, account, households.
-- **M7 A11y + verification:** contrast/Dynamic-Type/semantics audit, live Playwright verification (light+dark, mobile), docs, graphify update.
+- **M7 A11y + verification:** contrast/Dynamic-Type/semantics audit, live Playwright verification (light+dark, mobile), docs.

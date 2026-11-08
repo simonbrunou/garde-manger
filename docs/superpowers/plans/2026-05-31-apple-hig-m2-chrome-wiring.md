@@ -205,7 +205,6 @@ by `@media not (prefers-reduced-motion: reduce)`.
   errors are not in scope).
 - [ ] LIVE: full click-through of all five tabs + one pushed view, light AND dark, 390×844;
   capture one screenshot per surface per theme.
-- [ ] `graphify update .`; commit graph refresh.
 
 ---
 

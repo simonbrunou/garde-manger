@@ -624,7 +624,7 @@ git commit -m "fix(push,pwa): point reminder deep-link and start_url at /garde-m
 
 ---
 
-### Task 6: Full verification + graph refresh
+### Task 6: Full verification
 
 - [ ] **Step 1: Format, lint, type-check, and run the whole suite**
 
@@ -652,14 +652,6 @@ Run: `npm run dev`, then verify in a browser:
 ```bash
 git add -A
 git commit -m "style: prettier-format landing page additions" || echo "nothing to format-commit"
-```
-
-- [ ] **Step 4: Refresh the knowledge graph (project convention)**
-
-Run: `graphify update .`
-Expected: AST-only re-index succeeds (no API cost). Commit if it changes tracked graph files:
-```bash
-git add graphify-out 2>/dev/null && git commit -m "chore(graphify): update graph after landing page" || echo "no graph changes"
 ```
 
 ---
