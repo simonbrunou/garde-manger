@@ -13,6 +13,7 @@ import {
 	sendToSubscription,
 	isSafePushEndpoint,
 	isEndpointSendable,
+	approveEndpoint,
 	type PushSender,
 	type WebPushTarget,
 	type Vapid
@@ -72,6 +73,7 @@ interface SenderCall {
 	payload: string;
 	vapid: Vapid;
 	ttl?: number;
+	addresses?: readonly string[];
 }
 
 interface FakeSender extends PushSender {
@@ -83,8 +85,8 @@ function makeSender(opts: { status?: number; throws?: boolean } = {}): FakeSende
 	const calls: SenderCall[] = [];
 	return {
 		calls,
-		async send(target, payload, { vapid, ttl }) {
-			calls.push({ target, payload, vapid, ttl });
+		async send(target, payload, { vapid, ttl, addresses }) {
+			calls.push({ target, payload, vapid, ttl, addresses });
 			if (opts.throws) throw new Error('transport exploded');
 			return opts.status ?? 201;
 		}
@@ -441,6 +443,53 @@ describe('sendToSubscription SSRF guard (send-time re-validation)', () => {
 		expect(outcome).toBe('ok');
 		expect(sender.calls).toHaveLength(1);
 	});
+
+	it('hands the sender exactly the addresses the check approved (DNS rebinding)', async () => {
+		// A rebinding DNS server answers a public address to the check, then an
+		// internal one to any later lookup. The sender may connect only to the
+		// first answer, so it must get the addresses the check judged.
+		saveSubscription(db, 'user-a', SUB_A);
+		const sub = listSubscriptionsForUser(db, 'user-a')[0];
+		const sender = makeSender({ status: 201 });
+
+		const outcome = await sendToSubscription(db, sub, PAYLOAD, VAPID, {
+			sender,
+			now: FIXED_NOW,
+			today: TODAY,
+			resolve: async () => ['93.184.216.34', '2606:2800:220:1:248:1893:25c8:1946']
+		});
+
+		expect(outcome).toBe('ok');
+		expect(sender.calls).toHaveLength(1);
+		expect(sender.calls[0].addresses).toEqual([
+			'93.184.216.34',
+			'2606:2800:220:1:248:1893:25c8:1946'
+		]);
+	});
+
+	it('pins no addresses when the check made no lookup', async () => {
+		saveSubscription(db, 'user-a', SUB_A);
+		saveSubscription(db, 'user-a', {
+			endpoint: 'https://93.184.216.34/x',
+			keys: { p256dh: 'p', auth: 'a' }
+		});
+		const [named, literal] = ['https://push.example/aaa', 'https://93.184.216.34/x'].map(
+			(endpoint) => listSubscriptionsForUser(db, 'user-a').find((s) => s.endpoint === endpoint)!
+		);
+		const sender = makeSender({ status: 201 });
+
+		// No resolver: the literal check only.
+		await sendToSubscription(db, named, PAYLOAD, VAPID, { sender, now: FIXED_NOW, today: TODAY });
+		// A public IP literal needs no lookup.
+		await sendToSubscription(db, literal, PAYLOAD, VAPID, {
+			sender,
+			now: FIXED_NOW,
+			today: TODAY,
+			resolve: async () => ['10.0.0.5']
+		});
+
+		expect(sender.calls.map((c) => c.addresses)).toEqual([undefined, undefined]);
+	});
 });
 
 describe('isEndpointSendable', () => {
@@ -508,6 +557,28 @@ describe('isEndpointSendable', () => {
 		});
 		expect(ok).toBe(true);
 		expect(called).toBe(false);
+	});
+});
+
+describe('approveEndpoint', () => {
+	it('returns the resolved addresses it approved', async () => {
+		expect(
+			await approveEndpoint('https://fcm.googleapis.com/x', async () => [
+				'142.250.1.1',
+				'::ffff:93.184.216.34'
+			])
+		).toEqual({ addresses: ['142.250.1.1', '::ffff:93.184.216.34'] });
+	});
+
+	it('returns null when it refuses', async () => {
+		expect(await approveEndpoint('https://127.0.0.1/x')).toBeNull();
+		expect(await approveEndpoint('https://evil.example/x', async () => ['10.0.0.5'])).toBeNull();
+		expect(await approveEndpoint('https://nx.example/x', async () => [])).toBeNull();
+	});
+
+	it('approves no addresses when it made no lookup', async () => {
+		expect(await approveEndpoint('https://fcm.googleapis.com/x')).toEqual({});
+		expect(await approveEndpoint('https://93.184.216.34/x', async () => ['10.0.0.5'])).toEqual({});
 	});
 });
 
