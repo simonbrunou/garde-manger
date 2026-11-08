@@ -247,7 +247,7 @@ in isolation.
 5. **M5 Swipe actions** — pantry row swipe-to-reveal with fallbacks.
 6. **M6 Per-surface polish** — item detail, bilan, cuisiner, account, households.
 7. **M7 A11y + verification** — contrast/Dynamic Type/semantics audit, live
-   Playwright verification (light+dark, mobile), tests, docs, graphify update.
+   Playwright verification (light+dark, mobile), tests, docs.
 
 Each milestone is independently shippable and ends test-green.
 

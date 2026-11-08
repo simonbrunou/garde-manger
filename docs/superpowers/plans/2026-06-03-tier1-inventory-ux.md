@@ -770,13 +770,3 @@ Expected: PASS (no unused `setStatus` import left behind).
 
 Run: `bun run test:e2e`
 Expected: PASS.
-
-- [ ] **Refresh the graphify graph** (per project CLAUDE.md, after modifying code)
-
-Run: `graphify update .`
-
-- [ ] **Final commit if anything was regenerated**
-
-```bash
-git add -A && git commit -m "chore: refresh graphify graph for Tier 1 inventory UX"
-```
