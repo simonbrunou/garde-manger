@@ -1,12 +1,16 @@
-import { describe, it, expect, beforeEach } from 'bun:test';
+import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
 import { createDb, runMigrations } from './client';
 import { pushSubscriptions, users } from './schema';
 import { eq } from 'drizzle-orm';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
+const dir = mkdtempSync(join(tmpdir(), 'gm-schema-push-'));
+afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
 function makeDb() {
-	const path = join(tmpdir(), `schema-push-test-${crypto.randomUUID()}.db`);
+	const path = join(dir, `schema-push-test-${crypto.randomUUID()}.db`);
 	const { db } = createDb(path);
 	runMigrations(db);
 	return db;

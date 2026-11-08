@@ -11,6 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # Full history, so the graphify-out guard finds the merge base with main.
+          fetch-depth: 0
+
+      - name: graphify-out guard
+        # Only a graph refresh PR may change graphify-out/, and it changes nothing else (#58).
+        # A push to main has no base to diff against.
+        if: github.event_name == 'pull_request'
+        env:
+          GRAPHIFY_GUARD_BASE: origin/${{ github.base_ref }}
+        run: sh scripts/check-graphify-out.sh
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -28,7 +39,8 @@ jobs:
 
       - name: Unit tests
         # e2e specs (tests/e2e) run under Playwright via `bun run test:e2e`, not Bun.
-        run: bun test ./src
+        # The run gets an empty TMPDIR and fails when a test leaves a file there (#83).
+        run: sh scripts/bun-test-clean-tmpdir.sh ./src ./scripts
 
   e2e:
     runs-on: ubuntu-latest
@@ -42,10 +54,12 @@ jobs:
 
       # The Playwright runner + node:sqlite fixtures need Node; the app server still
       # runs under Bun via the webServer command in playwright.config.ts.
+      # The major comes from package.json engines.node, the field Railpack reads for
+      # production (#79). Setting node-version here would override it.
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: 26
+          node-version-file: package.json
 
       - name: Install dependencies
         run: bun install --frozen-lockfile

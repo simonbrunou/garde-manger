@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from 'bun:test';
+import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
 import { createDb, runMigrations, type DB } from './db/client';
 import { users, households, memberships, inventoryItems } from './db/schema';
 import { usersToNotify } from './reminders';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -9,8 +10,11 @@ const MS_PER_DAY = 86_400_000;
 const NOW = new Date('2026-05-29T09:00:00.000Z');
 const TODAY_START = Date.UTC(2026, 4, 29); // 2026-05-29 UTC midnight
 
+const dir = mkdtempSync(join(tmpdir(), 'gm-reminders-'));
+afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
 function makeDb(): DB {
-	const path = join(tmpdir(), `reminders-test-${crypto.randomUUID()}.db`);
+	const path = join(dir, `reminders-test-${crypto.randomUUID()}.db`);
 	const { db } = createDb(path);
 	runMigrations(db);
 	return db;

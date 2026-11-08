@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from 'bun:test';
+import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
 import { join } from 'node:path';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { eq } from 'drizzle-orm';
 import { createDb, runMigrations, type DB } from './db/client';
@@ -19,8 +20,11 @@ import {
 
 // ── Test DB harness ─────────────────────────────────────────────────────────
 
+const dir = mkdtempSync(join(tmpdir(), 'gm-push-'));
+afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
 function makeDb(): DB {
-	const path = join(tmpdir(), `push-test-${crypto.randomUUID()}.db`);
+	const path = join(dir, `push-test-${crypto.randomUUID()}.db`);
 	const { db } = createDb(path);
 	runMigrations(db);
 	return db;
@@ -366,6 +370,10 @@ describe('isSafePushEndpoint', () => {
 		expect(isSafePushEndpoint('https://[::1]/x')).toBe(false);
 	});
 
+	it('rejects a public IPv6-literal host, which web-push 4 cannot reach', () => {
+		expect(isSafePushEndpoint('https://[2001:4860:4860::8888]/x')).toBe(false);
+	});
+
 	it('rejects garbage', () => {
 		expect(isSafePushEndpoint('not a url')).toBe(false);
 		expect(isSafePushEndpoint('')).toBe(false);
@@ -458,6 +466,40 @@ describe('isEndpointSendable', () => {
 		expect(await isEndpointSendable('https://nx.example/x', async () => [])).toBe(false);
 	});
 
+	it('judges an IPv4-mapped IPv6 answer by the IPv4 address it carries', async () => {
+		for (const ip of [
+			'::ffff:127.0.0.1',
+			'::ffff:7f00:1',
+			'0:0:0:0:0:ffff:7f00:1',
+			'::FFFF:A9FE:A9FE',
+			'::ffff:169.254.169.254',
+			'::ffff:192.168.1.1'
+		]) {
+			expect(await isEndpointSendable('https://evil.example/x', async () => [ip])).toBe(false);
+		}
+		expect(
+			await isEndpointSendable('https://evil.example/x', async () => [
+				'142.250.1.1',
+				'::ffff:a00:1'
+			])
+		).toBe(false);
+		expect(
+			await isEndpointSendable('https://push.example/x', async () => ['::ffff:93.184.216.34'])
+		).toBe(true);
+	});
+
+	it('judges an uncompressed IPv6 answer like its compressed form', async () => {
+		for (const ip of ['0:0:0:0:0:0:0:1', 'FE80:0:0:0:0:0:0:1']) {
+			expect(await isEndpointSendable('https://evil.example/x', async () => [ip])).toBe(false);
+		}
+	});
+
+	it('does not read a junk answer as the address hidden inside it', async () => {
+		for (const ip of ['fe80::1]@[2001:db8::1', 'fc00::1]@[2001:db8::1', 'fe80::1]@a.b/']) {
+			expect(await isEndpointSendable('https://evil.example/x', async () => [ip])).toBe(false);
+		}
+	});
+
 	it('skips DNS for a public IP-literal endpoint (already vetted)', async () => {
 		let called = false;
 		const ok = await isEndpointSendable('https://93.184.216.34/x', async () => {
@@ -471,7 +513,7 @@ describe('isEndpointSendable', () => {
 
 describe('saveSubscription per-user cap', () => {
 	it('keeps at most 20 subscriptions per user, evicting oldest', () => {
-		const path = join(tmpdir(), `push-cap-${crypto.randomUUID()}.db`);
+		const path = join(dir, `push-cap-${crypto.randomUUID()}.db`);
 		const { db } = createDb(path);
 		runMigrations(db);
 		db.insert(users)

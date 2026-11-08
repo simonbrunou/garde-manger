@@ -1,0 +1,14 @@
+#!/bin/sh
+# Run `bun test <paths>` with TMPDIR set to a new empty directory, and fail when a
+# test leaves anything there (#83). CI's unit-test step runs this.
+set -e
+TMPDIR="$(mktemp -d)"
+export TMPDIR
+bun test "$@"
+leftover="$(ls -A "$TMPDIR")"
+if [ -n "$leftover" ]; then
+	printf 'Unit tests left files in TMPDIR; remove them in an afterEach or afterAll hook:\n%s\n' "$leftover"
+	exit 1
+fi
+rmdir "$TMPDIR"
+echo "TMPDIR is empty after the unit tests"
