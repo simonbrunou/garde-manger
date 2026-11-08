@@ -102,6 +102,10 @@ A Bun other than the pinned one can write a different `bun.lock`. Bun 1.3.13, wh
 
 Outside CI, Playwright reuses whatever already listens on the e2e port 4173 (`reuseExistingServer` in `playwright.config.ts`) instead of wiping `.e2e` and building fresh. A server left from an earlier run, or a `bun run preview` (Vite's default port is also 4173), then serves stale code and an old DB, and new routes or UI fail while the code is fine. Free the port before each run with `fuser -k 4173/tcp || true`, which kills by port; `pkill -f build/index.js` would also match your own shell. The port is shared by every worktree on the host, so run one e2e suite at a time.
 
+## Scratch copies
+
+Give a copy of the checkout (a probe tree, a tree extracted with `git archive`) its own `node_modules`. Run `env TMPDIR=/tmp bunx bun@<pin> install --frozen-lockfile` in the copy (see Bun version), or `cp -a --reflink=auto <checkout>/node_modules <copy>/`. `svelte-kit sync` writes the tsconfig base to `node_modules/$app/tsconfig.json`. Its `rootDirs` (`../..` and `../../.svelte-kit/types`) resolve from wherever that `node_modules` really lives. With `node_modules` symlinked to another checkout, `bun run check` in the copy reports `Cannot find module './$types'` in every file that imports it. With its own `node_modules`, the copy passes.
+
 ## Agent skills
 
 ### Issue tracker
