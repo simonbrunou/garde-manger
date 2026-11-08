@@ -23,10 +23,12 @@ jobs:
           GRAPHIFY_GUARD_BASE: origin/${{ github.base_ref }}
         run: sh scripts/check-graphify-out.sh
 
+      # The version comes from package.json packageManager, the pin Railpack reads
+      # for production (#81). Setting bun-version here would override it.
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.4
+          bun-version-file: package.json
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -47,10 +49,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # The version comes from package.json packageManager, the pin Railpack reads
+      # for production (#81). Setting bun-version here would override it.
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.4
+          bun-version-file: package.json
 
       # The Playwright runner + node:sqlite fixtures need Node; the app server still
       # runs under Bun via the webServer command in playwright.config.ts.

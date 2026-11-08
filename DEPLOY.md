@@ -13,7 +13,9 @@ Scheduled Tasks for the reminder cron and the backup.
 ## 1. Build & run
 
 - **Build pack:** Railpack. The Node provider runs Bun because `package.json`
-  pins `"packageManager": "bun@<version>"` and `bun.lock` is committed.
+  pins `"packageManager": "bun@<version>"` and `bun.lock` is committed. Both CI
+  jobs read the same field through setup-bun's `bun-version-file: package.json`,
+  so a Renovate bump of `packageManager` moves production and CI together.
 - **Node:** Railpack also installs Node next to Bun, and `bun install` runs
   `svelte-kit sync` under it. `package.json` `engines.node` pins its major.
   CI's `e2e` job reads the same field through setup-node's
