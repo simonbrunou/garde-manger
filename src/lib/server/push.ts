@@ -43,7 +43,17 @@ export interface PushSender {
 	send(
 		target: WebPushTarget,
 		payload: string,
-		opts: { vapid: Vapid; ttl?: number }
+		opts: {
+			vapid: Vapid;
+			ttl?: number;
+			/**
+			 * The addresses the send-time SSRF check approved for the endpoint's host.
+			 * When set, the request connects only to one of them and makes no DNS
+			 * lookup of its own; an empty list connects nowhere. Unset when the check
+			 * made no lookup.
+			 */
+			addresses?: readonly string[];
+		}
 	): Promise<number>;
 }
 
@@ -185,21 +195,35 @@ function isIpLiteral(host: string): boolean {
  * Send-time SSRF check. The subscribe-time `isSafePushEndpoint` validates the
  * literal endpoint string, but the value is stored and the daily cron POSTs to it
  * later — so we re-validate here and, when a resolver is supplied, resolve the
- * host and reject if ANY resolved IP is private/loopback/link-local. This closes
- * the time-of-check/time-of-use gap and DNS-rebinding (a public hostname that
- * resolves to an internal address). An unresolvable host is treated as unsafe.
+ * host and refuse if ANY resolved IP is private/loopback/link-local. An
+ * unresolvable host is treated as unsafe.
+ *
+ * Returns `null` when it refuses, else the resolved addresses it approved. The
+ * sender pins the connection to those addresses (see `webPushSender`), so a DNS
+ * answer that changes after this check (DNS rebinding) cannot reach an internal
+ * address. `addresses` is unset when no lookup ran: no resolver, or a public
+ * IP-literal endpoint, which needs no lookup.
  */
+export async function approveEndpoint(
+	endpoint: string,
+	resolve?: HostResolver
+): Promise<{ addresses?: string[] } | null> {
+	if (!isSafePushEndpoint(endpoint)) return null; // https + not a private literal
+	if (!resolve) return {}; // no resolver supplied → literal check only
+	const host = new URL(endpoint).hostname.toLowerCase().replace(/^\[/, '').replace(/\]$/, '');
+	if (isIpLiteral(host)) return {}; // already vetted as a public literal above
+	const ips = await resolve(host);
+	if (ips.length === 0) return null; // unresolved → conservative reject
+	if (ips.some((ip) => isPrivateOrLocalHost(ip))) return null;
+	return { addresses: ips };
+}
+
+/** `approveEndpoint` as a yes/no answer. */
 export async function isEndpointSendable(
 	endpoint: string,
 	resolve?: HostResolver
 ): Promise<boolean> {
-	if (!isSafePushEndpoint(endpoint)) return false; // https + not a private literal
-	if (!resolve) return true; // no resolver supplied → literal check only
-	const host = new URL(endpoint).hostname.toLowerCase().replace(/^\[/, '').replace(/\]$/, '');
-	if (isIpLiteral(host)) return true; // already vetted as a public literal above
-	const ips = await resolve(host);
-	if (ips.length === 0) return false; // unresolved → conservative reject
-	return ips.every((ip) => !isPrivateOrLocalHost(ip));
+	return (await approveEndpoint(endpoint, resolve)) !== null;
 }
 
 // ── Subscription persistence ────────────────────────────────────────────────────
@@ -291,8 +315,10 @@ export async function sendToSubscription(
 	const today = deps.today ?? toIsoDate(now);
 
 	// SSRF guard re-checked at SEND time (the endpoint is client-supplied and the
-	// server POSTs to it here). Don't send to an unsafe/internal endpoint.
-	if (!(await isEndpointSendable(sub.endpoint, deps.resolve))) {
+	// server POSTs to it here). Don't send to an unsafe/internal endpoint, and
+	// connect only to the addresses the check approved.
+	const approved = await approveEndpoint(sub.endpoint, deps.resolve);
+	if (!approved) {
 		return recordFailure(db, sub.id);
 	}
 
@@ -303,7 +329,7 @@ export async function sendToSubscription(
 
 	let status: number;
 	try {
-		status = await deps.sender.send(target, payload, { vapid });
+		status = await deps.sender.send(target, payload, { vapid, addresses: approved.addresses });
 	} catch {
 		// Transport blew up unexpectedly — treat as a soft failure, keep the row.
 		return recordFailure(db, sub.id);
