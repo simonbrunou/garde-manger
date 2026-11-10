@@ -30,10 +30,11 @@
 // `if: github.event_name == 'pull_request'`, so the push run skips it. Such a step may hold that
 // `if` and `${{ github.base_ref }}` when its other keys are `name` and an `env` that sets
 // GRAPHIFY_GUARD_BASE alone, its job has no keys but `name`, `runs-on` and `steps`, and its
-// workflow none but `name`, `on` and `jobs`. Every step inherits a job's or a workflow's
-// `defaults`, `env` and `container`, where a `shell`, a `working-directory` or a variable such as
-// BASH_ENV could run other code on the PR run only. The guard only reads git and prints, so the
-// steps after it see the same files on both runs.
+// workflow none but `name`, `on` and `jobs`. Every step inherits the workflow's `defaults` and
+// `env` and the job's `defaults`, `env` and `container`, where a `shell`, a `working-directory` or
+// a variable such as BASH_ENV could run other code on the PR run only, so any key outside those
+// lists makes it wait. The guard only reads git and prints, so the steps after it see the same
+// files on both runs.
 //
 // It cannot see code that branches on commit metadata (the push run checks out `main` at the
 // merge commit, whose subject, SHA and parents differ from the pushed SHA's), a step before the
@@ -155,8 +156,8 @@ function hasOnlyKeys(node: unknown, allowed: Set<string>): boolean {
 	);
 }
 
-// The steps of a workflow's jobs that are CI's graphify-out guard (see the header). A step counts
-// only where its workflow and its job have none of the keys every step inherits.
+// The steps of a workflow's jobs that are CI's graphify-out guard. A step counts only where its
+// workflow and its job hold no key outside GUARD_WORKFLOW_KEYS and GUARD_JOB_KEYS (see the header).
 function guardSteps(doc: Document): Set<unknown> {
 	const found = new Set<unknown>();
 	const jobs = doc.get('jobs', true);

@@ -596,11 +596,18 @@ describe('check-push-repeats-pr finds a difference', () => {
 			'the job',
 			'    runs-on:',
 			'    container:\n      image: node:22\n      env:\n        BASH_ENV: scripts/hook.sh\n    runs-on:'
-		]
+		],
+		// Keys no step inherits: the guard's workflow and job allow only the keys this repo uses.
+		[
+			'the job',
+			'    runs-on:',
+			'    services:\n      db:\n        image: postgres:17\n    runs-on:'
+		],
+		['the workflow', 'jobs:', 'concurrency: ci\njobs:']
 	]) {
 		const key = to.trim().split(':')[0];
 		it(
-			`${key} on ${where}, which the guard step inherits`,
+			`${key} on ${where} of the guard`,
 			() => {
 				expectDifference(
 					{ [CI]: edit(baseCi, from, to) },
