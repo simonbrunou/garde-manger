@@ -553,6 +553,33 @@ describe('check-push-repeats-pr finds a difference', () => {
 		TIMEOUT_MS
 	);
 	it(
+		'a guard step with a shell, which runs other code on the PR run',
+		() => {
+			const ci = edit(
+				baseCi,
+				'        run: sh scripts/check-graphify-out.sh',
+				"        shell: bash -c 'echo pr > marker; sh {0}'\n        run: sh scripts/check-graphify-out.sh"
+			);
+			expectDifference(
+				{ [CI]: ci },
+				/steps\[1\]\.if: an if: github\.event_name == 'pull_request'[\s\S]*GRAPHIFY_GUARD_BASE: an expression/
+			);
+		},
+		TIMEOUT_MS
+	);
+	it(
+		'a guard step with another env variable, which the shell can run code from',
+		() => {
+			const ci = edit(
+				baseCi,
+				'          GRAPHIFY_GUARD_BASE',
+				'          BASH_ENV: scripts/pr-only.sh\n          GRAPHIFY_GUARD_BASE'
+			);
+			expectDifference({ [CI]: ci }, /steps\[1\]\.if: an if: github\.event_name == 'pull_request'/);
+		},
+		TIMEOUT_MS
+	);
+	it(
 		'github.base_ref outside the guard',
 		() => {
 			const ci = ciWith(

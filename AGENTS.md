@@ -95,7 +95,7 @@ After every merge, check whether to wait for `main`'s CI run:
 1. Run `git fetch origin`. Take the merge SHA from `merge_commit_sha` in `python3 -I ~/.agents/skills/forgejo-issues/scripts/forgejo.py get garde-manger#<n>`, since `fj pr -R origin merge` prints none.
 2. Run `git rev-parse <merge SHA>^{tree} <pushed SHA>^{tree}`. Two different hashes mean the merge commit holds files CI has not tested together, as when the branch was behind `main`, so wait (step 4).
 3. The same hash twice means the merge commit holds the files the PR's CI passed, since the PR run checks out the pushed SHA itself. Run `bun scripts/check-push-repeats-pr.ts <pushed SHA>` in a checkout with its dependencies installed. It checks that the `push` run on `main` repeats the PR run's jobs and steps, and its header lists what it reads, the differences this repo's CI keeps on purpose and what it cannot see. Exit 0 means skip the wait. Any other exit means wait (step 4); it printed each difference it found.
-4. To wait, run `python3 -I ~/.agents/skills/forgejo-issues/scripts/forgejo.py ci garde-manger --follow main` alone in its shell call, again on exit 3, and fix a red run in a new PR.
+4. To wait, read `main`'s CI state as step 3 of the deploy check in `docs/agents/deploy.md` says, and fix a red run in a new PR.
 
 The production deploy that the merge triggers is accepted. Ask first only when the PR drops or rewrites stored data (a destructive migration, a backfill that overwrites rows). To check a production deploy, after a merge or whenever someone asks what `main` runs in production, follow `docs/agents/deploy.md`.
 

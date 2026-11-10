@@ -28,8 +28,10 @@
 // `pull_request` limits the PR runs to PRs into main, the ones whose merge starts a push run on
 // main. CI's graphify-out guard (#58) is a step that runs `sh scripts/check-graphify-out.sh` with
 // `if: github.event_name == 'pull_request'`, so the push run skips it. Such a step may hold that
-// `if` and `${{ github.base_ref }}`. The guard only reads git and prints, so the steps after it
-// see the same files on both runs.
+// `if` and `${{ github.base_ref }}` when its other keys are `name` and an `env` that sets
+// GRAPHIFY_GUARD_BASE alone: a `shell`, a `working-directory` or another variable could run
+// other code on the PR run only. The guard only reads git and prints, so the steps after it see
+// the same files on both runs.
 //
 // It cannot see code that branches on commit metadata (the push run checks out `main` at the
 // merge commit, whose subject, SHA and parents differ from the pushed SHA's), a change to
@@ -49,6 +51,7 @@ const EXPRESSION = /\$\{\{([\s\S]*?)\}\}/g;
 const GUARD_IF = "github.event_name == 'pull_request'";
 const GUARD_RUN = 'sh scripts/check-graphify-out.sh';
 const GUARD_EXPRESSION = 'github.base_ref';
+const GUARD_KEYS = new Set(['name', 'if', 'env', 'run']);
 
 function fail(message: string): never {
 	console.error(`check-push-repeats-pr: ${message}`);
@@ -125,7 +128,21 @@ function checkJobs(file: string, doc: unknown) {
 	}
 }
 
-// The steps of a workflow's jobs that are CI's graphify-out guard, by their `if` and `run`.
+function isGuardStep(doc: Document, step: unknown): boolean {
+	if (!YAML.isMap(step)) return false;
+	const value = step.toJS(doc) as Record<string, unknown>;
+	const env: unknown = value.env ?? {};
+	return (
+		value.if === GUARD_IF &&
+		value.run === GUARD_RUN &&
+		Object.keys(value).every((key) => GUARD_KEYS.has(key)) &&
+		typeof env === 'object' &&
+		env !== null &&
+		Object.keys(env).every((key) => key === 'GRAPHIFY_GUARD_BASE')
+	);
+}
+
+// The steps of a workflow's jobs that are CI's graphify-out guard (see the header).
 function guardSteps(doc: Document): Set<unknown> {
 	const found = new Set<unknown>();
 	const jobs = doc.get('jobs', true);
@@ -133,11 +150,7 @@ function guardSteps(doc: Document): Set<unknown> {
 	for (const job of jobs.items) {
 		const steps = YAML.isMap(job.value) ? job.value.get('steps', true) : undefined;
 		if (!YAML.isSeq(steps)) continue;
-		for (const step of steps.items) {
-			if (YAML.isMap(step) && step.get('if') === GUARD_IF && step.get('run') === GUARD_RUN) {
-				found.add(step);
-			}
-		}
+		for (const step of steps.items) if (isGuardStep(doc, step)) found.add(step);
 	}
 	return found;
 }
