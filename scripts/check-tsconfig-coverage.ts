@@ -2,6 +2,8 @@
 // type-checks, as scripts/ was until #89 and tests/ until #99. The guard takes those tsconfigs
 // from the svelte-check and tsc steps of the check script in package.json, so the list has one
 // home, and reads each file list from `tsc --showConfig`, the list svelte-check and tsc use.
+// It trusts each such step to type-check: a flag that turns checking off (--noCheck,
+// --listFilesOnly) is outside what it looks at.
 // Usage, from the repo root: bun scripts/check-tsconfig-coverage.ts
 import { realpathSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
@@ -31,7 +33,7 @@ if (/[;|]|(?:^|&&)\s*cd\s/.test(check)) {
 // Only a step that runs svelte-check or tsc, possibly through npx or bunx after environment
 // assignments, type-checks the tsconfig its flag names.
 const STEP =
-	/^(?:\w+=\S*\s+)*(?:(?:npx|bunx)\s+)?(?:svelte-check|tsc)\s(?:.*\s)?(?:--tsconfig|--project|-p)[ =](\S+)/;
+	/^(?:\w+=(?:"[^"]*"|'[^']*'|[^\s"']*)\s+)*(?:(?:npx|bunx)\s+)?(?:svelte-check|tsc)\s(?:.*\s)?(?:--tsconfig|--project|-p)[ =](\S+)/;
 const configs = check
 	.split('&&')
 	.map((step) => step.trim().match(STEP)?.[1])
