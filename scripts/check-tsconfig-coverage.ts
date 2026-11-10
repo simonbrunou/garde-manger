@@ -1,7 +1,7 @@
 // Fail when a tracked .ts, .mts or .cts file is in none of the tsconfigs that `bun run check`
 // type-checks, as scripts/ was until #89 and tests/ until #99. The guard takes those tsconfigs
-// from the check script in package.json (each path after `--tsconfig` or `-p`), so the list has
-// one home, and reads each file list from `tsc --showConfig`, the list svelte-check and tsc use.
+// from the svelte-check and tsc steps of the check script in package.json, so the list has one
+// home, and reads each file list from `tsc --showConfig`, the list svelte-check and tsc use.
 // Usage, from the repo root: bun scripts/check-tsconfig-coverage.ts
 import { realpathSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
@@ -19,11 +19,18 @@ function run(cmd: string[]): string {
 }
 
 const pkg = (await Bun.file('package.json').json()) as { scripts?: { check?: string } };
-const configs = [...(pkg.scripts?.check ?? '').matchAll(/(?:^|\s)(?:--tsconfig|-p)[ =](\S+)/g)].map(
-	(m) => m[1]
-);
+// Only a step that runs svelte-check or tsc type-checks the tsconfig its flag names.
+const configs = (pkg.scripts?.check ?? '')
+	.split('&&')
+	.map(
+		(step) =>
+			step.trim().match(/^(?:svelte-check|tsc)\s(?:.*\s)?(?:--tsconfig|--project|-p)[ =](\S+)/)?.[1]
+	)
+	.filter((config): config is string => config !== undefined);
 if (configs.length === 0) {
-	console.error('The check script in package.json names no tsconfig after --tsconfig or -p.');
+	console.error(
+		'The check script in package.json runs no svelte-check or tsc step with --tsconfig, --project or -p.'
+	);
 	process.exit(2);
 }
 
@@ -41,6 +48,11 @@ for (const config of configs) {
 const tracked = run(['git', 'ls-files', '-z', '--', '*.ts', '*.mts', '*.cts'])
 	.split('\0')
 	.filter(Boolean);
+if (tracked.length === 0) {
+	// A copy inside some other git repo lists nothing here, and would pass while checking nothing.
+	console.error('git lists no tracked .ts, .mts or .cts file. Run this from the repo root.');
+	process.exit(1);
+}
 const missing = tracked.filter((file) => !covered.has(file));
 if (missing.length > 0) {
 	console.log(

@@ -95,6 +95,26 @@ describe('check-tsconfig-coverage.ts', () => {
 		expect(both.stdout).toContain('all 2 tracked');
 	});
 
+	it('reads --tsconfig=, --project and -p from svelte-check and tsc steps', () => {
+		track('src/service-worker/tsconfig.json', JSON.stringify({ include: ['.'] }));
+		track('src/service-worker/index.ts', 'export {};\n');
+		checkScript(
+			'svelte-check --tsconfig=./tsconfig.json && tsc --noEmit --project src/service-worker/tsconfig.json'
+		);
+		const r = guard();
+		expect(r.exitCode).toBe(0);
+		expect(r.stdout).toContain('are in ./tsconfig.json, src/service-worker/tsconfig.json');
+	});
+
+	it('ignores a tsconfig flag of a step that does not type-check', () => {
+		track('tests/tsconfig.json', JSON.stringify({ include: ['.'] }));
+		track('tests/a.ts', 'export {};\n');
+		checkScript('svelte-check --tsconfig ./tsconfig.json && tsx --tsconfig tests/tsconfig.json a');
+		const r = guard();
+		expect(r.exitCode).toBe(1);
+		expect(r.stdout).toContain('  tests/a.ts');
+	});
+
 	it('fails on the files of a tsconfig the check script stops type-checking', () => {
 		track('src/service-worker/tsconfig.json', JSON.stringify({ include: ['.'] }));
 		track('src/service-worker/index.ts', 'export {};\n');
@@ -123,7 +143,16 @@ describe('check-tsconfig-coverage.ts', () => {
 		rmSync(join(repo, '.git'), { recursive: true, force: true });
 		const r = guard();
 		expect(r.exitCode).toBe(1);
-		expect(r.output).toContain('git ls-files');
+		expect(r.output).toContain('not a git repository');
+		expect(r.output).not.toContain('git lists no tracked');
+		expect(r.output).not.toContain('tsconfig coverage: ok');
+	});
+
+	it('fails when git lists no tracked TypeScript file, instead of passing on none', () => {
+		git('rm', '-q', '--cached', 'src/app.ts');
+		const r = guard();
+		expect(r.exitCode).toBe(1);
+		expect(r.output).toContain('git lists no tracked');
 		expect(r.output).not.toContain('tsconfig coverage: ok');
 	});
 
@@ -131,6 +160,6 @@ describe('check-tsconfig-coverage.ts', () => {
 		checkScript('svelte-check');
 		const r = guard();
 		expect(r.exitCode).toBe(2);
-		expect(r.output).toContain('names no tsconfig');
+		expect(r.output).toContain('runs no svelte-check or tsc step');
 	});
 });
