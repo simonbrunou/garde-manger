@@ -29,15 +29,17 @@
 // main. CI's graphify-out guard (#58) is a step that runs `sh scripts/check-graphify-out.sh` with
 // `if: github.event_name == 'pull_request'`, so the push run skips it. Such a step may hold that
 // `if` and `${{ github.base_ref }}` when its other keys are `name` and an `env` that sets
-// GRAPHIFY_GUARD_BASE alone, and when neither its job nor its workflow sets `defaults` or `env`,
-// which every step inherits: a `shell`, a `working-directory` or a variable such as BASH_ENV
-// could run other code on the PR run only. The guard only reads git and prints, so the steps
-// after it see the same files on both runs.
+// GRAPHIFY_GUARD_BASE alone, its job has no keys but `name`, `runs-on` and `steps`, and its
+// workflow none but `name`, `on` and `jobs`. Every step inherits a job's or a workflow's
+// `defaults`, `env` and `container`, where a `shell`, a `working-directory` or a variable such as
+// BASH_ENV could run other code on the PR run only. The guard only reads git and prints, so the
+// steps after it see the same files on both runs.
 //
 // It cannot see code that branches on commit metadata (the push run checks out `main` at the
-// merge commit, whose subject, SHA and parents differ from the pushed SHA's), a change to
-// scripts/check-graphify-out.sh that writes files later steps read, code that the runner or a
-// job's container image runs in every step, or code that reads the event by a route the list
+// merge commit, whose subject, SHA and parents differ from the pushed SHA's), a step before the
+// guard that changes what the guard runs (one that edits scripts/check-graphify-out.sh, say), a
+// change to scripts/check-graphify-out.sh that writes files later steps read, code that the
+// runner or its image runs in every step, or code that reads the event by a route the list
 // above leaves out. Such code passes.
 //
 // Exit 0: no difference, so the push run repeats the PR run. Exit 1: it printed a difference, so
@@ -54,7 +56,8 @@ const GUARD_IF = "github.event_name == 'pull_request'";
 const GUARD_RUN = 'sh scripts/check-graphify-out.sh';
 const GUARD_EXPRESSION = 'github.base_ref';
 const GUARD_KEYS = new Set(['name', 'if', 'env', 'run']);
-const INHERITED = ['defaults', 'env'];
+const GUARD_WORKFLOW_KEYS = new Set(['name', 'on', 'jobs']);
+const GUARD_JOB_KEYS = new Set(['name', 'runs-on', 'steps']);
 
 function fail(message: string): never {
 	console.error(`check-push-repeats-pr: ${message}`);
@@ -145,15 +148,22 @@ function isGuardStep(doc: Document, step: unknown): boolean {
 	);
 }
 
+function hasOnlyKeys(node: unknown, allowed: Set<string>): boolean {
+	return (
+		YAML.isMap(node) &&
+		node.items.every((pair) => YAML.isScalar(pair.key) && allowed.has(String(pair.key.value)))
+	);
+}
+
 // The steps of a workflow's jobs that are CI's graphify-out guard (see the header). A step counts
-// only where neither its workflow nor its job sets `defaults` or `env`, which every step inherits.
+// only where its workflow and its job have none of the keys every step inherits.
 function guardSteps(doc: Document): Set<unknown> {
 	const found = new Set<unknown>();
 	const jobs = doc.get('jobs', true);
-	if (!YAML.isMap(jobs) || INHERITED.some((key) => doc.has(key))) return found;
+	if (!YAML.isMap(jobs) || !hasOnlyKeys(doc.contents, GUARD_WORKFLOW_KEYS)) return found;
 	for (const job of jobs.items) {
 		const value = job.value;
-		if (!YAML.isMap(value) || INHERITED.some((key) => value.has(key))) continue;
+		if (!YAML.isMap(value) || !hasOnlyKeys(value, GUARD_JOB_KEYS)) continue;
 		const steps = value.get('steps', true);
 		if (!YAML.isSeq(steps)) continue;
 		for (const step of steps.items) if (isGuardStep(doc, step)) found.add(step);

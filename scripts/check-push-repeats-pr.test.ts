@@ -591,7 +591,12 @@ describe('check-push-repeats-pr finds a difference', () => {
 			'    defaults:\n      run:\n        working-directory: sub\n    runs-on:'
 		],
 		['the workflow', 'jobs:', 'env:\n  BASH_ENV: scripts/hook.sh\njobs:'],
-		['the job', '    runs-on:', '    env:\n      BASH_ENV: scripts/hook.sh\n    runs-on:']
+		['the job', '    runs-on:', '    env:\n      BASH_ENV: scripts/hook.sh\n    runs-on:'],
+		[
+			'the job',
+			'    runs-on:',
+			'    container:\n      image: node:22\n      env:\n        BASH_ENV: scripts/hook.sh\n    runs-on:'
+		]
 	]) {
 		const key = to.trim().split(':')[0];
 		it(
