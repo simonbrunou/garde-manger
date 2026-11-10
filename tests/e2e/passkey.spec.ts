@@ -1,5 +1,6 @@
 import { test, expect, loginAs, setActiveHousehold } from './fixtures/test';
 import * as db from './fixtures/db';
+import { BASE_URL } from './fixtures/constants';
 
 // Passkey enroll -> usernameless login round-trip via a Chromium CDP virtual
 // authenticator. No storageState: this project authenticates a freshly seeded
@@ -64,4 +65,47 @@ test('a user can enroll a passkey and then log in with it', async ({ page, conte
 	// Verifying with the virtual authenticator must land the user on /garde-manger.
 	await page.waitForURL('**/garde-manger');
 	await expect(page).toHaveURL(/\/garde-manger$/);
+});
+
+// A registration response that @simplewebauthn/server rejects by throwing (here a
+// clientDataJSON challenge that differs from the gm_wa_reg_chal cookie) must answer
+// 400, not 500, and must still clear the single-use challenge cookie (#97).
+test('a registration response with the wrong challenge answers 400 and clears the challenge cookie', async ({
+	page,
+	context
+}) => {
+	const user = db.seedUser({ locale: 'en' });
+	await loginAs(context, user.id);
+	// Establish the authenticated session on page.request by visiting an app page.
+	await page.goto('/account');
+
+	// A JSON body, as PasskeyEnroll sends: a POST with no content type fails SvelteKit's CSRF check.
+	const optionsRes = await page.request.post('/api/webauthn/register/options', { data: {} });
+	expect(optionsRes.status()).toBe(200);
+	const { challenge } = (await optionsRes.json()) as { challenge: string };
+	const challengeCookie = async () =>
+		(await context.cookies()).find((c) => c.name === 'gm_wa_reg_chal');
+	expect((await challengeCookie())?.value).toBe(challenge);
+
+	// Only the fields the library reads before its challenge check: it throws there.
+	const clientDataJSON = Buffer.from(
+		JSON.stringify({
+			type: 'webauthn.create',
+			challenge: Buffer.from('other').toString('base64url'),
+			origin: BASE_URL
+		})
+	).toString('base64url');
+	const verifyRes = await page.request.post('/api/webauthn/register/verify', {
+		data: {
+			id: 'AAAA',
+			rawId: 'AAAA',
+			type: 'public-key',
+			response: { clientDataJSON, attestationObject: 'AAAA' },
+			clientExtensionResults: {}
+		}
+	});
+
+	expect(verifyRes.status()).toBe(400);
+	expect(await challengeCookie()).toBeUndefined();
+	expect(db.getCredentialCount(user.id)).toBe(0);
 });

@@ -91,13 +91,21 @@ export async function verifyRegistration(
 		deviceLabel?: string;
 	}
 ): Promise<{ verified: boolean; reason?: 'duplicate' }> {
-	const result = await verifyRegistrationResponse({
-		response,
-		expectedChallenge,
-		expectedOrigin: ORIGIN,
-		expectedRPID: RP_ID,
-		requireUserVerification: true
-	});
+	let result;
+	try {
+		result = await verifyRegistrationResponse({
+			response,
+			expectedChallenge,
+			expectedOrigin: ORIGIN,
+			expectedRPID: RP_ID,
+			requireUserVerification: true
+		});
+	} catch (err) {
+		// verifyRegistrationResponse throws on a wrong challenge, origin, RP ID or type,
+		// an unsupported attestation format and a malformed response
+		console.error('[webauthn] registration verify failed:', err);
+		return { verified: false };
+	}
 
 	if (!result.verified || !result.registrationInfo) {
 		return { verified: false };
