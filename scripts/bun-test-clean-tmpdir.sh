@@ -5,7 +5,7 @@ set -e
 TMPDIR="$(mktemp -d)"
 export TMPDIR
 # CI sets no NODE_COMPILE_CACHE, so Node tools the tests spawn (tsc) cache their code in TMPDIR
-# there. The maintainer's shells set it (nix home/shell.nix, nix#86), which would pass a run CI fails.
+# there. A shell that sets it would pass a run that CI fails.
 unset NODE_COMPILE_CACHE
 bun test "$@"
 leftover="$(ls -A "$TMPDIR")"

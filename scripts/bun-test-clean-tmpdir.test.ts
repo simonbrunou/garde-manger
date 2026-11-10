@@ -61,7 +61,7 @@ describe('bun-test-clean-tmpdir.sh', () => {
 		expect(r.stdout).not.toContain('TMPDIR is empty after the unit tests');
 	});
 
-	it('runs the tests without NODE_COMPILE_CACHE, so a Node tool caches in TMPDIR as in CI', () => {
+	it('runs the tests without NODE_COMPILE_CACHE, as CI does', () => {
 		const r = runScript(`expect(process.env.NODE_COMPILE_CACHE).toBeUndefined();`, undefined, {
 			NODE_COMPILE_CACHE: join(dir, 'cache')
 		});
