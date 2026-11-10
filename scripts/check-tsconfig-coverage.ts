@@ -19,13 +19,22 @@ function run(cmd: string[]): string {
 }
 
 const pkg = (await Bun.file('package.json').json()) as { scripts?: { check?: string } };
-// Only a step that runs svelte-check or tsc type-checks the tsconfig its flag names.
-const configs = (pkg.scripts?.check ?? '')
+const check = pkg.scripts?.check ?? '';
+// Each && step must pass for the check to pass, and runs from the repo root. A ;, | or || could
+// let a failing type-check pass, and a cd would move the tsconfig paths the guard resolves.
+if (/[;|]|(?:^|&&)\s*cd\s/.test(check)) {
+	console.error(
+		'The check script in package.json must join its steps with && only, and run no cd.'
+	);
+	process.exit(2);
+}
+// Only a step that runs svelte-check or tsc, possibly through npx or bunx after environment
+// assignments, type-checks the tsconfig its flag names.
+const STEP =
+	/^(?:\w+=\S*\s+)*(?:(?:npx|bunx)\s+)?(?:svelte-check|tsc)\s(?:.*\s)?(?:--tsconfig|--project|-p)[ =](\S+)/;
+const configs = check
 	.split('&&')
-	.map(
-		(step) =>
-			step.trim().match(/^(?:svelte-check|tsc)\s(?:.*\s)?(?:--tsconfig|--project|-p)[ =](\S+)/)?.[1]
-	)
+	.map((step) => step.trim().match(STEP)?.[1])
 	.filter((config): config is string => config !== undefined);
 if (configs.length === 0) {
 	console.error(

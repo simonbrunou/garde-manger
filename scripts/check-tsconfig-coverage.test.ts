@@ -5,26 +5,35 @@ import { dirname, join } from 'node:path';
 
 const SCRIPT = join(import.meta.dir, 'check-tsconfig-coverage.ts');
 
-// The repos below must not see the caller's git config or a GIT_DIR a hook set.
+// The repos below must not see the caller's git config or a GIT_DIR a hook set. Without
+// NODE_COMPILE_CACHE, as in CI, tsc caches its compiled code in TMPDIR (#83).
 const ENV: Record<string, string> = {
 	...Object.fromEntries(
 		Object.entries(process.env).filter(
-			(e): e is [string, string] => !e[0].startsWith('GIT_') && e[1] !== undefined
+			(e): e is [string, string] =>
+				!e[0].startsWith('GIT_') && e[0] !== 'NODE_COMPILE_CACHE' && e[1] !== undefined
 		)
 	),
 	GIT_CONFIG_GLOBAL: '/dev/null',
-	GIT_CONFIG_NOSYSTEM: '1'
+	GIT_CONFIG_NOSYSTEM: '1',
+	// git's messages, which a test matches, in English.
+	LC_ALL: 'C'
 };
 
+// root holds the fixture repo and the TMPDIR the guard's tsc writes to.
+let root: string;
 let repo: string;
 beforeEach(() => {
-	repo = mkdtempSync(join(tmpdir(), 'gm-tsconfig-coverage-'));
+	root = mkdtempSync(join(tmpdir(), 'gm-tsconfig-coverage-'));
+	repo = join(root, 'repo');
+	mkdirSync(repo);
+	mkdirSync(join(root, 'tmp'));
 	git('init', '-q');
 	checkScript('svelte-check --tsconfig ./tsconfig.json');
 	track('tsconfig.json', JSON.stringify({ include: ['src'], exclude: ['src/service-worker'] }));
 	track('src/app.ts', 'export {};\n');
 });
-afterEach(() => rmSync(repo, { recursive: true, force: true }));
+afterEach(() => rmSync(root, { recursive: true, force: true }));
 
 function git(...args: string[]) {
 	const proc = Bun.spawnSync(['git', ...args], { cwd: repo, env: ENV });
@@ -47,7 +56,7 @@ function checkScript(check: string) {
 
 function guard() {
 	// The ceiling stops git from finding a repo above the fixture once its .git is gone.
-	const env = { ...ENV, GIT_CEILING_DIRECTORIES: dirname(repo) };
+	const env = { ...ENV, GIT_CEILING_DIRECTORIES: root, TMPDIR: join(root, 'tmp') };
 	const proc = Bun.spawnSync([process.execPath, SCRIPT], { cwd: repo, env });
 	const stdout = proc.stdout.toString();
 	return { exitCode: proc.exitCode, stdout, output: stdout + proc.stderr.toString() };
@@ -113,6 +122,33 @@ describe('check-tsconfig-coverage.ts', () => {
 		const r = guard();
 		expect(r.exitCode).toBe(1);
 		expect(r.stdout).toContain('  tests/a.ts');
+	});
+
+	it('reads a step run through npx or bunx after environment assignments', () => {
+		track('src/service-worker/tsconfig.json', JSON.stringify({ include: ['.'] }));
+		track('src/service-worker/index.ts', 'export {};\n');
+		checkScript(
+			'npx svelte-check --tsconfig ./tsconfig.json && NODE_OPTIONS=--no-warnings bunx tsc -p src/service-worker'
+		);
+		const r = guard();
+		expect(r.exitCode).toBe(0);
+		expect(r.stdout).toContain('are in ./tsconfig.json, src/service-worker');
+	});
+
+	it('fails when the check script joins steps with ;, | or ||, or runs cd', () => {
+		track('tests/tsconfig.json', JSON.stringify({ include: ['.'] }));
+		track('tests/a.ts', 'export {};\n');
+		for (const check of [
+			'svelte-check --tsconfig ./tsconfig.json; tsc -p tests',
+			'svelte-check --tsconfig ./tsconfig.json && tsc -p tests || true',
+			'svelte-check --tsconfig ./tsconfig.json && tsc -p tests | cat',
+			'svelte-check --tsconfig ./tsconfig.json && cd tests && tsc -p .'
+		]) {
+			checkScript(check);
+			const r = guard();
+			expect(r.exitCode, check).toBe(2);
+			expect(r.output, check).toContain('must join its steps with && only');
+		}
 	});
 
 	it('fails on the files of a tsconfig the check script stops type-checking', () => {
