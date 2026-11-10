@@ -579,6 +579,32 @@ describe('check-push-repeats-pr finds a difference', () => {
 		},
 		TIMEOUT_MS
 	);
+	for (const [where, from, to] of [
+		[
+			'the workflow',
+			'jobs:',
+			'defaults:\n  run:\n    shell: bash -c "sh {0}; touch marker"\njobs:'
+		],
+		[
+			'the job',
+			'    runs-on:',
+			'    defaults:\n      run:\n        working-directory: sub\n    runs-on:'
+		],
+		['the workflow', 'jobs:', 'env:\n  BASH_ENV: scripts/hook.sh\njobs:'],
+		['the job', '    runs-on:', '    env:\n      BASH_ENV: scripts/hook.sh\n    runs-on:']
+	]) {
+		const key = to.trim().split(':')[0];
+		it(
+			`${key} on ${where}, which the guard step inherits`,
+			() => {
+				expectDifference(
+					{ [CI]: edit(baseCi, from, to) },
+					/steps\[1\]\.if: an if: github\.event_name == 'pull_request'/
+				);
+			},
+			TIMEOUT_MS
+		);
+	}
 	it(
 		'github.base_ref outside the guard',
 		() => {
