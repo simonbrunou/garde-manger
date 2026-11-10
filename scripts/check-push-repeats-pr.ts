@@ -32,9 +32,10 @@
 // GRAPHIFY_GUARD_BASE alone, its job has no keys but `name`, `runs-on` and `steps`, and its
 // workflow none but `name`, `on` and `jobs`. Every step inherits the workflow's `defaults` and
 // `env` and the job's `defaults`, `env` and `container`, where a `shell`, a `working-directory` or
-// a variable such as BASH_ENV could run other code on the PR run only, so any key outside those
-// lists makes it wait. The guard only reads git and prints, so the steps after it see the same
-// files on both runs.
+// a variable such as BASH_ENV could run other code on the PR run only. Any other key on the
+// workflow or the job, inherited or not, keeps the step from counting as the guard, so its `if`
+// is reported. The guard only reads git and prints, so the steps after it see the same files on
+// both runs.
 //
 // It cannot see code that branches on commit metadata (the push run checks out `main` at the
 // merge commit, whose subject, SHA and parents differ from the pushed SHA's), a step before the
