@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
@@ -20,6 +20,7 @@ let repo: string;
 beforeEach(() => {
 	repo = mkdtempSync(join(tmpdir(), 'gm-tsconfig-coverage-'));
 	git('init', '-q');
+	checkScript('svelte-check --tsconfig ./tsconfig.json');
 	track('tsconfig.json', JSON.stringify({ include: ['src'], exclude: ['src/service-worker'] }));
 	track('src/app.ts', 'export {};\n');
 });
@@ -40,24 +41,29 @@ function track(path: string, body: string) {
 	git('add', path);
 }
 
-function guard(...configs: string[]) {
+function checkScript(check: string) {
+	write('package.json', JSON.stringify({ scripts: { check } }));
+}
+
+function guard() {
 	// The ceiling stops git from finding a repo above the fixture once its .git is gone.
 	const env = { ...ENV, GIT_CEILING_DIRECTORIES: dirname(repo) };
-	const proc = Bun.spawnSync([process.execPath, SCRIPT, ...configs], { cwd: repo, env });
+	const proc = Bun.spawnSync([process.execPath, SCRIPT], { cwd: repo, env });
 	const stdout = proc.stdout.toString();
 	return { exitCode: proc.exitCode, stdout, output: stdout + proc.stderr.toString() };
 }
 
 describe('check-tsconfig-coverage.ts', () => {
-	it('passes when every tracked .ts file is in the tsconfig', () => {
-		const r = guard('tsconfig.json');
+	it('passes when every tracked .ts file is in the tsconfig the check script names', () => {
+		const r = guard();
 		expect(r.exitCode).toBe(0);
 		expect(r.stdout).toContain('tsconfig coverage: ok, all 1 tracked');
+		expect(r.stdout).toContain('are in ./tsconfig.json');
 	});
 
 	it('fails on a tracked .ts file outside include, and names only that file', () => {
 		track('tests/e2e/smoke.spec.ts', 'export {};\n');
-		const r = guard('tsconfig.json');
+		const r = guard();
 		expect(r.exitCode).toBe(1);
 		expect(r.stdout).toContain('  tests/e2e/smoke.spec.ts');
 		expect(r.stdout).not.toContain('src/app.ts');
@@ -66,7 +72,7 @@ describe('check-tsconfig-coverage.ts', () => {
 	it('fails on tracked .mts and .cts files outside include', () => {
 		track('playwright.config.mts', 'export {};\n');
 		track('tools/legacy.cts', 'export {};\n');
-		const r = guard('tsconfig.json');
+		const r = guard();
 		expect(r.exitCode).toBe(1);
 		expect(r.stdout).toContain('  playwright.config.mts');
 		expect(r.stdout).toContain('  tools/legacy.cts');
@@ -75,40 +81,56 @@ describe('check-tsconfig-coverage.ts', () => {
 	it('ignores untracked .ts files and tracked files of other types', () => {
 		write('stray.ts', 'export {};\n');
 		track('eslint.config.js', 'export default [];\n');
-		const r = guard('tsconfig.json');
+		const r = guard();
 		expect(r.exitCode).toBe(0);
 		expect(r.stdout).toContain('all 1 tracked');
 	});
 
-	it("reads a nested tsconfig's files from its own directory", () => {
+	it('counts a tsconfig the check script passes to tsc -p as a directory, from its own directory', () => {
 		track('src/service-worker/tsconfig.json', JSON.stringify({ include: ['.'] }));
 		track('src/service-worker/index.ts', 'export {};\n');
-		const both = guard('tsconfig.json', 'src/service-worker/tsconfig.json');
+		checkScript('svelte-check --tsconfig ./tsconfig.json && tsc -p src/service-worker');
+		const both = guard();
 		expect(both.exitCode).toBe(0);
 		expect(both.stdout).toContain('all 2 tracked');
-		const rootOnly = guard('tsconfig.json');
-		expect(rootOnly.exitCode).toBe(1);
-		expect(rootOnly.stdout).toContain('  src/service-worker/index.ts');
 	});
 
-	it('fails when a tsconfig does not exist', () => {
-		const r = guard('tsconfig.json', 'missing/tsconfig.json');
+	it('fails on the files of a tsconfig the check script stops type-checking', () => {
+		track('src/service-worker/tsconfig.json', JSON.stringify({ include: ['.'] }));
+		track('src/service-worker/index.ts', 'export {};\n');
+		const r = guard();
 		expect(r.exitCode).toBe(1);
-		expect(r.output).toContain('missing/tsconfig.json');
+		expect(r.stdout).toContain('  src/service-worker/index.ts');
+	});
+
+	it('counts a file a tsconfig includes through a symlinked directory', () => {
+		track('lib/shared.ts', 'export {};\n');
+		symlinkSync('../lib', join(repo, 'src/lib'));
+		const r = guard();
+		expect(r.exitCode).toBe(0);
+		expect(r.stdout).toContain('all 2 tracked');
+	});
+
+	it('fails when a tsconfig the check script names does not exist', () => {
+		checkScript('svelte-check --tsconfig ./tsconfig.json && tsc -p missing');
+		const r = guard();
+		expect(r.exitCode).toBe(1);
+		expect(r.output).toContain('-p missing --showConfig exited');
 		expect(r.output).not.toContain('tsconfig coverage: ok');
 	});
 
 	it('fails when git cannot list the tracked files, instead of passing on none', () => {
 		rmSync(join(repo, '.git'), { recursive: true, force: true });
-		const r = guard('tsconfig.json');
+		const r = guard();
 		expect(r.exitCode).toBe(1);
 		expect(r.output).toContain('git ls-files');
 		expect(r.output).not.toContain('tsconfig coverage: ok');
 	});
 
-	it('fails when given no tsconfig', () => {
+	it('fails when the check script names no tsconfig', () => {
+		checkScript('svelte-check');
 		const r = guard();
 		expect(r.exitCode).toBe(2);
-		expect(r.output).toContain('usage:');
+		expect(r.output).toContain('names no tsconfig');
 	});
 });

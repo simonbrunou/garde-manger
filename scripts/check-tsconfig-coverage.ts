@@ -1,9 +1,10 @@
-// Fail when a tracked .ts, .mts or .cts file is in none of the tsconfigs given on the command
-// line. The check script in package.json passes every tsconfig it type-checks, so a file this
-// guard names is one that `bun run check` never checks, as scripts/ was until #89 and tests/
-// until #99. It reads each file list from `tsc --showConfig`, the list svelte-check and tsc use.
-// Usage, from the repo root: bun scripts/check-tsconfig-coverage.ts <path to tsconfig.json>...
-import { dirname, join, relative, resolve } from 'node:path';
+// Fail when a tracked .ts, .mts or .cts file is in none of the tsconfigs that `bun run check`
+// type-checks, as scripts/ was until #89 and tests/ until #99. The guard takes those tsconfigs
+// from the check script in package.json (each path after `--tsconfig` or `-p`), so the list has
+// one home, and reads each file list from `tsc --showConfig`, the list svelte-check and tsc use.
+// Usage, from the repo root: bun scripts/check-tsconfig-coverage.ts
+import { realpathSync, statSync } from 'node:fs';
+import { dirname, join, relative } from 'node:path';
 
 const TSC = join(import.meta.dir, '..', 'node_modules', 'typescript', 'bin', 'tsc');
 
@@ -17,9 +18,12 @@ function run(cmd: string[]): string {
 	return proc.stdout.toString();
 }
 
-const configs = process.argv.slice(2);
+const pkg = (await Bun.file('package.json').json()) as { scripts?: { check?: string } };
+const configs = [...(pkg.scripts?.check ?? '').matchAll(/(?:^|\s)(?:--tsconfig|-p)[ =](\S+)/g)].map(
+	(m) => m[1]
+);
 if (configs.length === 0) {
-	console.error('usage: bun scripts/check-tsconfig-coverage.ts <path to tsconfig.json>...');
+	console.error('The check script in package.json names no tsconfig after --tsconfig or -p.');
 	process.exit(2);
 }
 
@@ -28,8 +32,10 @@ for (const config of configs) {
 	const shown = JSON.parse(run([process.execPath, TSC, '-p', config, '--showConfig'])) as {
 		files?: string[];
 	};
-	// --showConfig lists each file relative to the tsconfig's own directory.
-	for (const file of shown.files ?? []) covered.add(relative('.', resolve(dirname(config), file)));
+	// --showConfig lists each file relative to the tsconfig's directory, which -p also accepts.
+	// git lists a file under its real path, so a file reached through a symlink resolves first.
+	const dir = statSync(config).isDirectory() ? config : dirname(config);
+	for (const file of shown.files ?? []) covered.add(relative('.', realpathSync(join(dir, file))));
 }
 
 const tracked = run(['git', 'ls-files', '-z', '--', '*.ts', '*.mts', '*.cts'])
@@ -42,7 +48,7 @@ if (missing.length > 0) {
 	);
 	for (const file of missing) console.log(`  ${file}`);
 	console.log(
-		'Add each to the include of one of those tsconfigs. A file that needs its own tsconfig gets it type-checked in the check script of package.json and passed to this guard there.'
+		'Add each to the include of one of those tsconfigs, or type-check its own tsconfig in the check script of package.json.'
 	);
 	process.exit(1);
 }

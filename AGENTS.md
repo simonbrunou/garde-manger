@@ -114,7 +114,7 @@ Outside CI, Playwright reuses whatever already listens on the e2e port 4173 (`re
 
 ## Scratch copies
 
-Give a copy of the checkout (a probe tree, a tree extracted with `git archive`) its own `node_modules`. Run `env TMPDIR=/tmp bunx bun@<pin> install --frozen-lockfile` in the copy (see Bun version), or `cp -a --reflink=auto <checkout>/node_modules <copy>/`. `svelte-kit sync` writes the tsconfig base to `node_modules/$app/tsconfig.json`. Its `rootDirs` (`../..` and `../../.svelte-kit/types`) resolve from wherever that `node_modules` really lives. With `node_modules` symlinked to another checkout, `bun run check` in the copy reports `Cannot find module './$types'` in every file that imports it. With its own `node_modules`, the copy passes.
+Give a copy of the checkout (a probe tree, a tree extracted with `git archive`) its own `node_modules`. Run `env TMPDIR=/tmp bunx bun@<pin> install --frozen-lockfile` in the copy (see Bun version), or `cp -a --reflink=auto <checkout>/node_modules <copy>/`. `svelte-kit sync` writes the tsconfig base to `node_modules/$app/tsconfig.json`. Its `rootDirs` (`../..` and `../../.svelte-kit/types`) resolve from wherever that `node_modules` really lives. With `node_modules` symlinked to another checkout, `bun run check` in the copy reports `Cannot find module './$types'` in every file that imports it. With its own `node_modules`, the copy passes. The check ends with `scripts/check-tsconfig-coverage.ts`, which lists the tracked TypeScript files with `git ls-files` and fails outside a git repository, so run `git init -q && git add -A` in a tree extracted with `git archive`.
 
 ## Agent skills
 
