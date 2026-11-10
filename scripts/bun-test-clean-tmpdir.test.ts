@@ -13,7 +13,7 @@ afterEach(() => rmSync(dir, { recursive: true, force: true }));
 
 // Writes one fixture test file outside src/, runs the script on it with its own
 // TMPDIR, and returns the exit code, the output and what the script left in that TMPDIR.
-function runScript(fixtureBody: string, scriptTmpdir?: string) {
+function runScript(fixtureBody: string, scriptTmpdir?: string, env: Record<string, string> = {}) {
 	const fixtures = join(dir, 'fixtures');
 	const outerTmp = join(dir, 'tmp');
 	mkdirSync(fixtures);
@@ -31,7 +31,7 @@ ${fixtureBody}
 	);
 	const proc = Bun.spawnSync(['sh', SCRIPT, './fixtures'], {
 		cwd: dir,
-		env: { ...process.env, TMPDIR: scriptTmpdir ?? outerTmp }
+		env: { ...process.env, ...env, TMPDIR: scriptTmpdir ?? outerTmp }
 	});
 	return {
 		exitCode: proc.exitCode,
@@ -59,6 +59,13 @@ describe('bun-test-clean-tmpdir.sh', () => {
 		const r = runScript(`expect(1).toBe(2);`);
 		expect(r.exitCode).not.toBe(0);
 		expect(r.stdout).not.toContain('TMPDIR is empty after the unit tests');
+	});
+
+	it('runs the tests without NODE_COMPILE_CACHE, so a Node tool caches in TMPDIR as in CI', () => {
+		const r = runScript(`expect(process.env.NODE_COMPILE_CACHE).toBeUndefined();`, undefined, {
+			NODE_COMPILE_CACHE: join(dir, 'cache')
+		});
+		expect(r.exitCode).toBe(0);
 	});
 
 	it('stops before the tests run when mktemp fails', () => {
