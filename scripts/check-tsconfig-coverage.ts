@@ -1,0 +1,80 @@
+// Fail when a tracked .ts, .mts or .cts file is in none of the tsconfigs that `bun run check`
+// type-checks, as scripts/ was until #89 and tests/ until #99. The guard takes those tsconfigs
+// from the svelte-check and tsc steps of the check script in package.json, so the list has one
+// home, and reads each file list from `tsc --showConfig`, the list svelte-check and tsc use.
+// It trusts each such step to type-check: a flag that turns checking off (--noCheck,
+// --listFilesOnly) is outside what it looks at.
+// Usage, from the repo root: bun scripts/check-tsconfig-coverage.ts
+import { realpathSync, statSync } from 'node:fs';
+import { dirname, join, relative } from 'node:path';
+
+const TSC = join(import.meta.dir, '..', 'node_modules', 'typescript', 'bin', 'tsc');
+
+function run(cmd: string[]): string {
+	const proc = Bun.spawnSync(cmd);
+	if (proc.exitCode !== 0) {
+		console.error(`${cmd.join(' ')} exited ${proc.exitCode}:`);
+		console.error(proc.stdout.toString() + proc.stderr.toString());
+		process.exit(1);
+	}
+	return proc.stdout.toString();
+}
+
+const pkg = (await Bun.file('package.json').json()) as { scripts?: { check?: string } };
+const check = pkg.scripts?.check ?? '';
+// Each && step must pass for the check to pass, and runs from the repo root. A ;, | or || could
+// let a failing type-check pass, and a cd would move the tsconfig paths the guard resolves.
+if (/[;|]|(?:^|&&)\s*cd\s/.test(check)) {
+	console.error(
+		'The check script in package.json must join its steps with && only, and run no cd.'
+	);
+	process.exit(2);
+}
+// Only a step that runs svelte-check or tsc, possibly through npx or bunx after environment
+// assignments, type-checks the tsconfig its flag names.
+const STEP =
+	/^(?:\w+=(?:"[^"]*"|'[^']*'|[^\s"']*)\s+)*(?:(?:npx|bunx)\s+)?(?:svelte-check|tsc)\s(?:.*\s)?(?:--tsconfig|--project|-p)[ =](\S+)/;
+const configs = check
+	.split('&&')
+	.map((step) => step.trim().match(STEP)?.[1])
+	.filter((config): config is string => config !== undefined);
+if (configs.length === 0) {
+	console.error(
+		'The check script in package.json runs no svelte-check or tsc step with --tsconfig, --project or -p.'
+	);
+	process.exit(2);
+}
+
+const covered = new Set<string>();
+for (const config of configs) {
+	const shown = JSON.parse(run([process.execPath, TSC, '-p', config, '--showConfig'])) as {
+		files?: string[];
+	};
+	// --showConfig lists each file relative to the tsconfig's directory, which -p also accepts.
+	// git lists a file under its real path, so a file reached through a symlink resolves first.
+	const dir = statSync(config).isDirectory() ? config : dirname(config);
+	for (const file of shown.files ?? []) covered.add(relative('.', realpathSync(join(dir, file))));
+}
+
+const tracked = run(['git', 'ls-files', '-z', '--', '*.ts', '*.mts', '*.cts'])
+	.split('\0')
+	.filter(Boolean);
+if (tracked.length === 0) {
+	// A copy inside some other git repo lists nothing here, and would pass while checking nothing.
+	console.error('git lists no tracked .ts, .mts or .cts file. Run this from the repo root.');
+	process.exit(1);
+}
+const missing = tracked.filter((file) => !covered.has(file));
+if (missing.length > 0) {
+	console.log(
+		`These tracked files are in none of ${configs.join(', ')}, so bun run check never type-checks them:`
+	);
+	for (const file of missing) console.log(`  ${file}`);
+	console.log(
+		'Add each to the include of one of those tsconfigs, or type-check its own tsconfig in the check script of package.json.'
+	);
+	process.exit(1);
+}
+console.log(
+	`tsconfig coverage: ok, all ${tracked.length} tracked .ts, .mts and .cts files are in ${configs.join(', ')}`
+);
