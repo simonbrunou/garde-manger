@@ -98,13 +98,15 @@ CI and production run the Bun that the repo pins, and the dev shell does not. Th
 
 A Bun other than the pinned one can write a different `bun.lock`. Bun 1.3.13, which the dev shell ran on 2026-11-06, drops the `libc` field of platform-specific packages, so an install from its lock also installs their musl builds. It can also resolve an npm alias to another version. `bun install --frozen-lockfile` on the pinned Bun accepts such a lock, so CI does not catch it. Write every lock change through the pinned Bun, as in `env TMPDIR=/tmp bunx bun@<pin> install` or `env TMPDIR=/tmp bunx bun@<pin> add <package>`. `bunx` keeps its copy of the pinned Bun, about 200 MB, in TMPDIR. `nix develop -c` gives each of its calls a fresh TMPDIR that it never removes. With `TMPDIR=/tmp`, every call reuses one copy.
 
-To run a check on the pinned Bun (the unit tests, `bun run build`, the e2e suite), put that copy first on `PATH` as both `bun` and `bunx`: `bun run build` calls `bunx`, and the e2e server runs `bun`. One directory per pin keeps a session on another pin from repointing yours. The single quotes leave `$PATH` for the dev shell to expand, so its `node` stays on the path.
+To run a check on the pinned Bun (the unit tests, `bun run build`, the e2e suite), put that copy first on `PATH` as both `bun` and `bunx`. `bun run build` calls `bunx`, and without a `bunx` link it runs the dev shell's older `bunx` with no error. Keep one directory per pin, so a worktree on another pin cannot overwrite your links. The single quotes keep `$PATH` unexpanded until the inner `sh` runs, so the dev shell's `node` stays on the path.
 
 ```sh
 P=$(nix develop -c env TMPDIR=/tmp bunx bun@<pin> -e 'console.log(process.execPath)')
 mkdir -p /tmp/bun-<pin> && ln -sf "$P" /tmp/bun-<pin>/bun && ln -sf "$P" /tmp/bun-<pin>/bunx
 nix develop -c sh -c 'PATH=/tmp/bun-<pin>:$PATH; bun --version; bun run test'
 ```
+
+`bun --version` must print the pin. A missing or broken link prints the dev shell's version and exits 0, so rerun the first two lines then. For the e2e suite, run `npx playwright test` in place of `bun run test`, as CI does, after the port step in E2E tests below.
 
 ## E2E tests
 
