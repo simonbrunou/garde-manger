@@ -19,8 +19,8 @@ import { dirname, join, relative } from 'node:path';
 const ROOT = join(import.meta.dir, '..');
 const TSC = join(ROOT, 'node_modules', 'typescript', 'bin', 'tsc');
 
-// Each test runs tsc, which takes about a second on an idle machine; the shared CI runner can
-// take longer than Bun's default 5 s timeout.
+// The setup and each test run tsc, which takes about a second on an idle machine; the shared CI
+// runner can take longer than Bun's default 5 s timeout.
 const TIMEOUT_MS = 30_000;
 
 let tmp: string;
@@ -50,10 +50,12 @@ beforeAll(() => {
 		copyFileSync(join(ROOT, file), join(copy, file));
 	}
 	symlinkSync(join(ROOT, 'node_modules'), join(copy, 'node_modules'));
-});
+}, TIMEOUT_MS);
 afterAll(() => rmSync(tmp, { recursive: true, force: true }));
 
-// Runs `tsc -p tests` on the copy, with `probe` appended to `file` for that run only.
+// Runs `tsc -p tests` on the copy, with `probe` appended to `file` for that run only. It reports
+// whether tsc exited 0, not the exit code: TypeScript 6 exits 2 on a type error and 7 exits 1, and
+// the && in bun run check stops on either.
 function check(file?: string, probe?: string) {
 	const path = file && join(copy, file);
 	const original = path && readFileSync(path, 'utf8');
@@ -64,7 +66,7 @@ function check(file?: string, probe?: string) {
 			file: m[1],
 			code: Number(m[2])
 		}));
-		return { exitCode, errors };
+		return { passed: exitCode === 0, errors };
 	} finally {
 		if (path) writeFileSync(path, original as string);
 	}
@@ -74,7 +76,7 @@ describe('tests/tsconfig.json', () => {
 	it(
 		'passes on the e2e files as they are',
 		() => {
-			expect(check()).toEqual({ exitCode: 0, errors: [] });
+			expect(check()).toEqual({ passed: true, errors: [] });
 		},
 		TIMEOUT_MS
 	);
@@ -84,7 +86,7 @@ describe('tests/tsconfig.json', () => {
 		() => {
 			const file = 'tests/e2e/fixtures/constants.ts';
 			expect(check(file, 'export const bunProbe: string = Bun.version;')).toEqual({
-				exitCode: 2,
+				passed: false,
 				errors: [{ file, code: 2868 }]
 			});
 		},
@@ -96,7 +98,7 @@ describe('tests/tsconfig.json', () => {
 		() => {
 			const file = 'playwright.config.ts';
 			expect(check(file, 'export const bunProbe: string = Bun.version;')).toEqual({
-				exitCode: 2,
+				passed: false,
 				errors: [{ file, code: 2868 }]
 			});
 		},
@@ -108,7 +110,7 @@ describe('tests/tsconfig.json', () => {
 		() => {
 			const file = 'tests/e2e/fixtures/constants.ts';
 			expect(check(file, "import { Database } from 'bun:sqlite';")).toEqual({
-				exitCode: 2,
+				passed: false,
 				errors: [{ file, code: 2307 }]
 			});
 		},
@@ -121,7 +123,7 @@ describe('tests/tsconfig.json', () => {
 			const file = 'tests/e2e/fixtures/dates.ts';
 			expect(
 				check(file, 'const typeProbe: number = "not a number"; export { typeProbe };')
-			).toEqual({ exitCode: 2, errors: [{ file, code: 2322 }] });
+			).toEqual({ passed: false, errors: [{ file, code: 2322 }] });
 		},
 		TIMEOUT_MS
 	);
@@ -131,7 +133,7 @@ describe('tests/tsconfig.json', () => {
 		() => {
 			const file = 'tests/e2e/fixtures/dates.ts';
 			expect(check(file, 'export const strictProbe: string = null;')).toEqual({
-				exitCode: 2,
+				passed: false,
 				errors: [{ file, code: 2322 }]
 			});
 		},
