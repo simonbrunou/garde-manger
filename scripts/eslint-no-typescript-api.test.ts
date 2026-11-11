@@ -5,8 +5,9 @@ import { join } from 'node:path';
 
 // eslint.config.js rejects imports, import() calls, import('typescript').X types and require or
 // createRequire(...) calls that name the typescript package or a file in it by a string literal,
-// since TypeScript 7 ships no compiler API (#67, #113). Each test lints a snippet with the repo's
-// config, as bun run lint does, under a file name in scripts/.
+// since TypeScript 7 ships no compiler API (#67, #113). A require bound to another name passes.
+// Each test lints a snippet with the repo's config, as bun run lint does, under a file name in
+// scripts/.
 const ROOT = join(import.meta.dir, '..');
 const ESLINT = join(ROOT, 'node_modules', 'eslint', 'bin', 'eslint.js');
 
@@ -133,12 +134,11 @@ describe('the typescript package ban in eslint.config.js', () => {
 	);
 
 	it(
-		'fails on an import type',
+		'fails on an import type, and names the tsc CLI',
 		() => {
-			expect(lint("export type P = import('typescript').Program;\n")).toMatchObject({
-				passed: false,
-				rules: ['no-restricted-syntax']
-			});
+			const result = lint("export type P = import('typescript').Program;\n");
+			expect(result).toMatchObject({ passed: false, rules: ['no-restricted-syntax'] });
+			expect(result.messages[0]).toContain('node_modules/typescript/bin/tsc');
 		},
 		TIMEOUT_MS
 	);
@@ -155,14 +155,16 @@ describe('the typescript package ban in eslint.config.js', () => {
 	);
 
 	it(
-		'fails on a require through createRequire',
+		'fails on a require through createRequire, and names the tsc CLI',
 		() => {
 			const source = [
 				"import { createRequire } from 'node:module';",
 				"export default createRequire(import.meta.url)('typescript');",
 				''
 			].join('\n');
-			expect(lint(source)).toMatchObject({ passed: false, rules: ['no-restricted-syntax'] });
+			const result = lint(source);
+			expect(result).toMatchObject({ passed: false, rules: ['no-restricted-syntax'] });
+			expect(result.messages[0]).toContain('node_modules/typescript/bin/tsc');
 		},
 		TIMEOUT_MS
 	);

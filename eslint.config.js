@@ -61,7 +61,8 @@ export default defineConfig(
 				}
 			],
 			// import(), import('typescript').X types, and require or createRequire(...) calls. A
-			// specifier written as a template literal or a variable passes; resolving the package
+			// specifier written as a template literal or a variable passes, and so does a require
+			// bound to another name (const req = createRequire(...)). Resolving the package
 			// (import.meta.resolve) loads nothing and passes too.
 			'no-restricted-syntax': [
 				'error',
