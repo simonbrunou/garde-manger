@@ -44,5 +44,22 @@ export default defineConfig(
 			// without meaningful benefit.
 			'svelte/no-navigation-without-resolve': 'off'
 		}
+	},
+	{
+		rules: {
+			// #67 keeps TypeScript 6 until #43's CI passes on 7, and 7 has no JavaScript API (#113).
+			'no-restricted-imports': [
+				'error',
+				{
+					paths: [
+						{
+							name: 'typescript',
+							message:
+								'TypeScript 7 has no JavaScript API (#67). Spawn node_modules/typescript/bin/tsc as scripts/check-tsconfig-coverage.ts does, and expect a non-zero exit rather than 2: TypeScript 7 exits 1 where 6 exits 2.'
+						}
+					]
+				}
+			]
+		}
 	}
 );
