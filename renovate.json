@@ -20,6 +20,11 @@
 			"matchManagers": ["bun"],
 			"matchDepNames": ["node"],
 			"rangeStrategy": "auto"
+		},
+		{
+			"description": "Group the Bun pin in package.json's `packageManager` with the fallback Dockerfile's `oven/bun` build and runtime tags, so one PR bumps all three and the Dockerfile builds on the Bun that CI and production run (#104). When npm lists a Bun release before Docker Hub does, the PR can merge with `packageManager` alone, and a later PR then bumps the tags. The rule only groups: each upgrade keeps the automerge the rules above give it.",
+			"matchDepNames": ["bun", "oven/bun"],
+			"groupName": "Bun"
 		}
 	]
 }
