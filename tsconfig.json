@@ -6,13 +6,6 @@
 		"strict": true,
 		"types": ["$app/types", "bun"]
 	},
-	"include": [
-		"src",
-		"scripts",
-		"tests",
-		"vite.config.ts",
-		"drizzle.config.ts",
-		"playwright.config.ts"
-	],
+	"include": ["src", "scripts", "vite.config.ts", "drizzle.config.ts"],
 	"exclude": ["src/service-worker", "scripts/ui-audit-capture.mjs"]
 }
