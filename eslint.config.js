@@ -60,7 +60,9 @@ export default defineConfig(
 					patterns: [{ group: ['typescript/*'], message: TYPESCRIPT_API }]
 				}
 			],
-			// import() and require-style calls, such as createRequire(import.meta.url)('typescript').
+			// import(), import('typescript').X types, and require or createRequire(...) calls. A
+			// specifier written as a template literal or a variable passes; resolving the package
+			// (import.meta.resolve) loads nothing and passes too.
 			'no-restricted-syntax': [
 				'error',
 				{
@@ -68,7 +70,11 @@ export default defineConfig(
 					message: TYPESCRIPT_API
 				},
 				{
-					selector: `CallExpression[arguments.0.value=${TYPESCRIPT_MODULE}]`,
+					selector: `TSImportType[source.value=${TYPESCRIPT_MODULE}]`,
+					message: TYPESCRIPT_API
+				},
+				{
+					selector: `CallExpression:matches([callee.name='require'], [callee.callee.name='createRequire'])[arguments.0.value=${TYPESCRIPT_MODULE}]`,
 					message: TYPESCRIPT_API
 				}
 			]

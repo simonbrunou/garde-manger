@@ -3,8 +3,9 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-// eslint.config.js rejects code that loads the typescript package or a file in it, since
-// TypeScript 7 ships no compiler API (#67, #113). Each test lints a snippet with the repo's
+// eslint.config.js rejects imports, import() calls, import('typescript').X types and require or
+// createRequire(...) calls that name the typescript package or a file in it by a string literal,
+// since TypeScript 7 ships no compiler API (#67, #113). Each test lints a snippet with the repo's
 // config, as bun run lint does, under a file name in scripts/.
 const ROOT = join(import.meta.dir, '..');
 const ESLINT = join(ROOT, 'node_modules', 'eslint', 'bin', 'eslint.js');
@@ -53,12 +54,14 @@ const VALUE_IMPORT = "import ts from 'typescript';\nexport default ts;\n";
 
 describe('the typescript package ban in eslint.config.js', () => {
 	it(
-		'passes on imports of other packages, typescript-eslint included',
+		'passes on other packages, and on code that names typescript without loading it',
 		() => {
 			const source = [
 				"import { join } from 'node:path';",
 				"import tseslint from 'typescript-eslint';",
 				"export const parser = await import('typescript-eslint');",
+				"export const tsc = import.meta.resolve('typescript/bin/tsc');",
+				"export const language = String('typescript');",
 				'export default [join, tseslint];',
 				''
 			].join('\n');
@@ -115,6 +118,38 @@ describe('the typescript package ban in eslint.config.js', () => {
 				passed: false,
 				rules: ['no-restricted-syntax']
 			});
+		},
+		TIMEOUT_MS
+	);
+
+	it(
+		'fails on a dynamic import of a file in the package, and names the tsc CLI',
+		() => {
+			const result = lint("export const ts = await import('typescript/lib/typescript.js');\n");
+			expect(result).toMatchObject({ passed: false, rules: ['no-restricted-syntax'] });
+			expect(result.messages[0]).toContain('node_modules/typescript/bin/tsc');
+		},
+		TIMEOUT_MS
+	);
+
+	it(
+		'fails on an import type',
+		() => {
+			expect(lint("export type P = import('typescript').Program;\n")).toMatchObject({
+				passed: false,
+				rules: ['no-restricted-syntax']
+			});
+		},
+		TIMEOUT_MS
+	);
+
+	it(
+		'fails on a require',
+		() => {
+			// @typescript-eslint/no-require-imports flags any require in a .ts file as well.
+			const result = lint("export default require('typescript');\n");
+			expect(result.passed).toBe(false);
+			expect(result.rules).toContain('no-restricted-syntax');
 		},
 		TIMEOUT_MS
 	);
