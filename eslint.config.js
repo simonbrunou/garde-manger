@@ -9,6 +9,12 @@ import ts from 'typescript-eslint';
 
 const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
 
+// #67 keeps TypeScript 6 until Renovate's #43 passes CI on 7, which ships no compiler API. Code
+// that loads the typescript package would keep #43 red, as a test nearly did on #113.
+const TYPESCRIPT_API =
+	'TypeScript 7 ships no compiler API (#67). Spawn node_modules/typescript/bin/tsc as scripts/e2e-tsconfig.test.ts does, and expect a non-zero exit rather than 2: TypeScript 7 exits 1 where 6 exits 2.';
+const TYPESCRIPT_MODULE = '/^typescript(\\/|$)/';
+
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
 	js.configs.recommended,
@@ -47,17 +53,23 @@ export default defineConfig(
 	},
 	{
 		rules: {
-			// #67 keeps TypeScript 6 until #43's CI passes on 7, and 7 has no JavaScript API (#113).
 			'no-restricted-imports': [
 				'error',
 				{
-					paths: [
-						{
-							name: 'typescript',
-							message:
-								'TypeScript 7 has no JavaScript API (#67). Spawn node_modules/typescript/bin/tsc as scripts/check-tsconfig-coverage.ts does, and expect a non-zero exit rather than 2: TypeScript 7 exits 1 where 6 exits 2.'
-						}
-					]
+					paths: [{ name: 'typescript', message: TYPESCRIPT_API }],
+					patterns: [{ group: ['typescript/*'], message: TYPESCRIPT_API }]
+				}
+			],
+			// import() and require-style calls, such as createRequire(import.meta.url)('typescript').
+			'no-restricted-syntax': [
+				'error',
+				{
+					selector: `ImportExpression[source.value=${TYPESCRIPT_MODULE}]`,
+					message: TYPESCRIPT_API
+				},
+				{
+					selector: `CallExpression[arguments.0.value=${TYPESCRIPT_MODULE}]`,
+					message: TYPESCRIPT_API
 				}
 			]
 		}

@@ -3,9 +3,9 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-// eslint.config.js bans imports of the typescript package, since TypeScript 7 has no JavaScript
-// API (#67, #113). Each test lints a snippet with the repo's config, as bun run lint does, under
-// a file name in scripts/.
+// eslint.config.js rejects code that loads the typescript package or a file in it, since
+// TypeScript 7 ships no compiler API (#67, #113). Each test lints a snippet with the repo's
+// config, as bun run lint does, under a file name in scripts/.
 const ROOT = join(import.meta.dir, '..');
 const ESLINT = join(ROOT, 'node_modules', 'eslint', 'bin', 'eslint.js');
 
@@ -20,7 +20,8 @@ beforeAll(() => {
 });
 afterAll(() => rmSync(eslintTmp, { recursive: true, force: true }));
 
-function lint(source: string): (string | null)[] {
+// Lints `source`. `passed` is whether ESLint exited 0, so a rule that only warns still passes.
+function lint(source: string) {
 	const proc = Bun.spawnSync(
 		[
 			process.execPath,
@@ -33,49 +34,110 @@ function lint(source: string): (string | null)[] {
 		],
 		{ cwd: ROOT, env: { ...process.env, TMPDIR: eslintTmp }, stdin: Buffer.from(source) }
 	);
+	let report: { messages: { ruleId: string | null; message: string }[] }[];
 	try {
-		const report = JSON.parse(proc.stdout.toString()) as {
-			messages: { ruleId: string | null }[];
-		}[];
-		return report.flatMap((file) => file.messages.map((m) => m.ruleId));
+		report = JSON.parse(proc.stdout.toString());
 	} catch {
 		throw new Error(`eslint exited ${proc.exitCode}:\n${proc.stdout}${proc.stderr}`);
 	}
+	const messages = report.flatMap((file) => file.messages);
+	return {
+		passed: proc.exitCode === 0,
+		rules: messages.map((m) => m.ruleId),
+		messages: messages.map((m) => m.message)
+	};
 }
 
-describe('no-restricted-imports on typescript', () => {
+// The value import is the form the #113 test used.
+const VALUE_IMPORT = "import ts from 'typescript';\nexport default ts;\n";
+
+describe('the typescript package ban in eslint.config.js', () => {
 	it(
-		'passes on an import of another package',
+		'passes on imports of other packages, typescript-eslint included',
 		() => {
-			expect(lint("import { join } from 'node:path';\nexport default join;\n")).toEqual([]);
+			const source = [
+				"import { join } from 'node:path';",
+				"import tseslint from 'typescript-eslint';",
+				"export const parser = await import('typescript-eslint');",
+				'export default [join, tseslint];',
+				''
+			].join('\n');
+			expect(lint(source)).toMatchObject({ passed: true, rules: [] });
 		},
 		TIMEOUT_MS
 	);
 
 	it(
-		'fails on a value import of typescript',
+		'fails on a value import, and names the tsc CLI',
 		() => {
-			expect(lint("import ts from 'typescript';\nexport default ts;\n")).toEqual([
-				'no-restricted-imports'
-			]);
+			const result = lint(VALUE_IMPORT);
+			expect(result).toMatchObject({ passed: false, rules: ['no-restricted-imports'] });
+			expect(result.messages[0]).toContain('node_modules/typescript/bin/tsc');
 		},
 		TIMEOUT_MS
 	);
 
 	it(
-		'fails on a type-only import of typescript',
+		'fails on a type-only import',
 		() => {
 			expect(
 				lint("import type { Program } from 'typescript';\nexport type P = Program;\n")
-			).toEqual(['no-restricted-imports']);
+			).toMatchObject({ passed: false, rules: ['no-restricted-imports'] });
 		},
 		TIMEOUT_MS
 	);
 
 	it(
-		'fails on a re-export from typescript',
+		'fails on a re-export',
 		() => {
-			expect(lint("export { version } from 'typescript';\n")).toEqual(['no-restricted-imports']);
+			expect(lint("export { version } from 'typescript';\n")).toMatchObject({
+				passed: false,
+				rules: ['no-restricted-imports']
+			});
+		},
+		TIMEOUT_MS
+	);
+
+	it(
+		'fails on an import of a file in the package',
+		() => {
+			expect(
+				lint("import ts from 'typescript/lib/typescript.js';\nexport default ts;\n")
+			).toMatchObject({ passed: false, rules: ['no-restricted-imports'] });
+		},
+		TIMEOUT_MS
+	);
+
+	it(
+		'fails on a dynamic import',
+		() => {
+			expect(lint("export const ts = await import('typescript');\n")).toMatchObject({
+				passed: false,
+				rules: ['no-restricted-syntax']
+			});
+		},
+		TIMEOUT_MS
+	);
+
+	it(
+		'fails on a require through createRequire',
+		() => {
+			const source = [
+				"import { createRequire } from 'node:module';",
+				"export default createRequire(import.meta.url)('typescript');",
+				''
+			].join('\n');
+			expect(lint(source)).toMatchObject({ passed: false, rules: ['no-restricted-syntax'] });
+		},
+		TIMEOUT_MS
+	);
+
+	it(
+		'passes on a line the ignore marker covers',
+		() => {
+			expect(
+				lint(`// eslint-disable-next-line no-restricted-imports\n${VALUE_IMPORT}`)
+			).toMatchObject({ passed: true, rules: [] });
 		},
 		TIMEOUT_MS
 	);
