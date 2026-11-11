@@ -20,6 +20,11 @@
 			"matchManagers": ["bun"],
 			"matchDepNames": ["node"],
 			"rangeStrategy": "auto"
+		},
+		{
+			"description": "Bump the Bun pin in package.json's `packageManager` and the fallback Dockerfile's `oven/bun` build and runtime tags in one PR, so the Dockerfile builds on the Bun that CI and production run (#104). The rule only groups: each upgrade keeps the automerge the rules above give it.",
+			"matchDepNames": ["bun", "oven/bun"],
+			"groupName": "Bun"
 		}
 	]
 }
