@@ -221,6 +221,13 @@ describe('readBunPins', () => {
 			]);
 		});
 
+		it('fails on the runtime stage before the build stage', () => {
+			const dockerfile = 'FROM oven/bun:1.4.4-slim\nFROM oven/bun:1.4.4 AS build\n';
+			expect(problems(dockerfile)).toContainEqual(
+				'Dockerfile line 2: the build stage "FROM oven/bun:1.4.4 AS build" follows the runtime stage on line 1'
+			);
+		});
+
 		it('fails on a second runtime stage', () => {
 			const dockerfile = withLine(17, 'FROM oven/bun:1.4.4-slim');
 			expect(problems(dockerfile)).toEqual([

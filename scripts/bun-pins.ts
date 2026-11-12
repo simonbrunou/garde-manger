@@ -11,7 +11,7 @@
 //   4. No comment line has the form of a parser directive (`# name=value`).
 //   5. Each non-comment line whose first word is FROM, in any case, is exactly
 //      `FROM oven/bun:<x.y.z> AS <name>` or `FROM oven/bun:<x.y.z>-slim`, and the file holds
-//      exactly one of each.
+//      exactly one of each, the build stage first.
 //   6. Any other non-comment line holding `oven/bun`, or `from` in any case, fails, except
 //      `COPY --from=<name> <rest>` after the build stage, where <name> is its AS name and <rest>
 //      holds neither.
@@ -70,6 +70,10 @@ export function readBunPins(dockerfile: string, packageJson: string): BunPins {
 			if (buildMatch) {
 				if (build) {
 					problems.push(`${at}: a second build stage ${shown}; line ${build.line} has the first`);
+				} else if (runtime) {
+					problems.push(
+						`${at}: the build stage ${shown} follows the runtime stage on line ${runtime.line}`
+					);
 				} else {
 					build = { line: index + 1, version: buildMatch[1], name: buildMatch[2] };
 				}
