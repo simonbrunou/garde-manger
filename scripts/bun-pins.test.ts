@@ -97,6 +97,7 @@ describe('readBunPins', () => {
 			['with a +sha512 suffix', pm('bun@1.4.4+sha512.abc'), '"bun@1.4.4+sha512.abc"'],
 			['another manager', pm('npm@1.4.4'), '"npm@1.4.4"'],
 			['two parts', pm('bun@1.4'), '"bun@1.4"'],
+			['prefixed', pm('xbun@1.4.4'), '"xbun@1.4.4"'],
 			['not a string', pm(144), '144']
 		])('fails when packageManager is %s', (_, packageJson, shown) => {
 			expect(problems(DOCKERFILE, packageJson)).toEqual([
@@ -121,11 +122,17 @@ describe('readBunPins', () => {
 		it.each([
 			['a CR line end', withLine(1, 'FROM oven/bun:1.4.4 AS build\r'), 1, '000D', 29],
 			['a tab', withLine(2, 'WORKDIR\t/app'), 2, '0009', 8],
-			['a byte order mark', '﻿' + DOCKERFILE, 1, 'FEFF', 1],
-			['a non-breaking space before FROM', withLine(8, ' FROM oven/bun:1.4.4-slim'), 8, '00A0', 1],
+			['a byte order mark', '\ufeff' + DOCKERFILE, 1, 'FEFF', 1],
+			[
+				'a non-breaking space before FROM',
+				withLine(8, '\u00a0FROM oven/bun:1.4.4-slim'),
+				8,
+				'00A0',
+				1
+			],
 			['a DEL', withLine(10, 'ENV NODE_ENV=production\x7f'), 10, '007F', 24],
 			['a control character', withLine(15, 'EXPOSE\x0b3000'), 15, '000B', 7],
-			['a line separator', withLine(15, 'EXPOSE 3000'), 15, '2028', 7]
+			['a line separator', withLine(15, 'EXPOSE\u20283000'), 15, '2028', 7]
 		])('fails on %s', (_, dockerfile, line, code, column) => {
 			expect(problems(dockerfile)).toContainEqual(
 				expect.stringMatching(
@@ -156,14 +163,17 @@ describe('readBunPins', () => {
 	});
 
 	describe('rule 4: no parser directive', () => {
-		it.each(['# escape=`', '#syntax=docker/dockerfile:1', '# escape = \\', ' # check=skip=all'])(
-			'fails on %s',
-			(directive) => {
-				expect(problems(insertBefore(1, directive))).toContainEqual(
-					`Dockerfile line 1: ${JSON.stringify(directive)} has the form of a parser directive (# name=value)`
-				);
-			}
-		);
+		it.each([
+			'# escape=`',
+			'#syntax=docker/dockerfile:1',
+			'# escape = \\',
+			' # check=skip=all',
+			'# SYNTAX=docker/dockerfile:1'
+		])('fails on %s', (directive) => {
+			expect(problems(insertBefore(1, directive))).toContainEqual(
+				`Dockerfile line 1: ${JSON.stringify(directive)} has the form of a parser directive (# name=value)`
+			);
+		});
 	});
 
 	describe('rule 5: two FROM lines of the forms read today', () => {
@@ -187,6 +197,13 @@ describe('readBunPins', () => {
 		])('fails on %s', (_, from) => {
 			expect(problems(withLine(1, from))).toContainEqual(
 				`Dockerfile line 1: ${JSON.stringify(from)} is neither "FROM oven/bun:<x.y.z> AS <name>" nor "FROM oven/bun:<x.y.z>-slim"`
+			);
+		});
+
+		it('fails on a runtime line with a leading space', () => {
+			const from = ' FROM oven/bun:1.4.4-slim';
+			expect(problems(withLine(8, from))).toContainEqual(
+				`Dockerfile line 8: ${JSON.stringify(from)} is neither "FROM oven/bun:<x.y.z> AS <name>" nor "FROM oven/bun:<x.y.z>-slim"`
 			);
 		});
 
