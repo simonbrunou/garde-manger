@@ -115,13 +115,21 @@ mkdir -p /tmp/bun-<pin> && ln -sf "$P" /tmp/bun-<pin>/bun && ln -sf "$P" /tmp/bu
 nix develop -c sh -c 'PATH=/tmp/bun-<pin>:$PATH; bun --version; bunx --version; bun run test'
 ```
 
-`bun --version` and `bunx --version` must both print the pin. A missing or broken link makes its command print the dev shell's version and exit 0, so rerun the first two lines then. For the e2e suite, run `npx playwright test` in place of `bun run test`, as CI does, after the port step in E2E tests below.
+`bun --version` and `bunx --version` must both print the pin. A missing or broken link makes its command print the dev shell's version and exit 0, so rerun the first two lines then. For the e2e suite, run `PORT=<port> npx playwright test` in place of `bun run test`, as CI runs `npx playwright test`, with the port that the steps in E2E tests below pick.
 
 While the dev shell runs another Bun than the pin, a unit test can fail there and pass on the pin. Before you blame a failing unit test on a change, rerun it on the pinned Bun by the recipe above. Bun 1.3.13, which the dev shell ran on 2026-11-12, fails the three `webPushSender address pin` tests in `src/lib/server/webPushSender.test.ts`, which pass on 1.4.4 (#110).
 
 ## E2E tests
 
-Outside CI, Playwright reuses whatever already listens on the e2e port 4173 (`reuseExistingServer` in `playwright.config.ts`) instead of wiping `.e2e` and building fresh. A server left from an earlier run, or a `bun run preview` (Vite's default port is also 4173), then serves stale code and an old DB, and new routes or UI fail while the code is fine. Free the port before each run with `fuser -k 4173/tcp || true`, which kills by port; `pkill -f build/index.js` would also match your own shell. The port is shared by every worktree on the host, so run one e2e suite at a time.
+Outside CI, Playwright reuses whatever already listens on the e2e port (`reuseExistingServer` in `playwright.config.ts`) instead of wiping `.e2e` and building fresh. A server left from an earlier run, or another checkout's server on the same port, then serves stale code and an old DB, and new routes or UI fail while the code is fine. So run each suite on a port nothing listens on. Stop only a server you started, by its saved PID: a port or a process name matches the servers of every checkout on the host, another worktree's e2e run included.
+
+The e2e port is the `PORT` environment variable, 4173 when unset (`tests/e2e/fixtures/constants.ts`), as in CI. Any other value that is not a whole number from 1 to 65535, the empty string included, stops Playwright with an error naming `PORT`. Pick the port by these steps:
+
+1. Take 4000 plus your issue number (4127 for #127). With no issue, take the PR number, since Forgejo numbers issues and PRs from one sequence. With neither, take 4000.
+2. Run `ss -ltn 'sport = :<port>'`. While it lists a listener (your own earlier run, another checkout's server, a diversif worktree on the same 4000 + N scheme), add 1 and run it again.
+3. Run the suite as `PORT=<port> npx playwright test`.
+
+A server you start by hand, such as the production build to reproduce a bug, takes a port by the same steps and saves its PID in a `.pid` file, which `.gitignore` ignores. Start it with `PORT=<port> bun ./build/index.js > /tmp/gm-<port>.log 2>&1 & echo $! > server.pid`, inside `nix develop -c sh -c '…'` where direnv has not run, and stop it with `kill "$(cat server.pid)"`. Start `bun ./build/index.js` directly, since a wrapper leaves `$!` on a process that does not listen: `bunx --bun vite preview` saved one PID while `ss -ltnp` showed the listener under another. `bun run preview` does not start at all; Vite fails with `ERR_UNSUPPORTED_ESM_URL_SCHEME` on a `bun:` import.
 
 ## Scratch copies
 

@@ -3,7 +3,22 @@
 // SQLite file to open), and test helpers (cookie URL). Centralising these prevents
 // the app-under-test and the test-side raw-SQL helpers from ever pointing at a
 // different origin or database.
-export const PORT = 4173;
+
+// The e2e server's port: PORT when set, so checkouts on one host can each run
+// the suite on their own port (AGENTS.md « E2E tests »), and 4173 when unset, as
+// in CI. Any other value fails loudly instead of falling back to a shared port.
+function e2ePort(raw: string | undefined): number {
+	if (raw === undefined) return 4173;
+	const port = Number(raw);
+	if (!/^[1-9][0-9]*$/.test(raw) || port > 65535) {
+		throw new Error(
+			`PORT must be a whole number from 1 to 65535 or unset, got ${JSON.stringify(raw)}`
+		);
+	}
+	return port;
+}
+
+export const PORT = e2ePort(process.env.PORT);
 export const BASE_URL = `http://localhost:${PORT}`;
 
 // Pinned: never honor an ambient DATABASE_PATH (which may be a developer's real DB).
