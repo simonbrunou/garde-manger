@@ -17,6 +17,9 @@
 //      holds neither.
 //   7. package.json's `packageManager` is a string `bun@<x.y.z>` and nothing else.
 //   8. Both tags name the `packageManager` version.
+//   9. No non-comment line holds a backslash, and only a `CMD [` line holds a quote. BuildKit
+//      strips quotes and backslashes from an instruction's flags, so `COPY --fr"o"m=` is a
+//      `--from` that rule 6 would not see.
 // Add a test to bun-pins.test.ts for each form this reader learns to accept or reject.
 
 export type BunPins = { version: string } | { problems: string[] };
@@ -61,6 +64,13 @@ export function readBunPins(dockerfile: string, packageJson: string): BunPins {
 				problems.push(`${at}: ${shown} has the form of a parser directive (# name=value)`);
 			}
 			return;
+		}
+
+		// Rule 9.
+		if (text.includes('\\') || (/["']/.test(text) && !text.startsWith('CMD ['))) {
+			problems.push(
+				`${at}: ${shown} holds a backslash, or a quote outside a CMD [...] line, which BuildKit strips from flags`
+			);
 		}
 
 		// Rule 5.

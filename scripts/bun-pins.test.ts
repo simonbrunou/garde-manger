@@ -279,4 +279,26 @@ describe('readBunPins', () => {
 			);
 		});
 	});
+
+	describe('rule 9: no backslash, and quotes only on a CMD [ line', () => {
+		it.each([
+			[
+				'a double-quoted --from',
+				'COPY --fr"o"m=oven/b"u"n:1.4.3 /usr/local/bin/bun /usr/local/bin/'
+			],
+			['a single-quoted --from', "COPY --fr'o'm=node:24 /a /b"],
+			['a backslash-escaped --from', 'COPY --fr\\om=node:24 /a /b'],
+			[
+				'a quoted from= inside a RUN --mount',
+				'RUN --mount=type=bind,fr"o"m=node:24,target=/n true'
+			],
+			['a quoted ARG value', 'ARG A="x"'],
+			['a shell-form CMD with quotes', 'CMD "bun" ./build/index.js'],
+			['a backslash on a CMD [ line', 'CMD ["bun", ".\\/build/index.js"]']
+		])('fails on %s', (_, text) => {
+			expect(problems(withLine(16, text))).toContainEqual(
+				`Dockerfile line 16: ${JSON.stringify(text)} holds a backslash, or a quote outside a CMD [...] line, which BuildKit strips from flags`
+			);
+		});
+	});
 });
