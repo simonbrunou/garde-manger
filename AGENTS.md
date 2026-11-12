@@ -117,7 +117,7 @@ nix develop -c sh -c 'PATH=/tmp/bun-<pin>:$PATH; bun --version; bunx --version; 
 
 `bun --version` and `bunx --version` must both print the pin. A missing or broken link makes its command print the dev shell's version and exit 0, so rerun the first two lines then. For the e2e suite, run `npx playwright test` in place of `bun run test`, as CI does, after the port step in E2E tests below.
 
-While the dev shell runs another Bun than the pin, a unit test can fail there and pass on the pin. Before you blame a failing unit test on a change, rerun it on the pinned Bun by the recipe above. Bun 1.3.13, which the dev shell ran until 2026-11-12, fails the three `webPushSender address pin` tests in `src/lib/server/webPushSender.test.ts`, which pass on 1.4.4 (#110).
+While the dev shell runs another Bun than the pin, a unit test can fail there and pass on the pin. Before you blame a failing unit test on a change, rerun it on the pinned Bun by the recipe above. Bun 1.3.13, which the dev shell ran on 2026-11-12, fails the three `webPushSender address pin` tests in `src/lib/server/webPushSender.test.ts`, which pass on 1.4.4 (#110).
 
 ## E2E tests
 
