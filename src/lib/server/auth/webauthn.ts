@@ -11,6 +11,7 @@ import {
 import type { RegistrationResponseJSON, AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { DB } from '../db/client';
 import { credentials, users } from '../db/schema';
+import { webauthnFailureCategory } from './webauthnFailure';
 
 // ---------------------------------------------------------------------------
 // Config — sourced from environment at module load time; safe to tree-shake
@@ -102,8 +103,9 @@ export async function verifyRegistration(
 		});
 	} catch (err) {
 		// verifyRegistrationResponse throws on a wrong challenge, origin, RP ID or type,
-		// an unsupported attestation format and a malformed response
-		console.error('[webauthn] registration verify failed:', err);
+		// an unsupported attestation format and a malformed response. Its message holds
+		// the expected challenge and request fields, so log only the category (#108).
+		console.error(`[webauthn] registration verify failed: ${webauthnFailureCategory(err)}`);
 		return { verified: false };
 	}
 
@@ -198,8 +200,10 @@ export async function verifyAuthentication(
 			}
 		});
 	} catch (err) {
-		// verifyAuthenticationResponse throws on counter regression / verification failure
-		console.error('[webauthn] authentication verify failed:', err);
+		// verifyAuthenticationResponse throws on counter regression / verification failure.
+		// Its message holds the expected challenge and request fields, so log only the
+		// category (#108).
+		console.error(`[webauthn] authentication verify failed: ${webauthnFailureCategory(err)}`);
 		return { verified: false };
 	}
 
