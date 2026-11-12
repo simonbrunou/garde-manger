@@ -174,6 +174,22 @@ describe('readBunPins', () => {
 				`Dockerfile line 1: ${JSON.stringify(directive)} has the form of a parser directive (# name=value)`
 			);
 		});
+
+		it.each(['//syntax=example/frontend:1', '// syntax = example/frontend:1', ' //x'])(
+			'fails on %s',
+			(directive) => {
+				expect(problems(insertBefore(1, directive))).toContainEqual(
+					`Dockerfile line 1: ${JSON.stringify(directive)} starts with //, which BuildKit reads as a parser directive`
+				);
+			}
+		);
+
+		it('fails on //syntax= after a shebang line', () => {
+			const dockerfile = '#!/usr/bin/env buildctl\n//syntax=example/frontend:1\n' + DOCKERFILE;
+			expect(problems(dockerfile)).toContainEqual(
+				'Dockerfile line 2: "//syntax=example/frontend:1" starts with //, which BuildKit reads as a parser directive'
+			);
+		});
 	});
 
 	describe('rule 5: two FROM lines of the forms read today', () => {

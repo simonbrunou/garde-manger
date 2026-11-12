@@ -8,7 +8,8 @@
 //   1. Only printable ASCII, spaces and LF line ends (no CR, tab, byte order mark, Unicode space).
 //   2. No line ends in `\` or a backtick before trailing spaces, so no line continues another.
 //   3. No line contains `<<`, so no heredoc body reads as an instruction.
-//   4. No comment line has the form of a parser directive (`# name=value`).
+//   4. No comment line has the form of a parser directive (`# name=value`), and no line starts
+//      with `//`, which BuildKit also reads as one (`//syntax=<image>`).
 //   5. Each non-comment line whose first word is FROM, in any case, is exactly
 //      `FROM oven/bun:<x.y.z> AS <name>` or `FROM oven/bun:<x.y.z>-slim`, and the file holds
 //      exactly one of each, the build stage first.
@@ -56,6 +57,11 @@ export function readBunPins(dockerfile: string, packageJson: string): BunPins {
 		// Rule 3.
 		if (text.includes('<<')) {
 			problems.push(`${at}: ${shown} holds a heredoc (<<)`);
+		}
+
+		// Rule 4, for a `//` line: BuildKit reads `//syntax=<image>` as the frontend to build with.
+		if (/^ *\/\//.test(text)) {
+			problems.push(`${at}: ${shown} starts with //, which BuildKit reads as a parser directive`);
 		}
 
 		if (/^ *#/.test(text)) {
