@@ -174,6 +174,22 @@ describe('readBunPins', () => {
 				`Dockerfile line 1: ${JSON.stringify(directive)} has the form of a parser directive (# name=value)`
 			);
 		});
+
+		it.each(['//syntax=example/frontend:1', '// syntax = example/frontend:1', ' //x'])(
+			'fails on %s',
+			(directive) => {
+				expect(problems(insertBefore(1, directive))).toContainEqual(
+					`Dockerfile line 1: ${JSON.stringify(directive)} starts with //, which BuildKit reads as a parser directive`
+				);
+			}
+		);
+
+		it('fails on //syntax= after a shebang line', () => {
+			const dockerfile = '#!/usr/bin/env buildctl\n//syntax=example/frontend:1\n' + DOCKERFILE;
+			expect(problems(dockerfile)).toContainEqual(
+				'Dockerfile line 2: "//syntax=example/frontend:1" starts with //, which BuildKit reads as a parser directive'
+			);
+		});
 	});
 
 	describe('rule 5: two FROM lines of the forms read today', () => {
@@ -276,6 +292,28 @@ describe('readBunPins', () => {
 						`^Dockerfile line ${line}: ${JSON.stringify(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} names oven/bun or "from" outside`
 					)
 				)
+			);
+		});
+	});
+
+	describe('rule 9: no backslash, and quotes only on a CMD [ line', () => {
+		it.each([
+			[
+				'a double-quoted --from',
+				'COPY --fr"o"m=oven/b"u"n:1.4.3 /usr/local/bin/bun /usr/local/bin/'
+			],
+			['a single-quoted --from', "COPY --fr'o'm=node:24 /a /b"],
+			['a backslash-escaped --from', 'COPY --fr\\om=node:24 /a /b'],
+			[
+				'a quoted from= inside a RUN --mount',
+				'RUN --mount=type=bind,fr"o"m=node:24,target=/n true'
+			],
+			['a quoted ARG value', 'ARG A="x"'],
+			['a shell-form CMD with quotes', 'CMD "bun" ./build/index.js'],
+			['a backslash on a CMD [ line', 'CMD ["bun", ".\\/build/index.js"]']
+		])('fails on %s', (_, text) => {
+			expect(problems(withLine(16, text))).toContainEqual(
+				`Dockerfile line 16: ${JSON.stringify(text)} holds a backslash, or a quote outside a CMD [...] line, which BuildKit strips from flags`
 			);
 		});
 	});
