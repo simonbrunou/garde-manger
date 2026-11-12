@@ -40,6 +40,8 @@ data/
 test-results/
 playwright-report/
 tests/e2e/.auth/
+# PID files of servers started by hand (AGENTS.md « E2E tests »)
+*.pid
 
 # graphify: commit the graph artifacts, but not machine-specific paths or caches
 graphify-out/.graphify_python
