@@ -242,7 +242,8 @@ describe('readBunPins', () => {
 				'COPY --from=build --from=deps /app/build ./build'
 			],
 			['a lowercase copy --from=build', 11, 'copy --from=build /app/build ./build'],
-			['ONBUILD FROM', 15, 'ONBUILD FROM oven/bun:1.4.3']
+			['ONBUILD FROM', 15, 'ONBUILD FROM oven/bun:1.4.3'],
+			['uppercase FROM with another image', 15, 'ONBUILD FROM node:24']
 		])('fails on %s', (_, line, text) => {
 			const dockerfile = line === 1 ? insertBefore(1, text) : withLine(line, text);
 			expect(problems(dockerfile)).toContainEqual(
