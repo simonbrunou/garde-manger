@@ -28,9 +28,10 @@ Scheduled Tasks for the reminder cron and the backup.
 - **Fallback:** a minimal multi-stage `Dockerfile` is kept in the repo if you
   prefer Docker over Railpack. Its two `FROM` tags, `oven/bun:<version>` and
   `oven/bun:<version>-slim`, carry the same Bun version as `packageManager`. A
-  `renovate.json` rule groups the three, so one Renovate PR bumps them all. When
-  npm lists a Bun release before Docker Hub does, that PR can merge with
-  `packageManager` alone, and a later PR then bumps the tags.
+  `renovate.json` rule groups the three, so one Renovate PR bumps them all. A
+  unit test, `scripts/bun-pins.test.ts`, compares the two tags with
+  `packageManager`, so CI fails while they differ. When npm lists a Bun release
+  before Docker Hub does, that PR fails CI and waits until its tags match.
 
 ## 2. Environment variables (production)
 
