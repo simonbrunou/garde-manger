@@ -68,12 +68,24 @@ const base: Record<string, string> = {
 	'scripts/build.sh': 'echo build\n'
 };
 
+type Git = (args: string[], input?: string) => string;
+type Options = {
+	script?: string;
+	subdir?: string;
+	bunArgs?: string[];
+	// Set for the script only, not for the git calls that build the repo.
+	env?: Record<string, string>;
+	// Writes a commit that the working tree cannot hold and returns its SHA.
+	rewrite?: (git: Git, dir: string) => string;
+};
+
+const AUTHOR = ['-c', 'user.name=t', '-c', 'user.email=t@example.invalid'];
 let count = 0;
 // Commits `files` over the base repo (a null value deletes a base file) and runs `script` on
 // that commit from `subdir` of the repo.
 function check(
 	files: Record<string, string | null> = {},
-	{ script = SCRIPT, subdir = '', bunArgs = [] as string[] } = {}
+	{ script = SCRIPT, subdir = '', bunArgs = [], env = {}, rewrite }: Options = {}
 ) {
 	const dir = join(root, String(count++));
 	for (const [file, content] of Object.entries({ ...base, ...files })) {
@@ -81,18 +93,19 @@ function check(
 		mkdirSync(dirname(join(dir, file)), { recursive: true });
 		writeFileSync(join(dir, file), content);
 	}
-	const git = (...args: string[]) => {
-		const proc = Bun.spawnSync(['git', ...args], { cwd: dir, env: ENV });
+	const git: Git = (args, input) => {
+		const stdin = input === undefined ? undefined : Buffer.from(input);
+		const proc = Bun.spawnSync(['git', ...args], { cwd: dir, env: ENV, stdin });
 		if (proc.exitCode !== 0) throw new Error(`git ${args.join(' ')}: ${proc.stderr.toString()}`);
 		return proc.stdout.toString();
 	};
-	git('init', '-q', '-b', 'main');
-	git('add', '-A');
-	git('-c', 'user.name=t', '-c', 'user.email=t@example.invalid', 'commit', '-qm', 'c');
-	const sha = git('rev-parse', 'HEAD').trim();
+	git(['init', '-q', '-b', 'main']);
+	git(['add', '-A']);
+	git([...AUTHOR, 'commit', '-qm', 'c']);
+	const sha = rewrite ? rewrite(git, dir) : git(['rev-parse', 'HEAD']).trim();
 	const proc = Bun.spawnSync([process.execPath, ...bunArgs, script, sha], {
 		cwd: join(dir, subdir),
-		env: ENV
+		env: { ...ENV, ...env }
 	});
 	return { exitCode: proc.exitCode, out: proc.stdout.toString() + proc.stderr.toString() };
 }
@@ -109,7 +122,7 @@ function ciWith(...extraSteps: string[]) {
 	return `${baseCi}\n${extraSteps.join('\n')}\n`;
 }
 
-function expectPass(files: Record<string, string | null>, options?: { subdir?: string }) {
+function expectPass(files: Record<string, string | null>, options?: Options) {
 	const { exitCode, out } = check(files, options);
 	expect(out).toMatch(/the push run repeats the PR run/);
 	expect(exitCode).toBe(0);
@@ -118,7 +131,7 @@ function expectPass(files: Record<string, string | null>, options?: { subdir?: s
 function expectDifference(
 	files: Record<string, string | null>,
 	pattern: RegExp,
-	options?: { subdir?: string }
+	options?: Options
 ) {
 	const { exitCode, out } = check(files, options);
 	expect(out).toMatch(pattern);
@@ -187,6 +200,16 @@ describe('check-push-repeats-pr passes', () => {
 		'run from a subfolder of the repo',
 		() => {
 			expectPass({}, { subdir: 'scripts' });
+		},
+		TIMEOUT_MS
+	);
+	it(
+		"Markdown anywhere, whatever pathspec variables the caller's environment sets",
+		() => {
+			const docs = { 'docs/notes.md': `Steps read ${GH}REF.\n` };
+			for (const name of ['LITERAL', 'GLOB', 'NOGLOB', 'ICASE']) {
+				expectPass(docs, { env: { [`GIT_${name}_PATHSPECS`]: '1' } });
+			}
 		},
 		TIMEOUT_MS
 	);
@@ -693,6 +716,57 @@ describe('check-push-repeats-pr finds a difference', () => {
 				{ 'scripts/build.sh': `echo build\necho "$${GH}REF"\n` },
 				/scripts\/build\.sh:2:.*names a runner variable/
 			);
+		},
+		TIMEOUT_MS
+	);
+	it(
+		'a .MD file that reads the ref, when the caller sets GIT_ICASE_PATHSPECS',
+		() => {
+			expectDifference(
+				{ 'scripts/hook.MD': `echo "$${GH}REF"\n` },
+				/scripts\/hook\.MD:1:.*names a runner variable/,
+				{ env: { GIT_ICASE_PATHSPECS: '1' } }
+			);
+		},
+		TIMEOUT_MS
+	);
+	it(
+		'two files of one name, the second with an if:',
+		() => {
+			// Git refuses such a tree from the working tree (fsck: duplicateEntries), so build it by hand.
+			const rewrite = (git: Git) => {
+				const second = ciWith('      - run: echo push', "        if: github.event_name == 'push'");
+				const blob = git(['hash-object', '-w', '--stdin'], second).trim();
+				const entries = `${git(['ls-tree', 'HEAD:.forgejo/workflows'])}100644 blob ${blob}\tci.yml\n`;
+				const workflows = git(['mktree'], entries).trim();
+				const forgejo = git(['mktree'], `040000 tree ${workflows}\tworkflows\n`).trim();
+				const top = git(['ls-tree', 'HEAD']).replace(/^.*\t\.forgejo\n/m, '');
+				const tree = git(['mktree'], `${top}040000 tree ${forgejo}\t.forgejo\n`).trim();
+				expect(git(['ls-tree', '-r', '--name-only', tree])).toMatch(/ci\.yml\n.*ci\.yml\n/);
+				return git([...AUTHOR, 'commit-tree', tree, '-p', 'HEAD', '-m', 'dup']).trim();
+			};
+			expectDifference({}, /: a file name the tree holds twice, which this script cannot read/, {
+				rewrite
+			});
+		},
+		TIMEOUT_MS
+	);
+	it(
+		'a workflow whose name is not UTF-8, with an if:, next to its U+FFFD twin',
+		() => {
+			const rewrite = (git: Git, dir: string) => {
+				const at = (bytes: number[]) =>
+					Buffer.concat([Buffer.from(join(dir, '.forgejo/workflows/a')), Buffer.from(bytes)]);
+				const ifStep = ciWith('      - run: echo push', "        if: github.event_name == 'push'");
+				writeFileSync(at([0xff, 0x2e, 0x79, 0x6d, 0x6c]), ifStep);
+				writeFileSync(at([0xef, 0xbf, 0xbd, 0x2e, 0x79, 0x6d, 0x6c]), baseCi);
+				git(['add', '-A']);
+				git([...AUTHOR, 'commit', '-qm', 'latin-1 name']);
+				return git(['rev-parse', 'HEAD']).trim();
+			};
+			expectDifference({}, /: a file name that is not UTF-8, which this script cannot read/, {
+				rewrite
+			});
 		},
 		TIMEOUT_MS
 	);

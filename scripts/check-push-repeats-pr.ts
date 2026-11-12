@@ -22,7 +22,9 @@
 // - in any file outside Markdown and graphify-out/, a name made of GITHUB, FORGEJO or FORGE and
 //   an underscore, which a script could read the event through, and the names of the actions
 //   toolkit's github module and its event property. Neither this script nor its test holds one,
-//   so both are read.
+//   so both are read. It drops the caller's GIT_*_PATHSPECS variables, which would change the
+//   files git reads;
+// - a file name that is not UTF-8, or that the tree holds twice, which this script cannot read.
 //
 // It allows the two differences this repo's CI keeps on purpose. `branches: [main]` under
 // `pull_request` limits the PR runs to PRs into main, the ones whose merge starts a push run on
@@ -45,8 +47,10 @@
 // above leaves out. Such code passes.
 //
 // Exit 0: no difference, so the push run repeats the PR run. Exit 1: it printed a difference, so
-// wait on main's run. Exit 2: git failed, the SHA is unknown or the `yaml` devDependency is
-// missing; wait too. scripts/check-push-repeats-pr.test.ts holds one case per difference.
+// wait on main's run. Exit 2: git failed, the SHA is unknown or Bun cannot load the `yaml`
+// devDependency, as from a node_modules installed before it was added (where Bun finds no
+// node_modules at all, it fetches the package itself); wait too.
+// scripts/check-push-repeats-pr.test.ts holds one case per difference.
 import type { Document, LineCounter, Node } from 'yaml';
 
 const RUNNER_NAMES = ['GITHUB', 'FORGEJO', 'FORGE'].map((name) => `${name}_`);
@@ -73,25 +77,46 @@ const YAML = await import('yaml').catch(() =>
 	fail('cannot load the yaml package; run bun install first')
 );
 
+// The caller's pathspec settings: GIT_ICASE_PATHSPECS=1 would make `:!*.md` skip a.MD as well.
+const GIT_ENV = Object.fromEntries(
+	Object.entries(process.env).filter(
+		([name]) => !/^GIT_(LITERAL|GLOB|NOGLOB|ICASE)_PATHSPECS$/.test(name)
+	)
+);
 let cwd = process.cwd();
-function git(gitArgs: string[], okCodes = [0]): string {
-	const proc = Bun.spawnSync(['git', ...gitArgs], { cwd });
+function gitBytes(gitArgs: string[], okCodes = [0]): Buffer {
+	const proc = Bun.spawnSync(['git', ...gitArgs], { cwd, env: GIT_ENV });
 	if (!okCodes.includes(proc.exitCode)) {
 		fail(`git ${gitArgs.join(' ')} failed: ${proc.stderr.toString().trim()}`);
 	}
-	return proc.stdout.toString();
+	return proc.stdout;
 }
+const git = (gitArgs: string[], okCodes = [0]) => gitBytes(gitArgs, okCodes).toString();
 
 cwd = git(['rev-parse', '--show-toplevel']).trim();
 const commit = git(['rev-parse', '--verify', '--quiet', `${args[0]}^{commit}`], [0, 1]).trim();
 if (!commit) fail(`unknown commit: ${args[0]}`);
-const files = git(['ls-tree', '-r', '--name-only', '-z', commit]).split('\0').filter(Boolean);
+const differences: string[] = [];
+const tree = gitBytes(['ls-tree', '-r', '--name-only', '-z', commit]);
+let names: string;
+try {
+	names = new TextDecoder('utf-8', { fatal: true }).decode(tree);
+} catch {
+	// Decoded with U+FFFD, two names can read as one, and `git show` then reads the wrong file.
+	differences.push(`${commit}: a file name that is not UTF-8, which this script cannot read`);
+	names = tree.toString('utf8');
+}
+const files = names.split('\0').filter(Boolean);
+// A tree git fsck rejects (duplicateEntries) can hold two files of one name; `git show` reads
+// one of them, and a checkout may take the other.
+if (new Set(files).size !== files.length) {
+	differences.push(`${commit}: a file name the tree holds twice, which this script cannot read`);
+}
 const isYaml = (f: string) => /\.ya?ml$/.test(f);
 const workflows = files.filter((f) => f.startsWith('.forgejo/workflows/') && isYaml(f));
 const scanned = files.filter(
 	(f) => (f.startsWith('.forgejo/') && isYaml(f)) || /(^|\/)action\.ya?ml$/.test(f)
 );
-const differences: string[] = [];
 let guardCount = 0;
 if (!workflows.length) differences.push('.forgejo/workflows/: no workflow file');
 
