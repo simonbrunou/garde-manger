@@ -10,7 +10,7 @@
 function e2ePort(raw: string | undefined): number {
 	if (raw === undefined) return 4173;
 	const port = Number(raw);
-	if (!/^[1-9][0-9]*$/.test(raw) || port > 65535) {
+	if (!/^[0-9]+$/.test(raw) || port < 1 || port > 65535) {
 		throw new Error(
 			`PORT must be a whole number from 1 to 65535 or unset, got ${JSON.stringify(raw)}`
 		);
