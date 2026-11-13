@@ -49,9 +49,12 @@ export default defineConfig(
 			// same-origin SvelteKit route — wrapping each in resolve() adds boilerplate
 			// without meaningful benefit.
 			'svelte/no-navigation-without-resolve': 'off',
-			// Agents' Write and Edit tools write a backslash-u escape such as the one for a no-break space
-			// as the character itself, which no reader sees (#124, diversif#624). The rule makes strings
-			// and templates spell such characters as escapes.
+			// Agents' Write and Edit tools have written a backslash-u escape, such as the one for a
+			// no-break space, as the character itself, which no reader sees (work on #124). By default
+			// the rule skips strings. With these options it also fails a string or template holding a
+			// character on its list (a no-break space, a BOM, a line separator and other Unicode
+			// spaces), so code spells those as escapes. A zero-width joiner, a word joiner or a soft
+			// hyphen passes.
 			'no-irregular-whitespace': ['error', { skipStrings: false, skipTemplates: false }]
 		}
 	},

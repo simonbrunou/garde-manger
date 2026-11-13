@@ -4,8 +4,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 // eslint.config.js runs no-irregular-whitespace on strings and templates too, since agents'
-// Write and Edit tools write an escaped no-break space as the character itself (#124). Each test
-// lints a snippet with the repo's config, as bun run lint does, under a file name in scripts/.
+// Write and Edit tools have written an escaped no-break space as the character itself (#124).
+// Each test lints a snippet with the repo's config, as bun run lint does, under the name of a
+// file in the repo: for a .svelte name, the TypeScript project service must find the file.
 const ROOT = join(import.meta.dir, '..');
 const ESLINT = join(ROOT, 'node_modules', 'eslint', 'bin', 'eslint.js');
 
@@ -21,17 +22,9 @@ beforeAll(() => {
 afterAll(() => rmSync(eslintTmp, { recursive: true, force: true }));
 
 // Lints `source`. `passed` is whether ESLint exited 0, so a rule that only warns still passes.
-function lint(source: string) {
+function lint(source: string, filename = 'scripts/probe.ts') {
 	const proc = Bun.spawnSync(
-		[
-			process.execPath,
-			ESLINT,
-			'--stdin',
-			'--stdin-filename',
-			'scripts/probe.ts',
-			'--format',
-			'json'
-		],
+		[process.execPath, ESLINT, '--stdin', '--stdin-filename', filename, '--format', 'json'],
 		{ cwd: ROOT, env: { ...process.env, TMPDIR: eslintTmp }, stdin: Buffer.from(source) }
 	);
 	let report: { messages: { ruleId: string | null }[] }[];
@@ -69,6 +62,18 @@ describe('no-irregular-whitespace in eslint.config.js', () => {
 		'fails on %s',
 		(_, source) => {
 			expect(lint(source)).toEqual({ passed: false, rules: ['no-irregular-whitespace'] });
+		},
+		TIMEOUT_MS
+	);
+
+	it(
+		'fails on a no-break space in a string in a Svelte component',
+		() => {
+			const source = `<script lang="ts">\n\tconst a = '${NBSP}';\n</script>\n\n<p>{a}</p>\n`;
+			expect(lint(source, 'src/lib/components/BarcodeScanner.svelte')).toEqual({
+				passed: false,
+				rules: ['no-irregular-whitespace']
+			});
 		},
 		TIMEOUT_MS
 	);
