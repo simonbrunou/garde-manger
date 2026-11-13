@@ -1,16 +1,17 @@
 import { describe, it, expect } from 'bun:test';
 import { join } from 'node:path';
 
-// tests/e2e/fixtures/constants.ts reads the e2e port from PORT once, when playwright.config.ts
-// imports it (#127). Each case imports the module in a fresh Bun process with PORT set or unset
-// and checks what PORT and BASE_URL become, or that loading throws.
+// tests/e2e/fixtures/constants.ts reads the e2e port from PORT when a process imports it (#127).
+// Each case imports the module in a fresh Bun process with PORT set or unset and checks what PORT
+// and BASE_URL become, or that loading throws.
 const CONSTANTS = join(import.meta.dir, '..', 'tests', 'e2e', 'fixtures', 'constants.ts');
 const PRINT = `import(${JSON.stringify(CONSTANTS)}).then((m) => console.log(m.PORT, m.BASE_URL))`;
 
 function load(port: string | undefined) {
 	const env: Record<string, string | undefined> = { ...process.env, PORT: port };
 	if (port === undefined) delete env.PORT;
-	const proc = Bun.spawnSync([process.execPath, '-e', PRINT], { env });
+	// Bun loads a .env in the working directory; a PORT there would set the unset case.
+	const proc = Bun.spawnSync([process.execPath, '--no-env-file', '-e', PRINT], { env });
 	return {
 		exitCode: proc.exitCode,
 		stdout: proc.stdout.toString().trim(),
