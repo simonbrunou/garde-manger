@@ -48,7 +48,11 @@ export default defineConfig(
 			// grouped/dynamic routes at this scale. Every anchor in this app targets a
 			// same-origin SvelteKit route — wrapping each in resolve() adds boilerplate
 			// without meaningful benefit.
-			'svelte/no-navigation-without-resolve': 'off'
+			'svelte/no-navigation-without-resolve': 'off',
+			// Agents' Write and Edit tools write a backslash-u escape such as the one for a no-break space
+			// as the character itself, which no reader sees (#124, diversif#624). The rule makes strings
+			// and templates spell such characters as escapes.
+			'no-irregular-whitespace': ['error', { skipStrings: false, skipTemplates: false }]
 		}
 	},
 	{
