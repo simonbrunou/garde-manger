@@ -48,7 +48,14 @@ export default defineConfig(
 			// grouped/dynamic routes at this scale. Every anchor in this app targets a
 			// same-origin SvelteKit route — wrapping each in resolve() adds boilerplate
 			// without meaningful benefit.
-			'svelte/no-navigation-without-resolve': 'off'
+			'svelte/no-navigation-without-resolve': 'off',
+			// On #124 an agent's Write call put a literal BOM, no-break space and line separator, which
+			// no reader sees, into strings in scripts/bun-pins.test.ts where escapes were meant. By
+			// default the rule skips strings. With these options it also fails a string or template
+			// holding a character on its list (a no-break space, a BOM, a line separator and other
+			// Unicode spaces), so code spells those as escapes. A zero-width joiner, a word joiner or a
+			// soft hyphen passes.
+			'no-irregular-whitespace': ['error', { skipStrings: false, skipTemplates: false }]
 		}
 	},
 	{
