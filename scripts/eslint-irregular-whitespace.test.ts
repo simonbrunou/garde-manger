@@ -3,10 +3,11 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-// eslint.config.js runs no-irregular-whitespace on strings and templates too, since agents'
-// Write and Edit tools have written an escaped no-break space as the character itself (#124).
-// Each test lints a snippet with the repo's config, as bun run lint does, under the name of a
-// file in the repo: for a .svelte name, the TypeScript project service must find the file.
+// eslint.config.js runs no-irregular-whitespace on strings and templates too, since on #124 an
+// agent's Write call put literal irregular whitespace into strings where escapes were meant.
+// Each test lints a snippet with the repo's config, as bun run lint does, under the file name
+// scripts/probe.ts. The .svelte case names a component that exists, since the TypeScript project
+// service rejects a .svelte name it cannot find.
 const ROOT = join(import.meta.dir, '..');
 const ESLINT = join(ROOT, 'node_modules', 'eslint', 'bin', 'eslint.js');
 
