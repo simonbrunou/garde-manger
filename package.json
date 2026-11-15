@@ -61,7 +61,7 @@
 		"barcode-detector": "^3.2.3",
 		"valibot": "^1.5.0",
 		"web-push": "^4.0.0",
-		"zxing-wasm": "^3.1.6"
+		"zxing-wasm": "^3.1.7"
 	},
 	"imports": {
 		"#lib/*": "./src/lib/*"
