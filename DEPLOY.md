@@ -95,8 +95,9 @@ localhost/dev over http keep working).
   such as `drizzle/0005_eager_shinko_yamashiro.sql`). Each container also keeps
   its own in-memory rate limits, so during the overlap a client gets up to
   twice the allowed failed logins.
-- Each deploy takes the site down for about 6 s. On 2026-11-06, a poll of
-  `/healthz` every 0.5 s got `404` for 5.8 to 6.8 s during a redeploy.
+- Each deploy takes the site down for 6 to 10 s. A poll of `/healthz` every
+  0.5 s got no `200` for 5.8 to 6.8 s during a redeploy on 2026-11-06, and for
+  8.3 to 9.5 s during a deploy on 2026-11-17.
 - With this setting, the deploy does not wait for the health check (§5): the
   old container is already gone when the new one starts. A build that boots
   unhealthy keeps the site down until a working build deploys.
