@@ -57,8 +57,8 @@ Drizzle ORM + `bun:sqlite`. Run `bun run db:generate` after schema changes. Migr
 ## Deploy (Coolify + Railpack)
 
 See **[DEPLOY.md](./DEPLOY.md)** for the full guide: env vars, persistent volume,
-the "Consistent name (no rolling updates)" container naming that keeps two
-containers off one database, reverse-proxy headers, the two daily Scheduled Tasks (reminder
+the "Consistent name (no rolling updates)" container naming (old code must
+not query a schema the new container migrated), reverse-proxy headers, the two daily Scheduled Tasks (reminder
 push + backup), how to read their run history in prod, security headers, and a
 post-deploy smoke checklist.
 
