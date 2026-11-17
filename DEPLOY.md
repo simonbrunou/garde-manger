@@ -80,13 +80,26 @@ origin.
 HSTS should be added at the proxy (the app intentionally does not send HSTS, so
 localhost/dev over http keep working).
 
-## 4. Persistent storage (single writer)
+## 4. Persistent storage (old code must not run on a migrated schema)
 
 - Mount a **directory** volume at `/app/data` (NOT the bare `.db` file) so the
   WAL siblings (`-wal`, `-shm`), cached OFF product images, and backups live
   together and survive redeploys.
-- **Disable rolling updates — use the recreate strategy** (≈1–2 s downtime per
-  deploy). SQLite has a single writer; never run two containers against the file.
+- **Turn off rolling updates.** On the app's **Advanced** page, section
+  **Container**, set **Container naming** to **Consistent name (no rolling
+  updates)**. These are the Coolify 4.7.5 labels. Coolify stores the setting as
+  `is_consistent_container_name_enabled` in `application_settings`. Coolify
+  then removes the old container before it starts the new one, so two
+  containers never run at once. In a rolling update they overlap: the old code
+  keeps querying a schema the new container has just migrated (a table rebuild
+  such as `drizzle/0005_eager_shinko_yamashiro.sql`). Each container also keeps
+  its own in-memory rate limits, so during the overlap a client gets up to
+  twice the allowed failed logins.
+- Each deploy takes the site down for about 6 s. On 2026-11-06, a poll of
+  `/healthz` every 0.5 s got `404` for 5.8 to 6.8 s during a redeploy.
+- With this setting, the deploy does not wait for the health check (§5): the
+  old container is already gone when the new one starts. A build that boots
+  unhealthy keeps the site down until a working build deploys.
 - Migrations run automatically at boot; the food catalogue seeds on first boot
   (idempotent).
 
@@ -131,10 +144,10 @@ Use this to find a running deploy, its Scheduled Tasks and their run history.
 On the homelab deploy the application is named `garde-manger`, and the two §6
 tasks are named `daily-reminder-push` and `daily-db-backup`.
 
-- **App container:** Coolify names it `<app uuid>-<deploy timestamp>`, so the
-  name changes on every deploy. The uuid is on the application's page in
-  Coolify. On the server Coolify deploys to, `docker ps --filter name=<app uuid>`
-  shows the current container.
+- **App container:** with the §4 container naming, Coolify names it
+  `<app uuid>`, and the name stays the same across deploys. The uuid is on the
+  application's page in Coolify. On the server Coolify deploys to,
+  `docker ps --filter name=<app uuid>` shows the current container.
 - **Task runs:** the application's Scheduled Tasks tab lists both tasks, and
   each task keeps its executions with status and output. The reminder logs the
   endpoint's JSON summary (`usersNotified`, `devicesSent`, ...), the backup the
