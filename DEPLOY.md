@@ -146,8 +146,8 @@ tasks are named `daily-reminder-push` and `daily-db-backup`.
 
 - **App container:** with the §4 container naming, Coolify names it
   `<app uuid>`, and the name stays the same across deploys. The uuid is on the
-  application's page in Coolify. On the server Coolify deploys to, `docker ps --filter name=<app uuid>`
-  shows the current container.
+  application's page in Coolify. On the server Coolify deploys to,
+  `docker ps --filter name=<app uuid>` shows the current container.
 - **Task runs:** the application's Scheduled Tasks tab lists both tasks, and
   each task keeps its executions with status and output. The reminder logs the
   endpoint's JSON summary (`usersNotified`, `devicesSent`, ...), the backup the
