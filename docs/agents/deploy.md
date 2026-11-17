@@ -23,3 +23,13 @@ Take the new `main` head SHA with `git fetch origin && git rev-parse origin/main
    - The run counts as failed in any of these cases: `origin/main` still points at `<sha>`, the ancestor check exits other than 0, or any check failed with a description other than `Has been cancelled`, even beside cancelled ones.
 
 When a check fails, file an issue labelled `needs-triage` with the `forgejo-issues` skill, and name it in your report to the user.
+
+## Measure a deploy's downtime
+
+Each deploy takes the site down while Coolify swaps containers (`DEPLOY.md` §4). A PR that states a downtime figure cannot measure its own deploy before it merges. Measure the figure on the deploy of that merge instead. Start this poll in the background right before you merge, with `<n>` set to the PR number. When the poll disagrees with the figure, correct it in a follow-up PR.
+
+```sh
+(ulimit -f 100000; for i in $(seq 1 2400); do printf '%s %s\n' "$(date -u +%H:%M:%S.%1N)" "$(curl -s -o /dev/null -w '%{http_code}' --max-time 2 https://garde-manger.sbrn.eu/healthz)"; sleep 0.5; done > /tmp/gm-healthz-poll-<n>.log)
+```
+
+It stops after 2400 polls, about 24 minutes, and logs times in UTC. Once the deploy check reads `OK`, find the run of lines without `200`. The downtime is at least the time from its first line to its last, and at most the time from the `200` before it to the `200` after it. A `000` line means curl got no answer within 2 s or could not connect. On 2026-11-17, #143 copied its figure from a measurement on an older Coolify, and the poll during its own deploy disagreed, so the figure took a second PR (#144).
