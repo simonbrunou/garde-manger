@@ -34,8 +34,8 @@
 
 <Card>
 	<form method="POST" action="?/update" class="edit">
-		<label
-			>{t.add_location_label}
+		<label>
+			{t.add_location_label}
 			<select name="location" value={it.location}>
 				<option value="pantry">{t.add_location_pantry}</option>
 				<option value="fridge">{t.add_location_fridge}</option>
@@ -44,8 +44,8 @@
 		</label>
 		{#if it.dateKind}
 			<input type="hidden" name="dateKind" value={it.dateKind} />
-			<label
-				>{it.dateKind === 'DLC' ? t.dlc_label : t.ddm_label}
+			<label>
+				{it.dateKind === 'DLC' ? t.dlc_label : t.ddm_label}
 				<input type="date" name="date" value={it.dateValue} />
 			</label>
 			{#if it.isEstimate}
@@ -53,12 +53,12 @@
 				<small class="est-disclaimer">{t.est_disclaimer}</small>
 			{/if}
 		{/if}
-		<label
-			>{t.add_quantity_label}
+		<label>
+			{t.add_quantity_label}
 			<input type="number" name="quantity" min="1" value={it.quantity} />
 		</label>
-		<label
-			>{t.item_notes_label}
+		<label>
+			{t.item_notes_label}
 			<textarea name="notes" rows="2" placeholder={t.item_notes_placeholder}>{it.notes}</textarea>
 		</label>
 		<Button type="submit" full>{t.item_save}</Button>

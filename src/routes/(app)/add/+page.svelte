@@ -120,8 +120,9 @@
 							<a href={`/add?food=${food.id}&q=${encodeURIComponent(data.q)}`}>
 								<span>{data.locale === 'fr' ? food.nameFr : food.nameEn}</span>
 								{#if data.locale === 'fr' ? food.subtitleFr : food.subtitleEn}
-									<span class="sub">{data.locale === 'fr' ? food.subtitleFr : food.subtitleEn}</span
-									>
+									<span class="sub">
+										{data.locale === 'fr' ? food.subtitleFr : food.subtitleEn}
+									</span>
 								{/if}
 							</a>
 						</li>

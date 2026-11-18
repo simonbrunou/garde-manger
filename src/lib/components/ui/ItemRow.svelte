@@ -75,9 +75,10 @@
 				<span class="meta">
 					{locLabel}{#if item.quantity > 1}&nbsp;· ×{item.quantity}{/if}{#if dateLabel}&nbsp;· <span
 							title={item.isEstimate ? t.est_label : undefined}
-							>{#if item.isEstimate}~
-							{/if}{dateLabel}</span
-						>{/if}
+						>
+							{#if item.isEstimate}~
+							{/if}{dateLabel}
+						</span>{/if}
 				</span>
 			</span>
 			<DayBadge band={item.band} effectiveDate={item.effectiveDate} {t} />
