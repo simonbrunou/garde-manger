@@ -74,14 +74,14 @@
 						{#if cred.createdAt}
 							<span class="passkey-meta">
 								— {t.account_passkey_added}
-								{new Date(cred.createdAt).toLocaleDateString(dateLocale)}</span
-							>
+								{new Date(cred.createdAt).toLocaleDateString(dateLocale)}
+							</span>
 						{/if}
 						{#if cred.lastUsedAt}
-							<span class="passkey-meta"
-								>, {t.account_passkey_last_used}
-								{new Date(cred.lastUsedAt).toLocaleDateString(dateLocale)}</span
-							>
+							<span class="passkey-meta">
+								, {t.account_passkey_last_used}
+								{new Date(cred.lastUsedAt).toLocaleDateString(dateLocale)}
+							</span>
 						{/if}
 						<form method="POST" action="?/removePasskey" class="passkey-remove">
 							<input type="hidden" name="id" value={cred.id} />

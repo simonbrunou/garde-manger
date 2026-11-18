@@ -68,9 +68,10 @@
 					<span class="role-badge">{member.role}</span>
 				</div>
 				<span class="email">{member.email}</span>
-				<span class="joined"
-					>{t.members_since} {member.joinedAt.toLocaleDateString(dateLocale)}</span
-				>
+				<span class="joined">
+					{t.members_since}
+					{member.joinedAt.toLocaleDateString(dateLocale)}
+				</span>
 
 				{#if data.isAdmin}
 					<div class="member-actions">
@@ -105,9 +106,9 @@
 		{/each}
 	</ul>
 	{#if data.isAdmin}
-		<a href="/households/{data.household.id}/invite" class="btn btn-primary"
-			>{t.members_invite_link}</a
-		>
+		<a href="/households/{data.household.id}/invite" class="btn btn-primary">
+			{t.members_invite_link}
+		</a>
 	{/if}
 </section>
 
@@ -121,9 +122,10 @@
 				{#each data.pendingInvitations as inv (inv.id)}
 					<li>
 						<span class="role-badge">{inv.role}</span>
-						<span class="invite-meta"
-							>{t.manage_invite_expires} {inv.expiresAt.toLocaleDateString(dateLocale)}</span
-						>
+						<span class="invite-meta">
+							{t.manage_invite_expires}
+							{inv.expiresAt.toLocaleDateString(dateLocale)}
+						</span>
 						<form method="POST" action="?/revokeInvitation" class="invite-revoke">
 							<input type="hidden" name="id" value={inv.id} />
 							<button type="submit" class="btn btn-ghost">{t.manage_invite_revoke}</button>
