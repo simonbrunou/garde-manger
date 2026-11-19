@@ -16,8 +16,8 @@ Scheduled Tasks for the reminder cron and the backup.
   `Dockerfile`. The build stage installs every dependency from `bun.lock` and
   runs the `build` script. The runtime stage starts from `oven/bun:<version>-slim`
   and holds only `build/`, `drizzle/`, `package.json`, `bun.lock`, the backup
-  script and what `bun install --production` installs. It has no Node install and no npm: its
-  `node` command is the base image's link to `bun` (#158).
+  script and what `bun install --production` installs. It has no Node install
+  and no npm: its `node` command is the base image's link to `bun` (#158).
 - **Bun:** the Dockerfile's two `FROM` tags, `oven/bun:<version>` and
   `oven/bun:<version>-slim`, carry the same Bun version as `package.json`'s
   `"packageManager": "bun@<version>"`. Both CI jobs read that field through
@@ -99,7 +99,8 @@ localhost/dev over http keep working).
   `0:0`: run `chown -R 1000:1000` on it before the first deploy as uid 1000.
   What a `0:0` volume does depends on the files it holds. With no database
   yet, the app exits at boot with `SQLITE_CANTOPEN`. With only the `.db` file,
-  as a clean stop leaves it, the app exits at boot with `SQLITE_READONLY`.
+  as a clean stop leaves it, the app exits at boot with
+  `SQLITE_READONLY_DIRECTORY`.
   With `-wal` and `-shm` files left, the app boots and `/healthz` answers
   `200`, but writes fail with `SQLITE_READONLY` and the backup task fails.
 - **Turn off rolling updates.** On the app's **Advanced** page, section
