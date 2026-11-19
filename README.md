@@ -54,7 +54,7 @@ Drizzle ORM + `bun:sqlite`. Run `bun run db:generate` after schema changes. Migr
 - `RP_ID` must be a stable HTTPS domain. Changing it invalidates all existing passkeys — affected users can still log in with their password and re-enroll.
 - Behind Coolify/Traefik, `PROTOCOL_HEADER` and `HOST_HEADER` handle the origin automatically; set `ORIGIN` as a fallback or for direct-access deployments.
 
-## Deploy (Coolify + Railpack)
+## Deploy (Coolify + Dockerfile)
 
 See **[DEPLOY.md](./DEPLOY.md)** for the full guide: env vars, persistent volume,
 the "Consistent name (no rolling updates)" container naming (old code must
@@ -62,7 +62,8 @@ not query a schema the new container migrated), reverse-proxy headers, the two
 daily Scheduled Tasks (reminder push + backup), how to read their run history in
 prod, security headers, and a post-deploy smoke checklist.
 
-In short: Railpack build pack (Bun), start `bun ./build/index.js`, mount a
-directory volume at `/app/data`, container naming "Consistent name (no rolling
-updates)" (old code must not query a schema the new container migrated),
-healthcheck `GET /healthz`. The included `Dockerfile` is the fallback build path.
+In short: Dockerfile build pack (the repo's `Dockerfile`, Bun, runs as uid
+1000), start `bun ./build/index.js`, mount a directory volume at `/app/data`
+owned by `1000:1000`, container naming "Consistent name (no rolling updates)"
+(old code must not query a schema the new container migrated), healthcheck
+`GET /healthz`.

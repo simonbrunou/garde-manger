@@ -16,13 +16,13 @@
 			"automerge": true
 		},
 		{
-			"description": "Keep package.json's `engines.node` a bare major such as `26`. Railpack installs that major in production (#66), and CI's setup-node reads it (#79). Under the top-level rangeStrategy bump, Renovate rewrites the major to a full release (#70, 26 to 26.13.0) and would open a PR for every Node release. auto leaves `26` alone and still proposes the next major, as #64 did.",
+			"description": "Keep package.json's `engines.node` a bare major such as `26`. CI's setup-node reads it (#79); production runs no Node since the Dockerfile build (#158). Under the top-level rangeStrategy bump, Renovate rewrites the major to a full release (#70, 26 to 26.13.0) and would open a PR for every Node release. auto leaves `26` alone and still proposes the next major, as #64 did.",
 			"matchManagers": ["bun"],
 			"matchDepNames": ["node"],
 			"rangeStrategy": "auto"
 		},
 		{
-			"description": "Group the Bun pin in package.json's `packageManager` with the fallback Dockerfile's `oven/bun` build and runtime tags, so one PR bumps all three and the Dockerfile builds on the Bun that CI and production run (#104). A unit test, scripts/bun-pins.test.ts, compares the two tags with `packageManager`, so CI fails while they differ. When npm lists a Bun release before Docker Hub does, the PR fails CI and waits until its tags match. The rule only groups: each upgrade keeps the automerge the rules above give it.",
+			"description": "Group the Bun pin in package.json's `packageManager` with the Dockerfile's `oven/bun` build and runtime tags, so one PR bumps all three and production, which builds from the Dockerfile (#158), runs the Bun that CI runs (#104). A unit test, scripts/bun-pins.test.ts, compares the two tags with `packageManager`, so CI fails while they differ. When npm lists a Bun release before Docker Hub does, the PR fails CI and waits until its tags match. The rule only groups: each upgrade keeps the automerge the rules above give it.",
 			"matchDepNames": ["bun", "oven/bun"],
 			"groupName": "Bun"
 		}

@@ -1,6 +1,6 @@
-# Deploying Garde-Manger (Coolify + Railpack)
+# Deploying Garde-Manger (Coolify + Dockerfile)
 
-Self-hosted on a homelab via **Coolify** with the **Railpack** build pack. One
+Self-hosted on a homelab via **Coolify** with the **Dockerfile** build pack. One
 container, one embedded SQLite file on a persistent volume (WAL), daily Coolify
 Scheduled Tasks for the reminder cron and the backup.
 
@@ -12,26 +12,34 @@ Scheduled Tasks for the reminder cron and the backup.
 
 ## 1. Build & run
 
-- **Build pack:** Railpack. The Node provider runs Bun because `package.json`
-  pins `"packageManager": "bun@<version>"` and `bun.lock` is committed. Both CI
-  jobs read the same field through setup-bun's `bun-version-file: package.json`,
-  so a Renovate bump of `packageManager` moves production and CI together.
-- **Node:** Railpack also installs Node next to Bun, and `bun install` runs
-  `svelte-kit sync` under it. `package.json` `engines.node` pins its major.
-  CI's `e2e` job reads the same field through setup-node's
-  `node-version-file: package.json`, so a Renovate bump of `engines.node` moves
-  production and CI together. Without the pin, Railpack installs its `lts`
-  default.
+- **Build pack:** Dockerfile. Coolify builds the repo's multi-stage
+  `Dockerfile`. The build stage installs every dependency from `bun.lock` and
+  runs the `build` script. The runtime stage starts from `oven/bun:<version>-slim`
+  and holds only `build/`, `drizzle/`, `package.json`, `bun.lock`, the backup
+  script and what `bun install --production` installs. It has no Node install
+  and no npm: its `node` command is the base image's link to `bun` (#158).
+- **Bun:** the Dockerfile's two `FROM` tags, `oven/bun:<version>` and
+  `oven/bun:<version>-slim`, carry the same Bun version as `package.json`'s
+  `"packageManager": "bun@<version>"`. Both CI jobs read that field through
+  setup-bun's `bun-version-file: package.json`. A `renovate.json` rule groups
+  the three, so one Renovate PR bumps production and CI together. A unit test,
+  `scripts/bun-pins.test.ts`, compares the two tags with `packageManager`, so
+  CI fails while they differ. When npm lists a Bun release before Docker Hub
+  does, that PR fails CI and waits until its tags match.
+- **Node:** production runs no Node. `package.json` `engines.node` pins the
+  major that CI's `e2e` job installs through setup-node's
+  `node-version-file: package.json`, for the Playwright runner.
+- **Debian updates:** the runtime stage runs `apt-get upgrade`, and installs
+  `curl` for Coolify's health check (§5) and the reminder task (§6). Docker
+  reuses that layer from its build cache, so a Debian fix published later lands
+  only when the layer rebuilds. To rebuild it, set `ARG APT_REFRESH` in the
+  `Dockerfile` to the day's date, for example when a scan flags an OS package
+  that a fresh upgrade fixes.
+- **User:** the container runs as the base image's `bun` user, uid 1000 and
+  gid 1000. See §4 for the volume's owner.
 - **Build:** `bunx --bun vite build` (the `--bun` flag is required so `bun:sqlite`
   resolves in the SSR graph). This is the repo's `build` script.
 - **Start:** `bun ./build/index.js` (adapter-node).
-- **Fallback:** a minimal multi-stage `Dockerfile` is kept in the repo if you
-  prefer Docker over Railpack. Its two `FROM` tags, `oven/bun:<version>` and
-  `oven/bun:<version>-slim`, carry the same Bun version as `packageManager`. A
-  `renovate.json` rule groups the three, so one Renovate PR bumps them all. A
-  unit test, `scripts/bun-pins.test.ts`, compares the two tags with
-  `packageManager`, so CI fails while they differ. When npm lists a Bun release
-  before Docker Hub does, that PR fails CI and waits until its tags match.
 
 ## 2. Environment variables (production)
 
@@ -85,6 +93,16 @@ localhost/dev over http keep working).
 - Mount a **directory** volume at `/app/data` (NOT the bare `.db` file) so the
   WAL siblings (`-wal`, `-shm`), cached OFF product images, and backups live
   together and survive redeploys.
+- **Owner uid 1000, gid 1000.** The app runs as that user (§1). A new named
+  volume takes its owner from the image's `/app/data`, which is `1000:1000`. A
+  volume that a root container wrote, as the Railpack build did, stays
+  `0:0`: run `chown -R 1000:1000` on it before the first deploy as uid 1000.
+  What a `0:0` volume does depends on the files it holds. With no database
+  yet, the app exits at boot with `SQLITE_CANTOPEN`. With only the `.db` file,
+  as a clean stop leaves it, the app exits at boot with
+  `SQLITE_READONLY_DIRECTORY`.
+  With `-wal` and `-shm` files left, the app boots and `/healthz` answers
+  `200`, but writes fail with `SQLITE_READONLY` and the backup task fails.
 - **Turn off rolling updates.** On the app's **Advanced** page, section
   **Container**, set **Container naming** to **Consistent name (no rolling
   updates)**. These are the Coolify 4.7.5 labels. Coolify stores the setting as
@@ -112,6 +130,8 @@ localhost/dev over http keep working).
 
 - `GET /healthz` → `200` (cheap DB ping) / `503` on failure. Point Coolify's
   health check at it.
+- Coolify runs that check inside the container, as `curl ... || wget ...`.
+  The image ships `curl` and no `wget`.
 
 ## 6. Scheduled Tasks (two)
 
