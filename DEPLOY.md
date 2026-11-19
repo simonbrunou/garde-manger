@@ -97,9 +97,10 @@ localhost/dev over http keep working).
   volume takes its owner from the image's `/app/data`, which is `1000:1000`. A
   volume that a root container wrote, as the Railpack build did, stays
   `0:0`: run `chown -R 1000:1000` on it before the first deploy as uid 1000.
-  On a `0:0` volume the app still boots and `/healthz` still answers `200`, but
-  every write fails with `SQLITE_READONLY` and the backup task fails with
-  `SQLITE_CANTOPEN`.
+  On a `0:0` volume that a clean stop left with only the `.db` file, the app
+  exits at boot with `SQLITE_READONLY` when it sets WAL mode. When `-wal` and
+  `-shm` files remain, it boots and `/healthz` answers `200`, but writes fail
+  with `SQLITE_READONLY` and the backup task fails with `SQLITE_CANTOPEN`.
 - **Turn off rolling updates.** On the app's **Advanced** page, section
   **Container**, set **Container naming** to **Consistent name (no rolling
   updates)**. These are the Coolify 4.7.5 labels. Coolify stores the setting as
