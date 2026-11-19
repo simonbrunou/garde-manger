@@ -5,7 +5,8 @@ import { readBunPins } from './bun-pins';
 
 const ROOT = join(import.meta.dir, '..');
 
-// The Dockerfile's shape today, with both tags on 1.4.4. Each failure-class test edits one line.
+// The Dockerfile's shape before #158 hardened its runtime stage, with both tags on 1.4.4. The
+// test "reads the repo's own Dockerfile" reads today's file. Each failure-class test edits one line.
 const DOCKERFILE = [
 	'FROM oven/bun:1.4.4 AS build',
 	'WORKDIR /app',

@@ -23,8 +23,8 @@ jobs:
           GRAPHIFY_GUARD_BASE: origin/${{ github.base_ref }}
         run: sh scripts/check-graphify-out.sh
 
-      # The version comes from package.json packageManager, the pin Railpack reads
-      # for production (#81). Setting bun-version here would override it.
+      # The version comes from package.json packageManager, the pin the Dockerfile's
+      # oven/bun tags match for production (#81, #158). Setting bun-version here would override it.
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -49,8 +49,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # The version comes from package.json packageManager, the pin Railpack reads
-      # for production (#81). Setting bun-version here would override it.
+      # The version comes from package.json packageManager, the pin the Dockerfile's
+      # oven/bun tags match for production (#81, #158). Setting bun-version here would override it.
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
@@ -58,8 +58,8 @@ jobs:
 
       # The Playwright runner + node:sqlite fixtures need Node; the app server still
       # runs under Bun via the webServer command in playwright.config.ts.
-      # The major comes from package.json engines.node, the field Railpack reads for
-      # production (#79). Setting node-version here would override it.
+      # The major comes from package.json engines.node (#79). Production runs no Node (#158).
+      # Setting node-version here would override it.
       - name: Setup Node
         uses: actions/setup-node@v7
         with:

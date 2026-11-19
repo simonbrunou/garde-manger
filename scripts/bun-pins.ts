@@ -1,4 +1,4 @@
-// Read the Bun version that the fallback Dockerfile's two `oven/bun` tags and package.json's
+// Read the Bun version that the production Dockerfile's two `oven/bun` tags and package.json's
 // `packageManager` name, and list each place where they differ (#124). bun-pins.test.ts runs it
 // on the repo's own files, so CI's Unit tests step fails while the three differ.
 //
