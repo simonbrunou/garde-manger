@@ -1,9 +1,10 @@
 // scripts/check-push-repeats-pr.ts (#105) against a small git repo written per test. The base
 // repo holds the shapes the script must pass, as this repo's CI has them: a workflow on `push`
-// and `pull_request` to `main`, and a runner variable name in Markdown. Each other case edits one
-// file into one difference and asserts exit 1 and the line that names it, so removing any rule
-// from the script turns a case red. The runner variable names are built from parts here, as in
-// the script, so neither file holds one and the script reads both.
+// and `pull_request` to `main`, and a runner variable name in Markdown. Each case under "finds a
+// difference" edits the base into one difference and asserts exit 1 and the line that names it;
+// the "passes" cases assert exit 0 and the "exits 2" cases a failed run. The runner variable
+// names are built from parts here, as in the script, so neither file holds one and the script
+// reads both.
 import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
