@@ -1,7 +1,6 @@
 // scripts/check-push-repeats-pr.ts (#105) against a small git repo written per test. The base
 // repo holds the shapes the script must pass, as this repo's CI has them: a workflow on `push`
-// and `pull_request` to `main`, the graphify-out guard with its PR-only `if` and
-// `${{ github.base_ref }}`, and a runner variable name in Markdown. Each other case edits one
+// and `pull_request` to `main`, and a runner variable name in Markdown. Each other case edits one
 // file into one difference and asserts exit 1 and the line that names it, so removing any rule
 // from the script turns a case red. The runner variable names are built from parts here, as in
 // the script, so neither file holds one and the script reads both.
@@ -38,13 +37,6 @@ beforeAll(() => {
 });
 afterAll(() => rmSync(root, { recursive: true, force: true }));
 
-const GUARD = [
-	'      - name: graphify-out guard',
-	"        if: github.event_name == 'pull_request'",
-	'        env:',
-	'          GRAPHIFY_GUARD_BASE: origin/${{ github.base_ref }}',
-	'        run: sh scripts/check-graphify-out.sh'
-].join('\n');
 const baseCi = [
 	'name: CI',
 	'on:',
@@ -57,9 +49,6 @@ const baseCi = [
 	'    runs-on: ubuntu-latest',
 	'    steps:',
 	'      - uses: actions/checkout@v7',
-	'        with:',
-	'          fetch-depth: 0',
-	GUARD,
 	'      - run: bun test'
 ].join('\n');
 const base: Record<string, string> = {
@@ -141,11 +130,11 @@ function expectDifference(
 
 describe('check-push-repeats-pr passes', () => {
 	it(
-		"the base repo: this repo's triggers and graphify-out guard",
+		"the base repo: this repo's triggers",
 		() => {
 			const { exitCode, out } = check();
 			expect(out).toMatch(
-				/the push run repeats the PR run but for 1 PR-only graphify-out guard step\(s\) \(1 workflow file\(s\), 1 file\(s\) scanned\)/
+				/the push run repeats the PR run \(1 workflow file\(s\), 1 file\(s\) scanned\)/
 			);
 			expect(exitCode).toBe(0);
 		},
@@ -186,13 +175,6 @@ describe('check-push-repeats-pr passes', () => {
 		'an action from data.forgejo.org',
 		() => {
 			expectPass({ [CI]: ciWith('      - uses: https://data.forgejo.org/actions/setup-node@v7') });
-		},
-		TIMEOUT_MS
-	);
-	it(
-		'a runner variable name in graphify-out',
-		() => {
-			expectPass({ 'graphify-out/graph.json': `{"label": "${GH}REF"}\n` });
 		},
 		TIMEOUT_MS
 	);
@@ -385,7 +367,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 			const ci = ciWith(`      - run: !!binary ${encoded}`);
 			expectDifference(
 				{ [CI]: ci },
-				/ci\.yml:20: \.jobs\.verify\.steps\[3\]\.run: a tag \(tag:yaml\.org,2002:binary\)/
+				/ci\.yml:13: \.jobs\.verify\.steps\[2\]\.run: a tag \(tag:yaml\.org,2002:binary\)/
 			);
 		},
 		TIMEOUT_MS
@@ -403,7 +385,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 			const ci = ciWith('      - run: echo push', "        if: github.event_name == 'push'");
 			expectDifference(
 				{ [CI]: ci },
-				/ci\.yml:21: \.jobs\.verify\.steps\[3\]\.if: an if: github\.event_name == 'push'/
+				/ci\.yml:14: \.jobs\.verify\.steps\[2\]\.if: an if: github\.event_name == 'push'/
 			);
 		},
 		TIMEOUT_MS
@@ -415,7 +397,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 				'      - run: bun install',
 				"        if: steps.cache.outputs.cache-hit != 'true'"
 			);
-			expectDifference({ [CI]: ci }, /steps\[3\]\.if: an if: steps\.cache/);
+			expectDifference({ [CI]: ci }, /steps\[2\]\.if: an if: steps\.cache/);
 		},
 		TIMEOUT_MS
 	);
@@ -424,7 +406,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 		() => {
 			expectDifference(
 				{ [CI]: ciWith('      - run: echo done', '        if: always()') },
-				/steps\[3\]\.if: an if: always\(\)/
+				/steps\[2\]\.if: an if: always\(\)/
 			);
 		},
 		TIMEOUT_MS
@@ -436,7 +418,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 				'      - run: echo push',
 				'        "if": steps.co.outputs.ref == \'refs/heads/main\''
 			);
-			expectDifference({ [CI]: ci }, /steps\[3\]\.if: an if:/);
+			expectDifference({ [CI]: ci }, /steps\[2\]\.if: an if:/);
 		},
 		TIMEOUT_MS
 	);
@@ -447,7 +429,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 				'      - run: echo push',
 				"        if : steps.co.outputs.ref == 'refs/heads/main'"
 			);
-			expectDifference({ [CI]: ci }, /steps\[3\]\.if: an if:/);
+			expectDifference({ [CI]: ci }, /steps\[2\]\.if: an if:/);
 		},
 		TIMEOUT_MS
 	);
@@ -462,7 +444,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 			);
 			expectDifference(
 				{ [CI]: ci },
-				/ci\.yml:23: \.jobs\.verify\.steps\[4\]\.if: an alias \(\*cond\)/
+				/ci\.yml:16: \.jobs\.verify\.steps\[3\]\.if: an alias \(\*cond\)/
 			);
 		},
 		TIMEOUT_MS
@@ -471,7 +453,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 		'a merge key that pulls in an alias',
 		() => {
 			const ci = ciWith('      - &step { run: echo a }', '      - <<: *step', '        name: b');
-			expectDifference({ [CI]: ci }, /steps\[4\]\.<<: an alias \(\*step\)/);
+			expectDifference({ [CI]: ci }, /steps\[3\]\.<<: an alias \(\*step\)/);
 		},
 		TIMEOUT_MS
 	);
@@ -485,7 +467,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 			);
 			expectDifference(
 				{ [CI]: ci },
-				/ci\.yml:22: \.jobs\.verify\.steps\[3\]\.env\.REF: an expression: \$\{\{ github\.ref \}\}/
+				/ci\.yml:15: \.jobs\.verify\.steps\[2\]\.env\.REF: an expression: \$\{\{ github\.ref \}\}/
 			);
 		},
 		TIMEOUT_MS
@@ -495,7 +477,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 		() => {
 			expectDifference(
 				{ [CI]: ciWith("      - run: echo ${{ github['event_name'] }}") },
-				/ci\.yml:20: .*an expression/
+				/ci\.yml:13: .*an expression/
 			);
 		},
 		TIMEOUT_MS
@@ -507,7 +489,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 				'      - run: bun run e2e',
 				"        continue-on-error: ${{ steps.co.outputs.ref != 'refs/heads/main' }}"
 			);
-			expectDifference({ [CI]: ci }, /ci\.yml:21: .*continue-on-error: an expression/);
+			expectDifference({ [CI]: ci }, /ci\.yml:14: .*continue-on-error: an expression/);
 		},
 		TIMEOUT_MS
 	);
@@ -520,7 +502,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 			);
 			expectDifference(
 				{ [CI]: ci },
-				/ci\.yml:20: .*an expression[\s\S]*ci\.yml:21: .*an expression/
+				/ci\.yml:13: .*an expression[\s\S]*ci\.yml:14: .*an expression/
 			);
 		},
 		TIMEOUT_MS
@@ -529,7 +511,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 		'an expression split over lines',
 		() => {
 			const ci = ciWith('      - run: >-', '          echo ${{', '          github.event_name }}');
-			expectDifference({ [CI]: ci }, /ci\.yml:20: .*an expression: \$\{\{ github\.event_name \}\}/);
+			expectDifference({ [CI]: ci }, /ci\.yml:13: .*an expression: \$\{\{ github\.event_name \}\}/);
 		},
 		TIMEOUT_MS
 	);
@@ -537,7 +519,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 		'an expression spelled with a YAML escape',
 		() => {
 			const ci = ciWith('      - run: "echo \\x24{{ github.event_name }}"');
-			expectDifference({ [CI]: ci }, /ci\.yml:20: .*an expression: \$\{\{ github\.event_name \}\}/);
+			expectDifference({ [CI]: ci }, /ci\.yml:13: .*an expression: \$\{\{ github\.event_name \}\}/);
 		},
 		TIMEOUT_MS
 	);
@@ -550,116 +532,13 @@ describe('check-push-repeats-pr finds a difference', () => {
 		TIMEOUT_MS
 	);
 	it(
-		"the guard's if: on a step that runs something else",
+		'an if: that runs a step on the PR run only',
 		() => {
 			const ci = ciWith(
 				'      - run: bun run build',
 				"        if: github.event_name == 'pull_request'"
 			);
-			expectDifference({ [CI]: ci }, /steps\[3\]\.if: an if: github\.event_name == 'pull_request'/);
-		},
-		TIMEOUT_MS
-	);
-	it(
-		'the guard script under another if:',
-		() => {
-			const ci = edit(
-				baseCi,
-				"if: github.event_name == 'pull_request'",
-				"if: github.event_name != 'push'"
-			);
-			expectDifference(
-				{ [CI]: ci },
-				/steps\[1\]\.if: an if: github\.event_name != 'push'[\s\S]*GRAPHIFY_GUARD_BASE: an expression: \$\{\{ github\.base_ref \}\}/
-			);
-		},
-		TIMEOUT_MS
-	);
-	it(
-		'a guard step with a shell, which runs other code on the PR run',
-		() => {
-			const ci = edit(
-				baseCi,
-				'        run: sh scripts/check-graphify-out.sh',
-				"        shell: bash -c 'echo pr > marker; sh {0}'\n        run: sh scripts/check-graphify-out.sh"
-			);
-			expectDifference(
-				{ [CI]: ci },
-				/steps\[1\]\.if: an if: github\.event_name == 'pull_request'[\s\S]*GRAPHIFY_GUARD_BASE: an expression/
-			);
-		},
-		TIMEOUT_MS
-	);
-	it(
-		'a guard step with another env variable, which the shell can run code from',
-		() => {
-			const ci = edit(
-				baseCi,
-				'          GRAPHIFY_GUARD_BASE',
-				'          BASH_ENV: scripts/pr-only.sh\n          GRAPHIFY_GUARD_BASE'
-			);
-			expectDifference({ [CI]: ci }, /steps\[1\]\.if: an if: github\.event_name == 'pull_request'/);
-		},
-		TIMEOUT_MS
-	);
-	for (const [where, from, to] of [
-		[
-			'the workflow',
-			'jobs:',
-			'defaults:\n  run:\n    shell: bash -c "sh {0}; touch marker"\njobs:'
-		],
-		[
-			'the job',
-			'    runs-on:',
-			'    defaults:\n      run:\n        working-directory: sub\n    runs-on:'
-		],
-		['the workflow', 'jobs:', 'env:\n  BASH_ENV: scripts/hook.sh\njobs:'],
-		['the job', '    runs-on:', '    env:\n      BASH_ENV: scripts/hook.sh\n    runs-on:'],
-		[
-			'the job',
-			'    runs-on:',
-			'    container:\n      image: node:22\n      env:\n        BASH_ENV: scripts/hook.sh\n    runs-on:'
-		],
-		// Keys no step inherits: the guard's workflow and job allow only the keys this repo uses.
-		[
-			'the job',
-			'    runs-on:',
-			'    services:\n      db:\n        image: postgres:17\n    runs-on:'
-		],
-		['the workflow', 'jobs:', 'concurrency: ci\njobs:']
-	]) {
-		const key = to.trim().split(':')[0];
-		it(
-			`${key} on ${where} of the guard`,
-			() => {
-				expectDifference(
-					{ [CI]: edit(baseCi, from, to) },
-					/steps\[1\]\.if: an if: github\.event_name == 'pull_request'/
-				);
-			},
-			TIMEOUT_MS
-		);
-	}
-	it(
-		'github.base_ref outside the guard',
-		() => {
-			const ci = ciWith(
-				'      - run: echo base',
-				'        env:',
-				'          BASE: ${{ github.base_ref }}'
-			);
-			expectDifference(
-				{ [CI]: ci },
-				/steps\[3\]\.env\.BASE: an expression: \$\{\{ github\.base_ref \}\}/
-			);
-		},
-		TIMEOUT_MS
-	);
-	it(
-		'another expression inside the guard',
-		() => {
-			const ci = edit(baseCi, 'name: graphify-out guard', 'name: guard ${{ github.ref }}');
-			expectDifference({ [CI]: ci }, /steps\[1\]\.name: an expression: \$\{\{ github\.ref \}\}/);
+			expectDifference({ [CI]: ci }, /steps\[2\]\.if: an if: github\.event_name == 'pull_request'/);
 		},
 		TIMEOUT_MS
 	);
@@ -831,7 +710,7 @@ describe('check-push-repeats-pr finds a difference', () => {
 			);
 			expectDifference(
 				{ [CI]: ci },
-				/ci\.yml:20: \.jobs\.verify\.steps\[3\]\.uses: runs code that gets the event: actions\/github-script@v7/
+				/ci\.yml:13: \.jobs\.verify\.steps\[2\]\.uses: runs code that gets the event: actions\/github-script@v7/
 			);
 		},
 		TIMEOUT_MS
