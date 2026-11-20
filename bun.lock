@@ -16,7 +16,7 @@
         "@eslint/compat": "^2.1.1",
         "@eslint/js": "^10.0.1",
         "@playwright/test": "^1.65.1",
-        "@sveltejs/adapter-auto": "^8.0.1",
+        "@sveltejs/adapter-auto": "^9.0.0",
         "@sveltejs/adapter-node": "^6.0.5",
         "@sveltejs/kit": "^3.4.0",
         "@sveltejs/vite-plugin-svelte": "^7.3.1",
@@ -228,7 +228,7 @@
 
     "@sveltejs/acorn-typescript": ["@sveltejs/acorn-typescript@1.0.13", "", { "peerDependencies": { "acorn": "^8.9.0" } }, "sha512-wgKggnhZVL9Bfx1OaKKTrYY9BFRk6C8UAkQNUcIv1+llzYrIqy+RZm5HPKzn0NpEBvTVhTqB4kQyllZywsRBRQ=="],
 
-    "@sveltejs/adapter-auto": ["@sveltejs/adapter-auto@8.0.1", "", { "peerDependencies": { "@sveltejs/kit": "^3.0.0-next.0" } }, "sha512-JXpRDJy/HxzhZsGS68C/SZ8BlndsfcGf/0X73WB05DAQJMR4Vi6k0hBYT+ZPgPxU4L0+G+irAHPN05YNCCGszA=="],
+    "@sveltejs/adapter-auto": ["@sveltejs/adapter-auto@9.0.0", "", { "peerDependencies": { "@sveltejs/kit": "^3.0.0-next.0" } }, "sha512-AV89HWxrAWoT6/TmuALWcLookGPmIsv1mDIxKORRvf0fjHWr9qX753FU/xPFh9fsmF84abrvK79Czr5HmIIPhw=="],
 
     "@sveltejs/adapter-node": ["@sveltejs/adapter-node@6.0.5", "", { "dependencies": { "@sveltejs/adapter-server": "^0.1.0" }, "peerDependencies": { "@sveltejs/kit": "^3.0.0-next.0" } }, "sha512-CcQ9Cnvns+PhI4tHKRrV63UcZqZ2+Dnaa4c65E9WSO932LsSpyWk9WLyiwUTRa7CLX5lCJAppoEEz1A0t6p8lQ=="],
 
