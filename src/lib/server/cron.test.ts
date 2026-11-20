@@ -1,7 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
-import { join } from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { eq } from 'drizzle-orm';
 import { createDb, runMigrations, type DB } from './db/client';
 import { users, households, memberships, inventoryItems, pushSubscriptions } from './db/schema';
@@ -10,12 +7,8 @@ import { runDailyReminders, secretMatches } from './cron';
 
 // ── Test DB harness ─────────────────────────────────────────────────────────
 
-const dir = mkdtempSync(join(tmpdir(), 'gm-cron-'));
-afterAll(() => rmSync(dir, { recursive: true, force: true }));
-
 function makeDb(): DB {
-	const path = join(dir, `cron-test-${crypto.randomUUID()}.db`);
-	const { db } = createDb(path);
+	const { db } = createDb(':memory:');
 	runMigrations(db);
 	return db;
 }

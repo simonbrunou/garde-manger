@@ -1,7 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
-import { join } from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { createDb, runMigrations, type DB } from './db/client';
 import { users, households, foods } from './db/schema';
 import {
@@ -20,12 +17,8 @@ import {
 
 // ── Test DB setup ─────────────────────────────────────────────────────────────
 
-const dir = mkdtempSync(join(tmpdir(), 'gm-inventory-'));
-afterAll(() => rmSync(dir, { recursive: true, force: true }));
-
 function makeDb(): DB {
-	const path = join(dir, `inventory-test-${crypto.randomUUID()}.db`);
-	const { db } = createDb(path);
+	const { db } = createDb(':memory:');
 	runMigrations(db);
 	return db;
 }

@@ -1,7 +1,4 @@
 import { test, expect, mock, spyOn, beforeEach, afterEach } from 'bun:test';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import {
 	SimpleWebAuthnError,
 	verifyAuthenticationResponse,
@@ -189,7 +186,6 @@ test.each([
 // The verify catch blocks in webauthn.ts log a fixed prefix and the category,
 // never the library's error, which holds the expected challenge (#108).
 
-let dir: string;
 let db: DB;
 let sqlite: Database;
 let consoleError: ReturnType<typeof spyOn<Console, 'error'>>;
@@ -202,8 +198,7 @@ const user = {
 };
 
 beforeEach(() => {
-	dir = mkdtempSync(join(tmpdir(), 'gm-webauthn-'));
-	({ db, sqlite } = createDb(join(dir, 'test.db')));
+	({ db, sqlite } = createDb(':memory:'));
 	runMigrations(db);
 	db.insert(users).values(user).run();
 	db.insert(credentials)
@@ -222,7 +217,6 @@ beforeEach(() => {
 afterEach(() => {
 	consoleError.mockRestore();
 	sqlite.close();
-	rmSync(dir, { recursive: true, force: true });
 });
 
 const forged = { challenge: 'sent\nFORGED LOG LINE' };

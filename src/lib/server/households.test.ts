@@ -1,7 +1,4 @@
 import { test, expect, beforeEach, afterEach } from 'bun:test';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { eq, and } from 'drizzle-orm';
 import { createDb, runMigrations, type DB } from './db/client';
 import { users, memberships, households, invitations } from './db/schema';
@@ -20,7 +17,6 @@ import {
 } from './households';
 import type { Database } from 'bun:sqlite';
 
-let dir: string;
 let db: DB;
 let sqlite: Database;
 
@@ -28,8 +24,7 @@ const OWNER_ID = 'user-owner-1';
 const MEMBER_ID = 'user-member-2';
 
 beforeEach(() => {
-	dir = mkdtempSync(join(tmpdir(), 'gm-households-'));
-	({ db, sqlite } = createDb(join(dir, 'test.db')));
+	({ db, sqlite } = createDb(':memory:'));
 	runMigrations(db);
 
 	// Seed two users.
@@ -56,7 +51,6 @@ beforeEach(() => {
 
 afterEach(() => {
 	sqlite.close();
-	rmSync(dir, { recursive: true, force: true });
 });
 
 test('createHousehold inserts the household AND an admin membership', () => {
