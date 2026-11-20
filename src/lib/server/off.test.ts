@@ -1,7 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
-import { join } from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { eq } from 'drizzle-orm';
 import { createDb, runMigrations, type DB } from './db/client';
 import { products } from './db/schema';
@@ -9,12 +6,8 @@ import { lookupProduct, parseOffV2, OffUnavailable, type OffConfig, type ImageSt
 
 // ── Test DB harness ─────────────────────────────────────────────────────────
 
-const dir = mkdtempSync(join(tmpdir(), 'gm-off-'));
-afterAll(() => rmSync(dir, { recursive: true, force: true }));
-
 function makeDb(): DB {
-	const path = join(dir, `off-test-${crypto.randomUUID()}.db`);
-	const { db } = createDb(path);
+	const { db } = createDb(':memory:');
 	runMigrations(db);
 	return db;
 }

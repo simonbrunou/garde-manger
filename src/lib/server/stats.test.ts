@@ -1,7 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
-import { join } from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { createDb, runMigrations, type DB } from './db/client';
 import { users, households, inventoryItems } from './db/schema';
 import { householdStats } from './stats';
@@ -11,11 +8,8 @@ const HH2 = 'hh-stats-2';
 const U = 'u-stats-1';
 const NOW = new Date('2026-05-15T12:00:00Z');
 
-const dir = mkdtempSync(join(tmpdir(), 'gm-stats-'));
-afterAll(() => rmSync(dir, { recursive: true, force: true }));
-
 function makeDb(): DB {
-	const { db } = createDb(join(dir, `stats-test-${crypto.randomUUID()}.db`));
+	const { db } = createDb(':memory:');
 	runMigrations(db);
 	db.insert(users)
 		.values({ id: U, email: 's@e.com', displayName: 'S', locale: 'fr', createdAt: new Date() })

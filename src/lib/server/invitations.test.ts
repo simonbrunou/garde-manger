@@ -1,7 +1,4 @@
 import { test, expect, beforeEach, afterEach } from 'bun:test';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { createHash, randomBytes } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 import { createDb, runMigrations, type DB } from './db/client';
@@ -16,7 +13,6 @@ import {
 import { createHousehold } from './households';
 import type { Database } from 'bun:sqlite';
 
-let dir: string;
 let db: DB;
 let sqlite: Database;
 
@@ -25,8 +21,7 @@ const INVITEE_ID = 'user-invitee-2';
 let householdId: string;
 
 beforeEach(() => {
-	dir = mkdtempSync(join(tmpdir(), 'gm-invitations-'));
-	({ db, sqlite } = createDb(join(dir, 'test.db')));
+	({ db, sqlite } = createDb(':memory:'));
 	runMigrations(db);
 
 	// Seed owner user.
@@ -58,7 +53,6 @@ beforeEach(() => {
 
 afterEach(() => {
 	sqlite.close();
-	rmSync(dir, { recursive: true, force: true });
 });
 
 test('createInvitation stores ONLY the hash, not the raw token', () => {

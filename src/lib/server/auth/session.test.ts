@@ -1,20 +1,15 @@
 import { test, expect, beforeEach, afterEach } from 'bun:test';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { createDb, runMigrations, type DB } from '../db/client';
 import { users } from '../db/schema';
 import { createSession, validateSessionToken, invalidateSession } from './session';
 import type { Database } from 'bun:sqlite';
 
-let dir: string;
 let db: DB;
 let sqlite: Database;
 const TEST_USER_ID = 'user-test-1';
 
 beforeEach(() => {
-	dir = mkdtempSync(join(tmpdir(), 'gm-session-'));
-	({ db, sqlite } = createDb(join(dir, 'test.db')));
+	({ db, sqlite } = createDb(':memory:'));
 	runMigrations(db);
 	// Seed a user row so foreign-key constraints are satisfied.
 	db.insert(users)
@@ -30,7 +25,6 @@ beforeEach(() => {
 
 afterEach(() => {
 	sqlite.close();
-	rmSync(dir, { recursive: true, force: true });
 });
 
 test('createSession returns a token and persists a sessions row', async () => {

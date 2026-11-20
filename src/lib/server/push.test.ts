@@ -1,7 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
-import { join } from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { eq } from 'drizzle-orm';
 import { createDb, runMigrations, type DB } from './db/client';
 import { users, pushSubscriptions } from './db/schema';
@@ -21,12 +18,8 @@ import {
 
 // ── Test DB harness ─────────────────────────────────────────────────────────
 
-const dir = mkdtempSync(join(tmpdir(), 'gm-push-'));
-afterAll(() => rmSync(dir, { recursive: true, force: true }));
-
 function makeDb(): DB {
-	const path = join(dir, `push-test-${crypto.randomUUID()}.db`);
-	const { db } = createDb(path);
+	const { db } = createDb(':memory:');
 	runMigrations(db);
 	return db;
 }
@@ -584,8 +577,7 @@ describe('approveEndpoint', () => {
 
 describe('saveSubscription per-user cap', () => {
 	it('keeps at most 20 subscriptions per user, evicting oldest', () => {
-		const path = join(dir, `push-cap-${crypto.randomUUID()}.db`);
-		const { db } = createDb(path);
+		const { db } = createDb(':memory:');
 		runMigrations(db);
 		db.insert(users)
 			.values({ id: 'capuser', email: 'cap@ex.test', displayName: 'cap', createdAt: new Date() })

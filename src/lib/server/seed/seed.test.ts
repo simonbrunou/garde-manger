@@ -1,7 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from 'bun:test';
-import { join } from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { createDb, runMigrations } from '../db/client.ts';
 import { foods, shelfLives } from '../db/schema.ts';
 import { seedFoods } from './seed.ts';
@@ -10,12 +7,8 @@ const VALID_LOCATIONS = new Set(['pantry', 'fridge', 'freezer']);
 const VALID_BASES = new Set(['purchase', 'opened', 'unspecified']);
 const VALID_UNITS = new Set(['hours', 'days', 'weeks', 'months', 'years']);
 
-const dir = mkdtempSync(join(tmpdir(), 'gm-seed-'));
-afterAll(() => rmSync(dir, { recursive: true, force: true }));
-
 function makeDb() {
-	const path = join(dir, `seed-test-${crypto.randomUUID()}.db`);
-	const { db } = createDb(path);
+	const { db } = createDb(':memory:');
 	runMigrations(db);
 	return { db };
 }
