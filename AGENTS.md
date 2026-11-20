@@ -1,14 +1,3 @@
-## graphify
-
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
-
-Rules:
-
-- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
-- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
-- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- Refresh the graph only in a dedicated chore PR cut from an up-to-date `main` in the main checkout, so feature PRs, fix PRs and worktree commits carry no `graphify-out/` changes. CI enforces it: the `verify` job runs `scripts/check-graphify-out.sh`, which fails a PR that changes `graphify-out/` and any other file, so a refresh PR changes `graphify-out/` only, and a `.gitignore` change the refresh needs lands first in its own PR. This rule overrides the "Run `graphify update .` after code changes" line in GRAPH_REPORT.md. See `docs/agents/graphify.md` for the reasons, the git hooks and undoing a stray run.
-
 ## Coding behavioral guidelines
 
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
@@ -94,7 +83,7 @@ After every merge, check whether to wait for `main`'s CI run:
 
 1. Run `git fetch origin`. Take the merge SHA from `merge_commit_sha` in `python3 -I ~/.agents/skills/forgejo-issues/scripts/forgejo.py get garde-manger#<n>`, since `fj pr -R origin merge` prints none.
 2. Run `git rev-parse <merge SHA>^{tree} <pushed SHA>^{tree}`. Two different hashes mean the merge commit holds files CI has not tested together, as when the branch was behind `main`, so wait (step 4).
-3. The same hash twice means the merge commit holds the files the PR's CI passed, since the PR run checks out the pushed SHA itself. Run `bun scripts/check-push-repeats-pr.ts <pushed SHA>` in a checkout with its dependencies installed. It checks that the `push` run on `main` repeats the PR run's jobs and steps, and its header lists what it reads, the differences this repo's CI keeps on purpose and what it cannot see. Exit 0 means skip the wait. Any other exit means wait (step 4); it printed each difference it found.
+3. The same hash twice means the merge commit holds the files the PR's CI passed, since the PR run checks out the pushed SHA itself. Run `bun scripts/check-push-repeats-pr.ts <pushed SHA>` in a checkout with its dependencies installed. It checks that the `push` run on `main` repeats the PR run's jobs and steps, and its header lists what it reads, the difference this repo's CI keeps on purpose and what it cannot see. Exit 0 means skip the wait. Exit 1 means wait (step 4); it printed each difference it found. Exit 2 means it could not check, as when git fails, the SHA is unknown or Bun cannot load the `yaml` package; it printed the error, so wait (step 4) too.
 4. To wait, read `main`'s CI state as step 3 of the deploy check in `docs/agents/deploy.md` says, and fix a red run in a new PR.
 
 The production deploy that the merge triggers is accepted. Ask first only when the PR drops or rewrites stored data (a destructive migration, a backfill that overwrites rows). To check a production deploy, after a merge or whenever someone asks what `main` runs in production, follow `docs/agents/deploy.md`.

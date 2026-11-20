@@ -19,30 +19,19 @@
 //   `<<: *name`), an `if` key, a `${{ }}` expression in a key or a value as YAML reads it
 //   (escapes such as \x24 included), and a step that uses actions/github-script, whose code gets
 //   the event;
-// - in any file outside Markdown and graphify-out/, a name made of GITHUB, FORGEJO or FORGE and
+// - in any file outside Markdown, a name made of GITHUB, FORGEJO or FORGE and
 //   an underscore, which a script could read the event through, and the names of the actions
 //   toolkit's github module and its event property. Neither this script nor its test holds one,
 //   so both are read. It drops the caller's GIT_*_PATHSPECS variables, which would change the
 //   files git reads;
 // - a file name that is not UTF-8, or that the tree holds twice, which this script cannot read.
 //
-// It allows the two differences this repo's CI keeps on purpose. `branches: [main]` under
+// It allows the one difference this repo's CI keeps on purpose: `branches: [main]` under
 // `pull_request` limits the PR runs to PRs into main, the ones whose merge starts a push run on
-// main. CI's graphify-out guard (#58) is a step that runs `sh scripts/check-graphify-out.sh` with
-// `if: github.event_name == 'pull_request'`, so the push run skips it. Such a step may hold that
-// `if` and `${{ github.base_ref }}` when its other keys are `name` and an `env` that sets
-// GRAPHIFY_GUARD_BASE alone, its job has no keys but `name`, `runs-on` and `steps`, and its
-// workflow none but `name`, `on` and `jobs`. Every step inherits the workflow's `defaults` and
-// `env` and the job's `defaults`, `env` and `container`, where a `shell`, a `working-directory` or
-// a variable such as BASH_ENV could run other code on the PR run only. Any other key on the
-// workflow or the job, inherited or not, keeps the step from counting as the guard, so its `if`
-// is reported. The guard only reads git and prints, so the steps after it see the same files on
-// both runs.
+// main.
 //
 // It cannot see code that branches on commit metadata (the push run checks out `main` at the
-// merge commit, whose subject, SHA and parents differ from the pushed SHA's), a step before the
-// guard that changes what the guard runs (one that edits scripts/check-graphify-out.sh, say), a
-// change to scripts/check-graphify-out.sh that writes files later steps read, code that the
+// merge commit, whose subject, SHA and parents differ from the pushed SHA's), code that the
 // runner or its image runs in every step, or code that reads the event by a route the list
 // above leaves out. Such code passes.
 //
@@ -51,19 +40,13 @@
 // devDependency, as from a node_modules installed before it was added (where Bun finds no
 // node_modules at all, it fetches the package itself); wait too.
 // scripts/check-push-repeats-pr.test.ts holds one case per difference.
-import type { Document, LineCounter, Node } from 'yaml';
+import type { LineCounter, Node } from 'yaml';
 
 const RUNNER_NAMES = ['GITHUB', 'FORGEJO', 'FORGE'].map((name) => `${name}_`);
 // Built from parts, like RUNNER_NAMES, so this file does not match itself.
 const EVENT_READS = [['@actions', 'github'].join('/'), ['event', 'Name'].join('')];
 const ALLOWED_TRIGGERS = new Set(['push', 'pull_request', 'schedule', 'workflow_dispatch']);
-const EXPRESSION = /\$\{\{([\s\S]*?)\}\}/g;
-const GUARD_IF = "github.event_name == 'pull_request'";
-const GUARD_RUN = 'sh scripts/check-graphify-out.sh';
-const GUARD_EXPRESSION = 'github.base_ref';
-const GUARD_KEYS = new Set(['name', 'if', 'env', 'run']);
-const GUARD_WORKFLOW_KEYS = new Set(['name', 'on', 'jobs']);
-const GUARD_JOB_KEYS = new Set(['name', 'runs-on', 'steps']);
+const EXPRESSION = /\$\{\{[\s\S]*?\}\}/g;
 
 function fail(message: string): never {
 	console.error(`check-push-repeats-pr: ${message}`);
@@ -117,7 +100,6 @@ const workflows = files.filter((f) => f.startsWith('.forgejo/workflows/') && isY
 const scanned = files.filter(
 	(f) => (f.startsWith('.forgejo/') && isYaml(f)) || /(^|\/)action\.ya?ml$/.test(f)
 );
-let guardCount = 0;
 if (!workflows.length) differences.push('.forgejo/workflows/: no workflow file');
 
 const isEmpty = (value: unknown) =>
@@ -161,53 +143,9 @@ function checkJobs(file: string, doc: unknown) {
 	}
 }
 
-function isGuardStep(doc: Document, step: unknown): boolean {
-	if (!YAML.isMap(step)) return false;
-	const value = step.toJS(doc) as Record<string, unknown>;
-	const env: unknown = value.env ?? {};
-	return (
-		value.if === GUARD_IF &&
-		value.run === GUARD_RUN &&
-		Object.keys(value).every((key) => GUARD_KEYS.has(key)) &&
-		typeof env === 'object' &&
-		env !== null &&
-		Object.keys(env).every((key) => key === 'GRAPHIFY_GUARD_BASE')
-	);
-}
-
-function hasOnlyKeys(node: unknown, allowed: Set<string>): boolean {
-	return (
-		YAML.isMap(node) &&
-		node.items.every((pair) => YAML.isScalar(pair.key) && allowed.has(String(pair.key.value)))
-	);
-}
-
-// The steps of a workflow's jobs that are CI's graphify-out guard. A step counts only where its
-// workflow and its job hold no key outside GUARD_WORKFLOW_KEYS and GUARD_JOB_KEYS (see the header).
-function guardSteps(doc: Document): Set<unknown> {
-	const found = new Set<unknown>();
-	const jobs = doc.get('jobs', true);
-	if (!YAML.isMap(jobs) || !hasOnlyKeys(doc.contents, GUARD_WORKFLOW_KEYS)) return found;
-	for (const job of jobs.items) {
-		const value = job.value;
-		if (!YAML.isMap(value) || !hasOnlyKeys(value, GUARD_JOB_KEYS)) continue;
-		const steps = value.get('steps', true);
-		if (!YAML.isSeq(steps)) continue;
-		for (const step of steps.items) if (isGuardStep(doc, step)) found.add(step);
-	}
-	return found;
-}
-
 // Every node of the file, keys included, so a key spelled "if" or `if :` and an expression in a
-// key are found too. `inGuard` is true inside a guard step.
-function walk(
-	file: string,
-	lines: LineCounter,
-	guards: Set<unknown>,
-	node: unknown,
-	where: string,
-	inGuard: boolean
-) {
+// key are found too.
+function walk(file: string, lines: LineCounter, node: unknown, where: string) {
 	const at = (n: unknown) => {
 		const start = (n as Node | null)?.range?.[0];
 		return start === undefined ? file : `${file}:${lines.linePos(start).line}`;
@@ -222,23 +160,21 @@ function walk(
 	} else if (YAML.isScalar(node)) {
 		if (typeof node.value !== 'string') return;
 		for (const match of node.value.matchAll(EXPRESSION)) {
-			if (inGuard && match[1].trim() === GUARD_EXPRESSION) continue;
 			differences.push(`${at(node)}: ${where}: an expression: ${match[0]}`);
 		}
 	} else if (YAML.isSeq(node)) {
-		node.items.forEach((item, i) => walk(file, lines, guards, item, `${where}[${i}]`, inGuard));
+		node.items.forEach((item, i) => walk(file, lines, item, `${where}[${i}]`));
 	} else if (YAML.isMap(node)) {
-		const isGuard = guards.has(node);
 		for (const pair of node.items) {
 			const key = YAML.isScalar(pair.key) ? String(pair.key.value) : '?';
 			const path = `${where}.${key}`;
 			const value = YAML.isScalar(pair.value) ? String(pair.value.value) : '(not a plain value)';
-			walk(file, lines, guards, pair.key, `${path} (key)`, inGuard || isGuard);
-			if (key === 'if' && !isGuard) differences.push(`${at(pair.key)}: ${path}: an if: ${value}`);
+			walk(file, lines, pair.key, `${path} (key)`);
+			if (key === 'if') differences.push(`${at(pair.key)}: ${path}: an if: ${value}`);
 			if (key === 'uses' && value.includes('github-script')) {
 				differences.push(`${at(pair.key)}: ${path}: runs code that gets the event: ${value}`);
 			}
-			walk(file, lines, guards, pair.value, path, inGuard || isGuard);
+			walk(file, lines, pair.value, path);
 		}
 	}
 }
@@ -251,9 +187,7 @@ for (const file of scanned) {
 		differences.push(`${file}: not readable as YAML (${problem.message.split('\n')[0]})`);
 		continue;
 	}
-	const guards = workflows.includes(file) ? guardSteps(doc) : new Set<unknown>();
-	guardCount += guards.size;
-	walk(file, lines, guards, doc.contents, '', false);
+	walk(file, lines, doc.contents, '');
 	if (workflows.includes(file)) {
 		const value: unknown = doc.toJS();
 		checkTriggers(file, value);
@@ -262,7 +196,7 @@ for (const file of scanned) {
 }
 
 const pattern = [...RUNNER_NAMES, ...EVENT_READS].join('|');
-const hits = git(['grep', '-nE', pattern, commit, '--', '.', ':!*.md', ':!graphify-out'], [0, 1]);
+const hits = git(['grep', '-nE', pattern, commit, '--', '.', ':!*.md'], [0, 1]);
 for (const hit of hits.split('\n').filter(Boolean)) {
 	differences.push(`${hit.replace(`${commit}:`, '')}: reads the event or names a runner variable`);
 }
@@ -276,7 +210,6 @@ if (differences.length) {
 	process.exit(1);
 }
 console.log(
-	`check-push-repeats-pr: ${short}: the push run repeats the PR run but for ${guardCount} ` +
-		`PR-only graphify-out guard step(s) (${workflows.length} workflow file(s), ` +
-		`${scanned.length} file(s) scanned)`
+	`check-push-repeats-pr: ${short}: the push run repeats the PR run ` +
+		`(${workflows.length} workflow file(s), ${scanned.length} file(s) scanned)`
 );

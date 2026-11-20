@@ -10,6 +10,5 @@ bun.lockb
 /drizzle/
 docs/
 
-# Generated knowledge graph (graphify) + local tool config — not hand-edited.
-graphify-out/
+# Local tool config — not hand-edited.
 .claude/
