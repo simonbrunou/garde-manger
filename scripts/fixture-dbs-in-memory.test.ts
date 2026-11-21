@@ -4,15 +4,16 @@ import { join, posix } from 'node:path';
 
 // A unit test that uses a database only as a fixture opens it in memory (#154). A file database
 // syncs to disk on every commit, and on the loaded CI runner a beforeEach that migrated one passed
-// Bun's 5 s timeout. The scan reads each src test file and flags every createDb( or
-// new Database( call whose first argument is not the literal ':memory:'. It follows those two
-// names only where a plain named import brings them in and a call uses them, so it also flags
-// every other import of bun:sqlite or db/client, every other use of the two names outside a
-// string and a `: Database` type, and any import of the app database, which opens DATABASE_PATH
-// when it loads.
+// Bun's 5 s timeout. The scan reads each src test file line by line. A line that names createDb,
+// Database, bun:sqlite or db/client must be one of the forms src tests use today: a one-line
+// `import { ... } from '...';` with no renames, a `createDb(':memory:')` or
+// `new Database(':memory:'` call, or `let <name>: Database;`. It flags every other such line,
+// comments and strings included, and every import of the app database, which opens
+// DATABASE_PATH when it loads.
 const ROOT = join(import.meta.dir, '..');
 
-// Files that test the file database itself, each with its reason.
+// Files that test the file database itself, each with its reason. In them the scan checks only
+// imports, and that the file still opens a file database.
 const FILE_DB_TESTS: Record<string, string> = {
 	'src/lib/server/backup.test.ts': 'backupDatabase runs VACUUM INTO from a source file',
 	'src/lib/server/db/client.test.ts': 'tests createDb on a file',
@@ -22,20 +23,16 @@ const FILE_DB_TESTS: Record<string, string> = {
 // src holds 33 test files today. Fewer than this means the glob read the wrong folder.
 const MIN_TEST_FILES = 20;
 
-const OPENER = /\b(createDb|new Database)\(\s*/g;
-const MEMORY = /^':memory:'\s*[,)]/;
 const OPENER_MODULES = ['bun:sqlite', 'src/lib/server/db/client'];
 const APP_DB_MODULES = ['src/lib/server/db', 'src/lib/server/db/index'];
 // A lookahead, so that a quote earlier on the line, as in a comment's "don't", hides no string.
 const STRING = /(?=(['"`])([^'"`\n]+)\1)/g;
-const NAME = /\b(createDb|Database)\b/g;
-const IMPORT_CLAUSE = /import\s+(?:type\s+)?\{[^}]*\}/g;
-const PAIRED = /(['"`])(?:(?!\1)[^\n])*\1/g;
-const NAMED_IMPORT = /import\s+(?:type\s+)?\{([^}]*)\}\s*from\s*$/;
-
-function lineOf(source: string, index: number): number {
-	return source.slice(0, index).split('\n').length;
-}
+const IMPORT_LINE = /^import (?:type )?\{([^}]*)\} from '[^']+';$/;
+const LET_DATABASE = /^let \w+: Database;$/;
+const MEMORY_CALLS = ["createDb(':memory:')", "new Database(':memory:'"];
+const NAME = /\b(createDb|Database)\b/;
+const OPENER = /\b(createDb|new Database)\(/;
+const FILE_DB = "opens a file database; pass ':memory:'";
 
 function moduleOf(file: string, specifier: string): string {
 	const path = specifier.startsWith('.')
@@ -44,45 +41,38 @@ function moduleOf(file: string, specifier: string): string {
 	return path.replace(/\.(ts|js)$/, '').replace(/\/$/, '');
 }
 
-function fileOpeners(file: string, source: string): string[] {
+function lineProblems(file: string, source: string, listed: boolean): string[] {
 	const found: string[] = [];
-	for (const m of source.matchAll(OPENER)) {
-		if (MEMORY.test(source.slice(m.index + m[0].length))) continue;
-		found.push(
-			`${file}:${lineOf(source, m.index)}: ${m[1]}( opens a file database; pass ':memory:'`
-		);
-	}
-	return found;
-}
-
-function importProblems(file: string, source: string): string[] {
-	const found: string[] = [];
-	for (const m of source.matchAll(STRING)) {
-		const target = moduleOf(file, m[2]);
-		const at = `${file}:${lineOf(source, m.index)}`;
-		if (APP_DB_MODULES.includes(target)) {
+	source.split('\n').forEach((raw, i) => {
+		const at = `${file}:${i + 1}`;
+		const line = raw.trim();
+		const modules = [...line.matchAll(STRING)].map((m) => moduleOf(file, m[2]));
+		if (modules.some((m) => APP_DB_MODULES.includes(m))) {
 			found.push(`${at}: imports the app database, which opens DATABASE_PATH`);
-		} else if (OPENER_MODULES.includes(target)) {
-			const named = NAMED_IMPORT.exec(source.slice(0, m.index));
-			if (!named) found.push(`${at}: reaches '${m[2]}' in a form this scan cannot follow`);
-			else if (/\bas\b/.test(named[1])) found.push(`${at}: renames an import from '${m[2]}'`);
+			return;
 		}
-	}
+		const plainImport = IMPORT_LINE.exec(line);
+		if (plainImport && !/\bas\b/.test(plainImport[1])) return;
+		if (modules.some((m) => OPENER_MODULES.includes(m))) {
+			found.push(
+				`${at}: reaches bun:sqlite or db/client other than by a one-line import with no renames`
+			);
+			return;
+		}
+		if (listed) return;
+		let rest = line.replace(LET_DATABASE, '');
+		for (const call of MEMORY_CALLS) rest = rest.replaceAll(call, '');
+		const opener = OPENER.exec(rest);
+		if (opener) found.push(`${at}: ${opener[1]}( ${FILE_DB}`);
+		else if (NAME.test(rest))
+			found.push(`${at}: names createDb or Database in a form this scan does not read`);
+	});
 	return found;
 }
 
-function otherUses(file: string, source: string): string[] {
-	const clauses = [...source.matchAll(IMPORT_CLAUSE)].map((m) => [m.index, m.index + m[0].length]);
-	const found: string[] = [];
-	for (const m of source.matchAll(NAME)) {
-		if (/^\s*\(/.test(source.slice(m.index + m[0].length))) continue;
-		if (clauses.some(([start, end]) => m.index >= start && m.index < end)) continue;
-		const before = source.slice(source.lastIndexOf('\n', m.index) + 1, m.index);
-		if (m[1] === 'Database' && /:\s*$/.test(before)) continue;
-		if (/['"`]/.test(before.replace(PAIRED, ''))) continue;
-		found.push(`${file}:${lineOf(source, m.index)}: uses ${m[1]} other than in a call`);
-	}
-	return found;
+// A listed file must still hold a line the scan would flag as opening a file database.
+function opensFileDatabase(file: string, source: string): boolean {
+	return lineProblems(file, source, false).some((p) => p.endsWith(FILE_DB));
 }
 
 function scan(sources: Record<string, string>, exceptions: Record<string, string>): string[] {
@@ -90,14 +80,10 @@ function scan(sources: Record<string, string>, exceptions: Record<string, string
 	if (files.length < MIN_TEST_FILES) {
 		return [`found ${files.length} src test files, fewer than ${MIN_TEST_FILES}`];
 	}
-	const found = files.flatMap((f) => [
-		...importProblems(f, sources[f]),
-		...otherUses(f, sources[f]),
-		...(f in exceptions ? [] : fileOpeners(f, sources[f]))
-	]);
+	const found = files.flatMap((f) => lineProblems(f, sources[f], f in exceptions));
 	for (const f of Object.keys(exceptions)) {
 		if (!(f in sources)) found.push(`${f}: listed in FILE_DB_TESTS but not found`);
-		else if (fileOpeners(f, sources[f]).length === 0) {
+		else if (!opensFileDatabase(f, sources[f])) {
 			found.push(`${f}: listed in FILE_DB_TESTS but opens no file database`);
 		}
 	}
@@ -117,121 +103,128 @@ function tree(files: Record<string, string>, padding = MIN_TEST_FILES): Record<s
 	return { ...pad, ...files };
 }
 
-function probe(source: string): string[] {
-	return scan(tree({ 'src/lib/server/probe.test.ts': source }), {});
+const PROBE = 'src/lib/server/probe.test.ts';
+
+function probe(lines: string[]): string[] {
+	return scan(tree({ [PROBE]: lines.join('\n') }), {});
 }
+
+// The expected problem for each line number in `lines`.
+function at(message: string, ...lines: number[]): string[] {
+	return lines.map((n) => `${PROBE}:${n}: ${message}`);
+}
+
+const OPENS_FILE = (name: string) => `${name}( ${FILE_DB}`;
+const OTHER_IMPORT =
+	'reaches bun:sqlite or db/client other than by a one-line import with no renames';
+const OTHER_NAME = 'names createDb or Database in a form this scan does not read';
+const APP_DB = 'imports the app database, which opens DATABASE_PATH';
 
 describe('fixture databases in src tests', () => {
 	it('open in memory, outside the files that test the file database', () => {
 		expect(scan(srcTests(), FILE_DB_TESTS)).toEqual([]);
 	});
 
-	it('passes a database opened in memory, and plain named imports', () => {
-		const source = [
+	it("passes today's forms: one-line imports, ':memory:' calls and a let", () => {
+		const lines = [
 			"import { createDb, runMigrations, type DB } from './db/client';",
+			"import { createDb, runMigrations } from '../db/client.ts';",
+			"import { createDb } from '#lib/server/db/client';",
 			"import type { Database } from 'bun:sqlite';",
 			"import { Database } from 'bun:sqlite';",
-			"const { db } = createDb(':memory:');",
-			"({ db, sqlite } = createDb( ':memory:' ));",
-			"const raw = new Database(':memory:', { strict: true });",
-			'let sqlite: Database;',
-			"test('createDb enables foreign_keys', () => {});"
-		].join('\n');
-		expect(probe(source)).toEqual([]);
+			'\tlet sqlite: Database;',
+			"\tconst { db } = createDb(':memory:');",
+			"\t({ db, sqlite } = createDb(':memory:'));",
+			"const raw = new Database(':memory:', { strict: true });"
+		];
+		expect(probe(lines)).toEqual([]);
 	});
 
-	it('flags createDb on a file path, on one line or across lines', () => {
-		const source = [
+	it('flags createDb or new Database on a file path, on one line or across lines', () => {
+		const lines = [
 			"const { db } = createDb(join(dir, 'test.db'));",
 			'const { db: other } = createDb(',
 			'\tpath',
-			');'
-		].join('\n');
-		expect(probe(source)).toEqual([
-			"src/lib/server/probe.test.ts:1: createDb( opens a file database; pass ':memory:'",
-			"src/lib/server/probe.test.ts:2: createDb( opens a file database; pass ':memory:'"
+			');',
+			'const raw = new Database(destPath);',
+			"createDb( ':memory:' );"
+		];
+		expect(probe(lines)).toEqual([
+			...at(OPENS_FILE('createDb'), 1, 2),
+			...at(OPENS_FILE('new Database'), 5),
+			...at(OPENS_FILE('createDb'), 6)
 		]);
 	});
 
-	it('flags new Database on a file path', () => {
-		expect(probe('const raw = new Database(destPath);')).toEqual([
-			"src/lib/server/probe.test.ts:1: new Database( opens a file database; pass ':memory:'"
-		]);
-	});
-
-	it('flags an import that renames createDb or Database', () => {
-		const source = [
+	it('flags every other import of bun:sqlite or db/client', () => {
+		const lines = [
 			"import { createDb as _open } from './db/client';",
-			'import {',
-			'\ttype Statement,',
-			'\tDatabase as $D',
-			"} from 'bun:sqlite';",
-			"/* don't */ import { createDb as open } from '#lib/server/db/client';"
-		].join('\n');
-		expect(probe(source)).toEqual([
-			"src/lib/server/probe.test.ts:1: renames an import from './db/client'",
-			"src/lib/server/probe.test.ts:5: renames an import from 'bun:sqlite'",
-			"src/lib/server/probe.test.ts:6: renames an import from '#lib/server/db/client'"
-		]);
-	});
-
-	it('flags every other way to reach bun:sqlite or db/client', () => {
-		const source = [
+			"/* don't */ import { createDb as open } from '#lib/server/db/client';",
+			"import { type Statement, Database as $D } from 'bun:sqlite';",
 			"import Sqlite from 'bun:sqlite';",
 			"import * as client from '$lib/server/db/client';",
 			'const { Database } = await import(`bun:sqlite`);',
-			"const { createDb } = require('./db/client.ts');"
-		].join('\n');
-		expect(probe(source)).toEqual([
-			"src/lib/server/probe.test.ts:1: reaches 'bun:sqlite' in a form this scan cannot follow",
-			"src/lib/server/probe.test.ts:2: reaches '$lib/server/db/client' in a form this scan cannot follow",
-			"src/lib/server/probe.test.ts:3: reaches 'bun:sqlite' in a form this scan cannot follow",
-			"src/lib/server/probe.test.ts:4: reaches './db/client.ts' in a form this scan cannot follow",
-			'src/lib/server/probe.test.ts:3: uses Database other than in a call',
-			'src/lib/server/probe.test.ts:4: uses createDb other than in a call'
-		]);
+			"const { createDb } = require('./db/client.ts');",
+			"export { createDb } from './db/client';",
+			"} from 'bun:sqlite';",
+			"import { createDb } from './db/client'; const open = createDb;",
+			"const open = createDb; import { Database } from 'bun:sqlite';"
+		];
+		expect(probe(lines)).toEqual(at(OTHER_IMPORT, ...lines.map((_, i) => i + 1)));
 	});
 
 	it('flags an import of the app database', () => {
-		const source = [
+		const lines = [
 			"import { db } from '$lib/server/db';",
 			"import { sqlite } from './db/index';",
 			"import { db as appDb } from '#lib/server/db';"
-		].join('\n');
-		expect(probe(source)).toEqual([
-			'src/lib/server/probe.test.ts:1: imports the app database, which opens DATABASE_PATH',
-			'src/lib/server/probe.test.ts:2: imports the app database, which opens DATABASE_PATH',
-			'src/lib/server/probe.test.ts:3: imports the app database, which opens DATABASE_PATH'
-		]);
+		];
+		expect(probe(lines)).toEqual(at(APP_DB, 1, 2, 3));
 	});
 
-	it('flags createDb or Database used other than in a call', () => {
-		const source = [
+	it('flags every other line that names createDb or Database', () => {
+		const lines = [
 			'const open = createDb;',
 			'wrap(Database, path);',
 			'const o = { open: createDb };',
-			"const s = 'x'; const alias = createDb;"
-		].join('\n');
-		expect(probe(source)).toEqual([
-			'src/lib/server/probe.test.ts:1: uses createDb other than in a call',
-			'src/lib/server/probe.test.ts:2: uses Database other than in a call',
-			'src/lib/server/probe.test.ts:3: uses createDb other than in a call',
-			'src/lib/server/probe.test.ts:4: uses createDb other than in a call'
-		]);
+			"const s = 'x'; const alias = createDb;",
+			"/* don't */ const open = createDb;",
+			'const t = { make: Database };',
+			'const x = ok ? Other : Database;',
+			"const s = 'import {'; const open = createDb;",
+			'const u = `${createDb}`;',
+			"createDb ('/tmp/x.db');",
+			"new  Database(':memory:');",
+			'\tDatabase as $D',
+			"it('createDb enables foreign_keys', () => {});",
+			'// createDb opens a file',
+			'let sqlite: Database = other;'
+		];
+		expect(probe(lines)).toEqual(at(OTHER_NAME, ...lines.map((_, i) => i + 1)));
 	});
 
-	it('flags a listed file that is missing or opens no file database', () => {
+	it('checks only imports in a listed file, and flags one that is missing or opens no file database', () => {
 		const sources = tree({
-			'src/listed.test.ts': "const { db } = createDb(':memory:');",
+			'src/opens.test.ts': [
+				"import { createDb } from './lib/server/db/client';",
+				"it('createDb on a file', () => {});",
+				"const { db } = createDb(join(dir, 'x.db'));"
+			].join('\n'),
+			'src/memory.test.ts': "const { db } = createDb(':memory:');",
 			'src/renamed.test.ts': [
 				"import { createDb as open } from './lib/server/db/client';",
-				"const { db } = open(':memory:');"
+				"const { db } = open('/tmp/x.db');"
 			].join('\n')
 		});
-		const listed = { 'src/listed.test.ts': '', 'src/renamed.test.ts': '', 'src/gone.test.ts': '' };
+		const listed = {
+			'src/opens.test.ts': '',
+			'src/memory.test.ts': '',
+			'src/renamed.test.ts': '',
+			'src/gone.test.ts': ''
+		};
 		expect(scan(sources, listed)).toEqual([
-			"src/renamed.test.ts:1: renames an import from './lib/server/db/client'",
-			'src/listed.test.ts: listed in FILE_DB_TESTS but opens no file database',
+			`src/renamed.test.ts:1: ${OTHER_IMPORT}`,
+			'src/memory.test.ts: listed in FILE_DB_TESTS but opens no file database',
 			'src/renamed.test.ts: listed in FILE_DB_TESTS but opens no file database',
 			'src/gone.test.ts: listed in FILE_DB_TESTS but not found'
 		]);
