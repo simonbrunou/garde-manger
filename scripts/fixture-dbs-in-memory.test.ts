@@ -13,8 +13,8 @@ import { join, posix } from 'node:path';
 // module that opens a file for a test, Bun's SQL or drizzle opened on a path all pass it.
 const ROOT = join(import.meta.dir, '..');
 
-// The file names bun test runs as tests.
-const TEST_GLOB = 'src/**/*{.test,_test,.spec,_spec}.{ts,tsx,js,jsx}';
+// The file names bun test 1.4.5 runs, in any case: E.TEST.ts and f_SPEC.js run too.
+const TEST_FILE = /[._](test|spec)\.(ts|tsx|js|jsx|mts|cts|mjs|cjs)$/i;
 
 // Files that test the file database itself, each with its reason. In them the scan checks only
 // imports, and that the file still opens a file database.
@@ -94,7 +94,9 @@ function scan(sources: Record<string, string>, exceptions: Record<string, string
 }
 
 function srcTests(): Record<string, string> {
-	const files = [...new Bun.Glob(TEST_GLOB).scanSync({ cwd: ROOT })].sort();
+	const files = [...new Bun.Glob('src/**/*').scanSync({ cwd: ROOT })]
+		.filter((f) => TEST_FILE.test(f))
+		.sort();
 	return Object.fromEntries(files.map((f) => [f, readFileSync(join(ROOT, f), 'utf8')]));
 }
 
@@ -129,12 +131,12 @@ describe('fixture databases in src tests', () => {
 	});
 
 	it('reads every file name bun test runs', () => {
-		const glob = new Bun.Glob(TEST_GLOB);
-		const names = ['a.test', 'a_test', 'a.spec', 'a_spec'].flatMap((n) =>
-			['ts', 'tsx', 'js', 'jsx'].map((ext) => `src/lib/${n}.${ext}`)
+		const names = ['a.test', 'a_test', 'a.spec', 'a_spec', 'E.TEST', 'f_Spec'].flatMap((n) =>
+			['ts', 'tsx', 'js', 'jsx', 'mts', 'cts', 'mjs', 'cjs'].map((ext) => `src/lib/${n}.${ext}`)
 		);
-		expect(names.filter((n) => !glob.match(n))).toEqual([]);
-		expect(['src/lib/a.ts', 'scripts/a.test.ts'].filter((n) => glob.match(n))).toEqual([]);
+		expect(names.filter((n) => !TEST_FILE.test(n))).toEqual([]);
+		const skipped = ['src/lib/a.ts', 'src/lib/g-test.ts', 'src/lib/h.tests.ts', 'src/a.test.json'];
+		expect(skipped.filter((n) => TEST_FILE.test(n))).toEqual([]);
 	});
 
 	it("passes today's forms: one-line imports, ':memory:' calls and a let", () => {
