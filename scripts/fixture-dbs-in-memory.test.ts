@@ -6,11 +6,15 @@ import { join, posix } from 'node:path';
 // syncs to disk on every commit, and on the loaded CI runner a beforeEach that migrated one passed
 // Bun's 5 s timeout. The scan reads each src test file line by line. A line that names createDb,
 // Database, bun:sqlite or db/client must be one of the forms src tests use today: a one-line
-// `import { ... } from '...';` with no renames, a `createDb(':memory:')` or
-// `new Database(':memory:'` call, or `let <name>: Database;`. It flags every other such line,
+// `import { ... } from '...';` or `import type { ... } from '...';` with no renames, a
+// `createDb(':memory:')` call, or `let <name>: Database;`. It flags every other such line,
 // comments and strings included, and every import of the app database, which opens
-// DATABASE_PATH when it loads.
+// DATABASE_PATH when it loads. It reads only test files, and only those two openers: a helper
+// module that opens a file for a test, Bun's SQL or drizzle opened on a path all pass it.
 const ROOT = join(import.meta.dir, '..');
+
+// The file names bun test runs as tests.
+const TEST_GLOB = 'src/**/*{.test,_test,.spec,_spec}.{ts,tsx,js,jsx}';
 
 // Files that test the file database itself, each with its reason. In them the scan checks only
 // imports, and that the file still opens a file database.
@@ -29,7 +33,7 @@ const APP_DB_MODULES = ['src/lib/server/db', 'src/lib/server/db/index'];
 const STRING = /(?=(['"`])([^'"`\n]+)\1)/g;
 const IMPORT_LINE = /^import (?:type )?\{([^}]*)\} from '[^']+';$/;
 const LET_DATABASE = /^let \w+: Database;$/;
-const MEMORY_CALLS = ["createDb(':memory:')", "new Database(':memory:'"];
+const MEMORY_CALL = "createDb(':memory:')";
 const NAME = /\b(createDb|Database)\b/;
 const OPENER = /\b(createDb|new Database)\(/;
 const FILE_DB = "opens a file database; pass ':memory:'";
@@ -60,8 +64,7 @@ function lineProblems(file: string, source: string, listed: boolean): string[] {
 			return;
 		}
 		if (listed) return;
-		let rest = line.replace(LET_DATABASE, '');
-		for (const call of MEMORY_CALLS) rest = rest.replaceAll(call, '');
+		const rest = line.replace(LET_DATABASE, '').replaceAll(MEMORY_CALL, '');
 		const opener = OPENER.exec(rest);
 		if (opener) found.push(`${at}: ${opener[1]}( ${FILE_DB}`);
 		else if (NAME.test(rest))
@@ -91,7 +94,7 @@ function scan(sources: Record<string, string>, exceptions: Record<string, string
 }
 
 function srcTests(): Record<string, string> {
-	const files = [...new Bun.Glob('src/**/*.test.ts').scanSync({ cwd: ROOT })].sort();
+	const files = [...new Bun.Glob(TEST_GLOB).scanSync({ cwd: ROOT })].sort();
 	return Object.fromEntries(files.map((f) => [f, readFileSync(join(ROOT, f), 'utf8')]));
 }
 
@@ -125,6 +128,15 @@ describe('fixture databases in src tests', () => {
 		expect(scan(srcTests(), FILE_DB_TESTS)).toEqual([]);
 	});
 
+	it('reads every file name bun test runs', () => {
+		const glob = new Bun.Glob(TEST_GLOB);
+		const names = ['a.test', 'a_test', 'a.spec', 'a_spec'].flatMap((n) =>
+			['ts', 'tsx', 'js', 'jsx'].map((ext) => `src/lib/${n}.${ext}`)
+		);
+		expect(names.filter((n) => !glob.match(n))).toEqual([]);
+		expect(['src/lib/a.ts', 'scripts/a.test.ts'].filter((n) => glob.match(n))).toEqual([]);
+	});
+
 	it("passes today's forms: one-line imports, ':memory:' calls and a let", () => {
 		const lines = [
 			"import { createDb, runMigrations, type DB } from './db/client';",
@@ -134,8 +146,7 @@ describe('fixture databases in src tests', () => {
 			"import { Database } from 'bun:sqlite';",
 			'\tlet sqlite: Database;',
 			"\tconst { db } = createDb(':memory:');",
-			"\t({ db, sqlite } = createDb(':memory:'));",
-			"const raw = new Database(':memory:', { strict: true });"
+			"\t({ db, sqlite } = createDb(':memory:'));"
 		];
 		expect(probe(lines)).toEqual([]);
 	});
@@ -147,12 +158,16 @@ describe('fixture databases in src tests', () => {
 			'\tpath',
 			');',
 			'const raw = new Database(destPath);',
-			"createDb( ':memory:' );"
+			"createDb( ':memory:' );",
+			"createDb(':memory:' && path);",
+			"const raw = new Database(':memory:', { strict: true });",
+			"new Database(':memory:' && path);"
 		];
 		expect(probe(lines)).toEqual([
 			...at(OPENS_FILE('createDb'), 1, 2),
 			...at(OPENS_FILE('new Database'), 5),
-			...at(OPENS_FILE('createDb'), 6)
+			...at(OPENS_FILE('createDb'), 6, 7),
+			...at(OPENS_FILE('new Database'), 8, 9)
 		]);
 	});
 
