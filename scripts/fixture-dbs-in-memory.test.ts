@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'bun:test';
-import { readFileSync } from 'node:fs';
-import { join, posix } from 'node:path';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, posix } from 'node:path';
 
 // A unit test that uses a database only as a fixture opens it in memory (#154). A file database
 // syncs to disk on every commit, and on the loaded CI runner a beforeEach that migrated one passed
@@ -93,10 +94,23 @@ function scan(sources: Record<string, string>, exceptions: Record<string, string
 	return found;
 }
 
-function srcTests(): Record<string, string> {
-	const files = [...new Bun.Glob('src/**/*').scanSync({ cwd: ROOT })]
+// The test files bun test runs under root/src: dotfiles such as .x.test.ts included, files in a
+// dot folder left out.
+function testFiles(root: string): string[] {
+	return [...new Bun.Glob('src/**/*').scanSync({ cwd: root, dot: true })]
 		.filter((f) => TEST_FILE.test(f))
+		.filter(
+			(f) =>
+				!f
+					.split('/')
+					.slice(0, -1)
+					.some((part) => part.startsWith('.'))
+		)
 		.sort();
+}
+
+function srcTests(): Record<string, string> {
+	const files = testFiles(ROOT);
 	return Object.fromEntries(files.map((f) => [f, readFileSync(join(ROOT, f), 'utf8')]));
 }
 
@@ -137,6 +151,27 @@ describe('fixture databases in src tests', () => {
 		expect(names.filter((n) => !TEST_FILE.test(n))).toEqual([]);
 		const skipped = ['src/lib/a.ts', 'src/lib/g-test.ts', 'src/lib/h.tests.ts', 'src/a.test.json'];
 		expect(skipped.filter((n) => TEST_FILE.test(n))).toEqual([]);
+	});
+
+	it('lists dotfile tests and skips dot folders, as bun test does', () => {
+		const root = mkdtempSync(join(tmpdir(), 'gm-fixture-dbs-'));
+		try {
+			const files = [
+				'src/lib/.bar.test.ts',
+				'src/lib/a.TEST.mts',
+				'src/lib/b.ts',
+				'src/.cache/c.test.ts',
+				'src/lib/.d/e.test.ts',
+				'other/f.test.ts'
+			];
+			for (const f of files) {
+				mkdirSync(dirname(join(root, f)), { recursive: true });
+				writeFileSync(join(root, f), '');
+			}
+			expect(testFiles(root)).toEqual(['src/lib/.bar.test.ts', 'src/lib/a.TEST.mts']);
+		} finally {
+			rmSync(root, { recursive: true, force: true });
+		}
 	});
 
 	it("passes today's forms: one-line imports, ':memory:' calls and a let", () => {
