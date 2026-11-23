@@ -13,7 +13,7 @@ ENV NODE_ENV=production
 # echoes APT_REFRESH: set it to today's date to rebuild the layer when a scan flags an OS
 # package that a fresh upgrade fixes (#158).
 # curl is for Coolify's health check and the daily-reminder-push task (DEPLOY.md sections 5, 6).
-ARG APT_REFRESH=2026-11-19
+ARG APT_REFRESH=2026-11-23
 RUN echo Debian packages refreshed ${APT_REFRESH} && apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 COPY --from=build /app/build ./build
 COPY --from=build /app/package.json /app/bun.lock ./
