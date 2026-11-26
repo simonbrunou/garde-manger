@@ -3,6 +3,11 @@
 	"extends": ["config:recommended"],
 	"platformAutomerge": true,
 	"rangeStrategy": "bump",
+	"rebaseWhen": "conflicted",
+	"pin": {
+		"description": "Repeats the top-level rebaseWhen: Renovate's built-in pin config sets behind-base-branch, which would override it for pin updates, so an open automerge pin PR that falls behind main would rebase and rerun CI at Renovate's next run (#54, homelab-stacks#228).",
+		"rebaseWhen": "conflicted"
+	},
 	"packageRules": [
 		{
 			"description": "Auto-merge low-risk updates once CI passes",
